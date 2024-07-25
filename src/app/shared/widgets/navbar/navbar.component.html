@@ -1,16 +1,55 @@
-<nav class="bg-white fixed w-full z-20 top-0 border-b border-gray-200 dark:border-gray-600 ">
-    <div class="max-w-screen-xl mx-auto p-4 flex justify-between items-center">
-        <div class="flex items-center space-x-8">
-            <a [routerLink]="['/services']" class="text-xl text-center text-stone-900 cursor-pointer">SERVICES</a>
-            <a  class="text-xl text-center text-stone-900 cursor-pointer" >PACKAGES</a>
+<nav class="bg-white fixed w-full z-20 top-0 border-b border-gray-200 dark:border-gray-600">
+    <div class="max-w-screen-xl mx-auto p-3 flex justify-between items-center">
+        <!-- Logo for all screens -->
+        <div class="flex items-center">
+            <a [routerLink]="['/home']" class="flex items-center">
+                <img src="../../../assets/WiskAndWillow.png" alt="logo" class="w-8 md:w-10">
+            </a>
         </div>
-        <div class="flex justify-center items-center cursor-pointer">
-            <img [routerLink]="['/home']" src="../../../assets/WiskAndWillow.png" alt="logo" class="w-10">
+
+        <!-- Menu for desktop -->
+        <div class="hidden md:flex items-center space-x-8 relative">
+            <a [routerLink]="['/services']" class="text-sm text-center text-stone-900 cursor-pointer">SERVICES</a>
+            <a [routerLink]="['/packages']" class="text-sm text-center text-stone-900 cursor-pointer">PACKAGES</a>
+            <a [routerLink]="['/gallery']" class="text-sm text-center text-stone-900 cursor-pointer">GALLERY</a>
+            <a [routerLink]="['/contact']" class="text-sm text-center text-stone-900 cursor-pointer">CONTACT</a>
+             <!-- <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/e076ee509d41f87de3803272feb94d6469126380b5356a9f726329e4222aa3f0?apiKey=b5ab136a2b7b497195a8e3ac52af09ef&&apiKey=b5ab136a2b7b497195a8e3ac52af09ef" alt="User Profile" class="w-12"> -->
+            <div class="relative">
+              <i class="fa-solid fa-user cursor-pointer" style="color: #000000;" id="userIcon" (click)="toggleDropdown()"></i>
+              <div *ngIf="isDropdownVisible" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20">
+                <a [routerLink]="['/login']" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">User Login</a>
+                <a [routerLink]="['/employee-login']" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Employee Login</a>
+                <a (click)="logout()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Logout</a>
+              </div>
+            </div>
+          </div>
+
+        <!-- Menu button for mobile view -->
+        <div class="md:hidden flex items-center">
+            <button (click)="toggleMenu()" class="text-stone-900 focus:outline-none">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
         </div>
-        <div class="flex items-center space-x-8 cursor-pointer">
-            <a  class="text-xl text-center text-stone-900 ">GALLERY</a>
-            <a  class="text-xl text-center text-stone-900 ">CONTACT</a>
-            <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/e076ee509d41f87de3803272feb94d6469126380b5356a9f726329e4222aa3f0?apiKey=b5ab136a2b7b497195a8e3ac52af09ef&&apiKey=b5ab136a2b7b497195a8e3ac52af09ef" alt="Logo" class="w-12">
+    </div>
+
+    <!-- Mobile menu -->
+    <div *ngIf="isMenuOpen" class="fixed inset-0 z-30 bg-white border-t border-gray-200 dark:border-gray-600 flex flex-col items-center p-4 space-y-4">
+        <!-- Close button -->
+        <div class="w-full flex justify-between items-center mb-4">
+            <button (click)="closeMenu()" class="text-stone-900">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <img [routerLink]="['/home']" src="../../../assets/WiskAndWillow.png" alt="logo" class="w-7">
+            <i class="fa-solid fa-user" style="color: #000000;"></i>
+            <!-- <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/e076ee509d41f87de3803272feb94d6469126380b5356a9f726329e4222aa3f0?apiKey=b5ab136a2b7b497195a8e3ac52af09ef&&apiKey=b5ab136a2b7b497195a8e3ac52af09ef" alt="User Profile" class="w-12"> -->
         </div>
+        <a [routerLink]="['/services']" (click)="closeMenu()" class="text-sm text-center text-stone-900 cursor-pointer">SERVICES</a>
+        <a (click)="closeMenu()" class="text-sm text-center text-stone-900 cursor-pointer">PACKAGES</a>
+        <a (click)="closeMenu()" class="text-sm text-center text-stone-900">GALLERY</a>
+        <a (click)="closeMenu()" class="text-sm text-center text-stone-900">CONTACT</a>
     </div>
 </nav>

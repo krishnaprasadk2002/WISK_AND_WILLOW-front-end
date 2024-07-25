@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-user-login',
   standalone: true,
   imports: [RouterModule],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  templateUrl: './user-login.component.html',
+  styleUrl: './user-login.component.css'
 })
-export class HomeComponent {
+export class UserLoginComponent {
 
 }

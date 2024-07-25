@@ -1,0 +1,45 @@
+<div class="font-[sans-serif] min-h-screen flex items-center justify-center py-6 px-4 mt-16">
+    <div class="container flex flex-col md:flex-row items-center justify-center border-gray-300 rounded-lg p-4 md:p-6 w-full max-w-4xl shadow-[0_2px_22px_-4px_rgba(93,96,127,0.2)] bg-white">
+        <!-- Registration Form -->
+        <div class="w-full md:w-1/2 p-4 md:p-6 max-w-lg md:rounded-lg">
+            <form class="space-y-4">
+                <div class="mb-6">
+                    <h3 class="text-gray-800 text-2xl md:text-3xl font-extrabold text-center">Register</h3>
+                    <p class="text-gray-500 text-sm mt-2 leading-relaxed text-center">Register with Wisk and Willow to start planning your unforgettable events.</p>
+                </div>
+                <div>
+                    <label class="text-gray-800 text-sm mb-1 block">User name</label>
+                    <input name="username" type="text" required class="w-full text-sm text-gray-800 border border-gray-300 px-4 py-2 rounded-lg outline-blue-600" placeholder="Enter user name" />
+                </div>
+                <div>
+                    <label class="text-gray-800 text-sm mb-1 block">Email</label>
+                    <input name="email" type="email" required class="w-full text-sm text-gray-800 border border-gray-300 px-4 py-2 rounded-lg outline-blue-600" placeholder="Enter email" />
+                </div>
+                <div>
+                    <label class="text-gray-800 text-sm mb-1 block">Mobile</label>
+                    <input name="mobile" type="text" required class="w-full text-sm text-gray-800 border border-gray-300 px-4 py-2 rounded-lg outline-blue-600" placeholder="Enter mobile" />
+                </div>
+                <div>
+                    <label class="text-gray-800 text-sm mb-1 block">Password</label>
+                    <input name="password" type="password" required class="w-full text-sm text-gray-800 border border-gray-300 px-4 py-2 rounded-lg outline-blue-600" placeholder="Enter password" />
+                </div>
+                <div>
+                    <label class="text-gray-800 text-sm mb-1 block">Confirm password</label>
+                    <input name="confirm password" type="password" required class="w-full text-sm text-gray-800 border border-gray-300 px-4 py-2 rounded-lg outline-blue-600" placeholder="Enter confirm password" />
+                </div>
+                <div class="!mt-6">
+                    <button type="button" class="w-full shadow-xl py-2 px-4 text-sm tracking-wide rounded-lg text-white bg-black hover:bg-gray-700 focus:outline-none">
+                        Register
+                    </button>
+                </div>
+                <p class="text-sm !mt-6 text-center text-gray-700">Already have an account? <a [routerLink]="['/login']" class="text-black font-semibold hover:underline ml-1 whitespace-nowrap cursor-pointer">Log in here</a></p>
+            </form>
+        </div>
+        <!-- Image -->
+        <div class="hidden md:flex lg:h-[300px] md:h-[250px] w-full md:w-1/2 my-auto p-4 justify-center items-center">
+            <div class="text-center font-serif w-full h-full flex justify-center items-center">
+                <img src="../../../../assets/Events.png" alt="wisk and willow logo" class="max-w-full max-h-full object-contain">
+            </div>
+        </div>
+    </div>
+</div>

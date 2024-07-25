@@ -1,20 +1,20 @@
 <!-- banner image -->
-<div class="relative mt-20 w-full">
+<div class="relative mt-16 sm:mt-15 md:mt-15 lg:mt-15 w-full">
     <img src="assets/Banner.jpg" alt="Banner" class="w-full h-auto object-cover md:h-screen md:max-h-96 md:min-h-64">
     <div class="absolute inset-0 flex items-center justify-center">
-      <h1 class="text-white text-4xl md:text-6xl font-bold text-center">
+      <h1 class="text-white text-xl sm:text-2xl md:text-4xl lg:text-6xl font-bold text-center px-4">
         WISK AND WILLOW
-        <span class="block font-extrabold">SERVICES</span>
+        <span class="block font-light">SERVICES</span>
       </h1>
     </div>
   </div>
 
   <!-- events showing -->
 <div class="bg-white flex justify-center items-center mt-10 ">
-    <div class="container mx-auto px-4">
+    <div class="container mx-auto px-4 items-center">
         <div class="flex flex-col md:flex-row justify-around items-center space-y-8 md:space-y-0 md:space-x-8">
             <!-- Weddings -->
-            <div [routerLink]="['/wedding']" class="text-center max-w-sm">
+            <div [routerLink]="['/wedding']" class="text-center items-center max-w-sm">
                 <div class="w-48 h-48 mx-auto mb-4">
                     <img src="https://via.placeholder.com/150" alt="Weddings" class="w-full h-full object-cover rounded-full">
                 </div>

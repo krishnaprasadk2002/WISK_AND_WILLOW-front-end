@@ -1,0 +1,40 @@
+<div class="font-[sans-serif] min-h-screen flex items-center justify-center py-4 px-4 mt-8">
+    <div class="container flex flex-col md:flex-row items-center justify-center border-gray-300 rounded-lg p-4 md:p-6 w-full max-w-4xl shadow-[0_2px_22px_-4px_rgba(93,96,127,0.2)] bg-white">
+        <!-- Login Form -->
+        <div class="w-full md:w-1/2 p-4 md:p-6 max-w-lg md:rounded-lg">
+            <form class="space-y-4">
+                <div class="mb-6">
+                    <h3 class="text-gray-800 text-2xl md:text-3xl font-extrabold text-center">Employee login</h3>
+                    <p class="text-gray-500 text-sm mt-2 leading-relaxed text-center">Sign in to Wisk and Willow and begin your journey to unforgettable events.</p>
+                </div>
+                <div>
+                    <label class="text-gray-800 text-sm mb-1 block">Email</label>
+                    <input name="email" type="text" required class="w-full text-sm text-gray-800 border border-gray-300 px-4 py-2 rounded-lg outline-black" placeholder="Enter email" />
+                </div>
+                <div>
+                    <label class="text-gray-800 text-sm mb-1 block">Password</label>
+                    <input name="password" type="password" required class="w-full text-sm text-gray-800 border border-gray-300 px-4 py-2 rounded-lg outline-black" placeholder="Enter password" />
+                </div>
+                <div class="!mt-6">
+                    <button type="button" class="w-full shadow-xl py-2 px-4 text-sm tracking-wide rounded-lg text-white bg-black hover:bg-gray-700 focus:outline-none">
+                        Log in
+                    </button>
+                </div>
+                <p class="text-sm !mt-6 text-center text-gray-700">Don't have an account? <a [routerLink]="['/register']" class="text-black font-semibold hover:underline ml-1 whitespace-nowrap cursor-pointer">Register here</a></p>
+              
+                <div class="!mt-6 flex justify-center">
+                    <button type="button" class="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 mr-2 mb-2">
+                        <svg class="mr-2 -ml-1 w-4 h-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg>
+                        Sign in with Google
+                    </button>
+                </div>
+            </form>
+        </div>
+        <!-- Image -->
+        <div class="hidden md:flex lg:h-[300px] md:h-[250px] w-full md:w-1/2 my-auto p-4 justify-center items-center">
+            <div class="text-center font-serif w-full h-full flex justify-center items-center">
+                <img src="../../../../assets/Events.png" alt="wisk and willow logo" class="max-w-full max-h-full object-contain">
+            </div>
+        </div>
+    </div>
+</div>
