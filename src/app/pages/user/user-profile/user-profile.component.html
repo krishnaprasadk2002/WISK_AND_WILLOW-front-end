@@ -1,0 +1,40 @@
+<!-- banner image -->
+<div class="relative mt-16 sm:mt-15 md:mt-15 lg:mt-15 w-full">
+    <img src="assets/Banner.jpg" alt="Banner" class="w-full h-auto object-cover md:h-screen md:max-h-96 md:min-h-64">
+    <div class="absolute inset-0 flex items-center justify-center">
+        <p class="text-white text-xl sm:text-2xl md:text-4xl lg:text-6xl font-semibold text-center px-4">
+            WISK AND WILLOW
+            <span class="block text-4xl font-light">USER PROFILE</span>
+        </p>
+    </div>
+</div>
+
+<!-- user profile -->
+<div class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md sm:max-w-sm lg:max-w-lg">
+        <div class="flex flex-col items-center">
+            <img src="https://via.placeholder.com/100" alt="Profile Picture" class="rounded-full w-24 h-24">
+        </div>
+        <div class="mt-6 space-y-4">
+            <div class="flex flex-col">
+                <label for="username" class="text-gray-700">Username</label>
+                <input type="text" id="username" value="kpk" class="mt-1 p-2 border rounded-md " readonly>
+            </div>
+            <div class="flex flex-col">
+                <label for="email" class="text-gray-700">Email Id</label>
+                <input type="email" id="email" value="kpk@gmail.com" class="mt-1 p-2 border rounded-md " readonly>
+            </div>
+            <div class="flex flex-col">
+                <label for="phone" class="text-gray-700">Phone Number</label>
+                <input type="text" id="phone" value="1234567890" class="mt-1 p-2 border rounded-md " readonly>
+            </div>
+            <div class="flex flex-col">
+                <label for="password" class="text-gray-700">Password</label>
+                <input type="password" id="password" value="12345678" class="mt-1 p-2 border rounded-md " readonly>
+            </div>
+        </div>
+        <div class="mt-6 flex justify-center">
+            <button [routerLink]="['/edit-profile']" class="bg-black text-white py-2 px-4 rounded-md hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-500">EDIT</button>
+        </div>
+    </div>
+</div>

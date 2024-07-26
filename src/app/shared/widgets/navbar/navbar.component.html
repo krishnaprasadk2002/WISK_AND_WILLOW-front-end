@@ -2,7 +2,7 @@
     <div class="max-w-screen-xl mx-auto p-3 flex justify-between items-center">
         <!-- Logo for all screens -->
         <div class="flex items-center">
-            <a [routerLink]="['/home']" class="flex items-center">
+            <a [routerLink]="['']" class="flex items-center">
                 <img src="../../../assets/WiskAndWillow.png" alt="logo" class="w-8 md:w-10">
             </a>
         </div>
@@ -13,12 +13,11 @@
             <a [routerLink]="['/packages']" class="text-sm text-center text-stone-900 cursor-pointer">PACKAGES</a>
             <a [routerLink]="['/gallery']" class="text-sm text-center text-stone-900 cursor-pointer">GALLERY</a>
             <a [routerLink]="['/contact']" class="text-sm text-center text-stone-900 cursor-pointer">CONTACT</a>
-             <!-- <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/e076ee509d41f87de3803272feb94d6469126380b5356a9f726329e4222aa3f0?apiKey=b5ab136a2b7b497195a8e3ac52af09ef&&apiKey=b5ab136a2b7b497195a8e3ac52af09ef" alt="User Profile" class="w-12"> -->
             <div class="relative">
-              <i class="fa-solid fa-user cursor-pointer" style="color: #000000;" id="userIcon" (click)="toggleDropdown()"></i>
-              <div *ngIf="isDropdownVisible" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20">
+              <i class="fa-solid fa-user cursor-pointer" style="color: #000000;" id="userIcon" (click)="toggleDropdown($event)"></i>
+              <div *ngIf="isDropdownVisible" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20 dropdown">
                 <a [routerLink]="['/login']" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">User Login</a>
-                <a [routerLink]="['/employee-login']" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Employee Login</a>
+                <a [routerLink]="['/employee/login']" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Employee Login</a>
                 <a (click)="logout()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Logout</a>
               </div>
             </div>
@@ -43,9 +42,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
-            <img [routerLink]="['/home']" src="../../../assets/WiskAndWillow.png" alt="logo" class="w-7">
-            <i class="fa-solid fa-user" style="color: #000000;"></i>
-            <!-- <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/e076ee509d41f87de3803272feb94d6469126380b5356a9f726329e4222aa3f0?apiKey=b5ab136a2b7b497195a8e3ac52af09ef&&apiKey=b5ab136a2b7b497195a8e3ac52af09ef" alt="User Profile" class="w-12"> -->
+            <img [routerLink]="['']" src="../../../assets/WiskAndWillow.png" alt="logo" class="w-7">
+            <i [routerLink]="" class="fa-solid fa-user" style="color: #000000;"></i>
         </div>
         <a [routerLink]="['/services']" (click)="closeMenu()" class="text-sm text-center text-stone-900 cursor-pointer">SERVICES</a>
         <a (click)="closeMenu()" class="text-sm text-center text-stone-900 cursor-pointer">PACKAGES</a>
