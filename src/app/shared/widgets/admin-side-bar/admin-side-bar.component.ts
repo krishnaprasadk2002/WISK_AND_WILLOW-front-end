@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { AdminNavService } from '../../../core/services/admin-nav.service';
 
 @Component({
   selector: 'app-admin-side-bar',
@@ -12,7 +13,14 @@ import { RouterModule } from '@angular/router';
 export class AdminSideBarComponent {
   isSidebarOpen = false;
 
+  constructor(private navServices:AdminNavService){
+
+    this.navServices.sidebarOpen$.subscribe(isOpen => {
+      this.isSidebarOpen = isOpen
+    })
+  }
+
   toggleSidebar() {
-    this.isSidebarOpen = !this.isSidebarOpen;
+    this.navServices.toggleSidebar();
   }
 }

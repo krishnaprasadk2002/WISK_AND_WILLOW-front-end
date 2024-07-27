@@ -11,6 +11,7 @@ import { EmployeeLoginComponent } from './pages/employee/employee-login/employee
 import { EmployeeRegisterComponent } from './pages/employee/employee-register/employee-register.component';
 import { AdminSideBarComponent } from './shared/widgets/admin-side-bar/admin-side-bar.component';
 import { AdminAuthComponent } from './pages/admin/admin-auth/admin-auth.component';
+import { UserManagementComponent } from './pages/admin/user-management/user-management.component';
 
 export const routes: Routes = [
 
@@ -60,7 +61,22 @@ export const routes: Routes = [
     //Admin side
     {
         path: 'admin',
-        component: AdminDashboardComponent,
+        component: AdminComponent,
+        children:[
+            {path:'',component:AdminDashboardComponent},
+            {
+                path:'user-management',
+                loadComponent:()=>import('./pages/admin/user-management/user-management.component').then(a=>a.UserManagementComponent)
+            },
+            {
+                path:'event-managemnt',
+                loadComponent:()=>import('./pages/admin/event-management/event-management.component').then(a=>a.EventManagementComponent)
+            },
+            {
+                path:'employee-managemnt',
+                loadComponent:()=>import('./pages/admin/employee-managment/employee-managment.component').then(a=>a.EmployeeManagmentComponent)
+            }
+        ]
         
     },
 
