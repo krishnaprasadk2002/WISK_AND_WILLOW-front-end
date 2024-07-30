@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AdminNavService } from '../../../core/services/admin-nav.service';
+import { AdminNavService } from '../../../core/services/adminNav/admin-nav.service';
 
 @Component({
   selector: 'app-admin-side-bar',

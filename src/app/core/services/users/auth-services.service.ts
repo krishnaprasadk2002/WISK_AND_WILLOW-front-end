@@ -17,12 +17,16 @@ export class AuthServicesService {
     return this.http.post(`${this.baseUrl}user/register`, userData);
   }
 
-  verifyOtp(userId:string,otp:string): Observable<any> {
-  return this.http.post(`${this.baseUrl}user/verify-otp`,{userId,otp})
+  verifyOtp(userId: string, otp: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}user/verify-otp`, { userId, otp })
   }
 
-  resendOtP(email:string):Observable<any>{
-  return this.http.post(`${this.baseUrl}user/resend-otp`,{email})
+  resendOtP(email: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}user/resend-otp`, { email })
+  }
+
+  userLogin(email: string, password: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}user/login`, { email, password })
   }
 
 }

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AdminSideBarComponent } from '../../../shared/widgets/admin-side-bar/admin-side-bar.component';
-import { AdminNavService } from '../../../core/services/admin-nav.service';
+import { AdminNavService } from '../../../core/services/adminNav/admin-nav.service';
 
 @Component({
   selector: 'app-admin-dashboard',

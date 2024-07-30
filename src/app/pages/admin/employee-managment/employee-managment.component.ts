@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { AdminNavService } from '../../../core/services/admin-nav.service';
+import { AdminNavService } from '../../../core/services/adminNav/admin-nav.service';
 
 @Component({
   selector: 'app-employee-managment',
