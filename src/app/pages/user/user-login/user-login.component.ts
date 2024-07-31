@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-user-login',
   standalone: true,
-  imports: [RouterModule, ReactiveFormsModule,CommonModule],
+  imports: [RouterModule, ReactiveFormsModule, CommonModule],
   templateUrl: './user-login.component.html',
   styleUrl: './user-login.component.css'
 })
@@ -33,7 +33,7 @@ export class UserLoginComponent implements OnInit {
 
       this.authService.userLogin(email, password).subscribe(
         response => {
-console.log(response);
+          console.log(response);
 
           this.toastService.show('Login successful', 'success');
           this.router.navigate([''])

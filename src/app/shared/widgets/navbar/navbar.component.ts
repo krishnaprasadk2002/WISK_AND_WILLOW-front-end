@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component, HostListener } from '@angular/core';
-import { RouterLink, RouterModule } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
+import { environment } from '../../../../environments/environment';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-navbar',
@@ -10,6 +13,12 @@ import { RouterLink, RouterModule } from '@angular/router';
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
+
+  constructor(private http:HttpClient,private route:Router,private toastrService:ToastrService){
+  }
+
+private baseUrl = environment.baseUrl
+
   isMenuOpen = false;
   isDropdownVisible = false;
 
@@ -38,6 +47,15 @@ export class NavbarComponent {
   }
 
   logout() {
-    console.log('User logged out'); 
+    this.http.post(`${this.baseUrl}user/logout`,{}).subscribe(
+      response =>{
+        console.log('User logged out');
+        this.toastrService.show('Logout successful', 'success')
+        this.route.navigate(['/login'])
+      },error=>{
+        console.error('Logout failed', error);
+        this.toastrService.show(error.error.message || "Error during logout",'error')
+      }
+)
   }
 }
