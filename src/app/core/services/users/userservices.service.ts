@@ -16,4 +16,8 @@ private baseUrl = environment.baseUrl
    return this.http.get<User[]>(`${this.baseUrl}admin/userdata`)
   }
 
+  UpdateUser(user:User):Observable<User>{
+    return this.http.post<User>(`${this.baseUrl}admin/updateUserStaus`,user)
+  }
+
 }
