@@ -27,8 +27,8 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/user/services-page/services-page.component').then(a => a.ServicesPageComponent)
             },
             {
-                path: 'wedding',
-                loadComponent: () => import('./pages/user/wedding-event/wedding-event.component').then(a => a.WeddingEventComponent)
+                path: 'events/:name',
+                loadComponent: () => import('./pages/user/event/event.component').then(a => a.EventComponent)
             },
             {
                 path: 'user-profile',
