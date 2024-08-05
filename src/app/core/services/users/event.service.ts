@@ -26,6 +26,10 @@ export class EventService {
     return this.http.get<IEvent[]>(`${this.baseUrl}event/getevents`)
   }
 
+  getEventByName(name:string):Observable<IEvent>{
+    return this.http.get<IEvent>(`${this.baseUrl}event/getEventByName/${name}`)
+  }
+
   updateEventStatus(event: IEvent): Observable<IEvent> {
     return this.http.post<IEvent>(`${this.baseUrl}event/eventstatus`, event);
   }  

@@ -1,33 +1,29 @@
-<div class="font-[sans-serif] min-h-screen flex items-center justify-center py-4 px-4 mt-8">
-    <div class="container flex flex-col md:flex-row items-center justify-center border-gray-300 rounded-lg p-4 md:p-6 w-full max-w-4xl shadow-[0_2px_22px_-4px_rgba(93,96,127,0.2)] bg-white">
+<div class="min-h-screen flex items-center justify-center bg-gray-100 py-4 px-4">
+    <div class="container flex flex-col md:flex-row items-center justify-center bg-white border border-gray-300 rounded-lg shadow-lg p-4 md:p-8 w-full max-w-3xl">
+        <!-- Image -->
+        <div class="hidden md:flex md:w-1/2 p-4 justify-center items-center">
+            <img src="../../../../assets/Events.png" alt="Employee Login" class="max-w-full h-auto object-cover rounded-lg">
+        </div>
         <!-- Login Form -->
-        <div class="w-full md:w-1/2 p-4 md:p-6 max-w-lg md:rounded-lg">
-            <form class="space-y-4">
-                <div class="mb-6">
-                    <h3 class="text-gray-800 text-2xl md:text-3xl font-extrabold text-center">Employee login</h3>
-                    <p class="text-gray-500 text-sm mt-2 leading-relaxed text-center">Sign in to Wisk and Willow and begin your journey to unforgettable events.</p>
+        <div class="w-full md:w-1/2 p-4 md:p-8">
+            <h3 class="text-gray-900 text-2xl md:text-3xl font-bold mb-4">Employee Login</h3>
+            <p class="text-gray-600 text-sm mb-6">Sign in to access your employee dashboard and manage your tasks.</p>
+            <form class="space-y-6">
+                <div>
+                    <label class="text-gray-800 text-sm mb-1 block" for="email">Email</label>
+                    <input id="email" name="email" type="email" required class="w-full text-sm bg-gray-100 text-gray-900 border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your email">
                 </div>
                 <div>
-                    <label class="text-gray-800 text-sm mb-1 block">Email</label>
-                    <input name="email" type="text" required class="w-full text-sm text-gray-800 border border-gray-300 px-4 py-2 rounded-lg outline-black" placeholder="Enter email" />
+                    <label class="text-gray-800 text-sm mb-1 block" for="password">Password</label>
+                    <input id="password" name="password" type="password" required class="w-full text-sm bg-gray-100 text-gray-900 border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your password">
                 </div>
                 <div>
-                    <label class="text-gray-800 text-sm mb-1 block">Password</label>
-                    <input name="password" type="password" required class="w-full text-sm text-gray-800 border border-gray-300 px-4 py-2 rounded-lg outline-black" placeholder="Enter password" />
-                </div>
-                <div class="!mt-6">
-                    <button type="button" class="w-full shadow-xl py-2 px-4 text-sm tracking-wide rounded-lg text-white bg-black hover:bg-gray-700 focus:outline-none">
-                        Log in
+                    <button type="button" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        Log In
                     </button>
                 </div>
-                <p class="text-sm !mt-6 text-center text-gray-700">Don't have an account? <a [routerLink]="['/employee/register']" class="text-black font-semibold hover:underline ml-1 whitespace-nowrap cursor-pointer">Register here</a></p>
+                <p class="text-sm text-center text-gray-700">Don't have an account? <a href="/employee/register" class="text-blue-600 font-semibold hover:underline">Register here</a></p>
             </form>
-        </div>
-        <!-- Image -->
-        <div class="hidden md:flex lg:h-[300px] md:h-[250px] w-full md:w-1/2 my-auto p-4 justify-center items-center">
-            <div class="text-center font-serif w-full h-full flex justify-center items-center">
-                <img src="../../../../assets/Events.png" alt="wisk and willow logo" class="max-w-full max-h-full object-contain">
-            </div>
         </div>
     </div>
 </div>

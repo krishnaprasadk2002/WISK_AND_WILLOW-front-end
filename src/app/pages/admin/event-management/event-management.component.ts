@@ -21,6 +21,7 @@ export class EventManagementComponent {
   status: boolean = true;
   isSidebarOpen = false;
   isModalOpen = false;
+  isEditModalOpen = false;
   isEditMode = false;
   imagePreview1: string | ArrayBuffer | null = null;
   imagePreview2: string | ArrayBuffer | null = null;
@@ -36,6 +37,7 @@ export class EventManagementComponent {
   }
 
   ngOnInit(): void {
+    
     this.eventForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(100)]],
       description: ['', [Validators.required, Validators.maxLength(1000)]],
@@ -82,12 +84,18 @@ export class EventManagementComponent {
   }
 
 
-  openModal() {
-    this.isModalOpen = true
+  openModal(target:string) {
+    if(target==="edit"){
+      this.isEditModalOpen = true
+    }else{
+      this.isModalOpen = true;
+    }
+    
   }
 
   closeModal() {
-    this.isModalOpen = false
+    this.isModalOpen = false;
+    this.isEditModalOpen = false
     this.resetPreviews();
     this.isEditMode = false;
     this.eventForm.reset();
@@ -131,22 +139,32 @@ export class EventManagementComponent {
 
   onSubmit(): void {
 
-    if (this.eventForm.valid) {
-      const formData = { ...this.eventForm.value };
+    if (this.eventForm.valid ) {
+      const formData = { ...this.eventForm.value,...this.images }
       
       // Only include images that have been changed
       if (this.images.image1 !== this.imagePreview1) formData.image1 = this.images.image1;
       if (this.images.image2 !== this.imagePreview2) formData.image2 = this.images.image2;
       if (this.images.image3 !== this.imagePreview3) formData.image3 = this.images.image3;
-  
+      
       if (this.isEditMode && this.currentEventId) {
+        console.log(this.isEditMode);
         this.eventService.updateEvent({ _id: this.currentEventId, ...formData }).subscribe(
           (response) => {
+            this.isEditMode = false;
+            this.eventForm.get('image1')?.addValidators(Validators.required);
+            this.eventForm.get('image2')?.addValidators(Validators.required);
+            this.eventForm.get('image3')?.addValidators(Validators.required);
+
             console.log('Event updated successfully', response);
             this.closeModal();
             this.loadEvents();
           },
           (error) => {
+            this.isEditMode = false;
+            this.eventForm.get('image1')?.addValidators(Validators.required);
+            this.eventForm.get('image2')?.addValidators(Validators.required);
+            this.eventForm.get('image3')?.addValidators(Validators.required);
             console.error('Error updating event', error);
           }
         );
@@ -172,8 +190,12 @@ export class EventManagementComponent {
 
   editEvent(event: IEvent) {
     this.isEditMode = true
+    this.eventForm.get('image1')?.removeValidators(Validators.required);
+    this.eventForm.get('image2')?.removeValidators(Validators.required);
+    this.eventForm.get('image3')?.removeValidators(Validators.required);
+
     this.currentEventId = event._id
-    this.openModal()
+    this.openModal("edit")
     this.eventForm.patchValue({
       name: event.name,
       description: event.description,

@@ -4,7 +4,7 @@
     <div class="absolute inset-0 flex items-center justify-center">
       <h1 class="text-white text-xl sm:text-2xl md:text-4xl lg:text-6xl font-bold text-center px-4">
         WISK AND WILLOW
-        <span class="block font-light">WEDDING</span>
+        <span class="block font-light text-2xl">{{event?.name}}</span>
       </h1>
     </div>
   </div>
@@ -15,17 +15,16 @@
     <div class="flex flex-col md:flex-row gap-8 md:gap-14 justify-center items-center">
         <div class="w-full md:w-1/2">
             <p class="text-lg mt-5 mb-6 font-bold">
-                Our team is here to make the day you've always dreamed of, the day you'll never forget.
+                {{event?.event_heading}}
             </p>
             <p class="mb-4">
-                From the very beginning, we will create a custom proposal based on your wants and needs. Once booked, your Infinity event team will collaborate with you to build the foundation of your wedding, creating an inspiration board and floor plan based on your unique vision. From unique lighting to seating charts, with us customization is guaranteed.
+                {{event?.event_content}}
             </p>
-            <p>
-                We care about the experience of planning your wedding from start to finish. So relax and have fun. Your Infinity event team will guide you every step of the way, ensuring your big day is effortless and unforgettable.
-            </p>
+           
         </div>
         <div>
-            <img src="https://via.placeholder.com/300x400" alt="Wedding Image" class="max-w-full h-auto md:max-w-sm lg:max-w-md">
+            <img [src]="event?.image2 ? event?.image2 : 'https://via.placeholder.com/300x400'" alt="event Image" class="max-w-full h-auto md:max-w-sm lg:max-w-md">
+
         </div>
     </div>
 </div>
@@ -35,22 +34,13 @@
     <div class="container mx-auto flex justify-center px-4">
         <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-44">
             <div class="w-full md:w-1/2 flex justify-center md:justify-end mb-8 md:mb-0">
-                <img src="https://via.placeholder.com/300x400" alt="Wedding Image" class="w-full max-w-xs md:max-w-md lg:max-w-lg h-auto">
+                <img [src]="event?.image3 ? event?.image3 : 'https://via.placeholder.com/300x400'" alt="Event Image" class="w-full max-w-xs md:max-w-md lg:max-w-lg h-auto">
             </div>
             <div class="w-full md:w-1/2 flex justify-center md:justify-start">
                 <div>
-                    <h4 class="text-lg font-extrabold mb-4">WEDDING SERVICES</h4>
-                    <ul class="list-disc pl-5 space-y-2 text-sm">
-                        <li>Ceremony & Reception Coordination</li>
-                        <li>Rehearsal Dinner Coordination</li>
-                        <li>Rentals & Vendor Coordination</li>
-                        <li>Wedding Day Timeline</li>
-                        <li>Floor Plan Design</li>
-                        <li>Wedding Concept & Design</li>
-                        <li>Budget Management</li>
-                        <li>Security & Staffing</li>
-                        <li>Tenting</li>
-                        <li>Transportation & Parking</li>
+                    <h4 class="text-lg font-extrabold mb-4">{{event?.event_services}}</h4>
+                    <ul  class="list-disc pl-5 space-y-2 text-sm">
+                        <li *ngFor="let feature of ulServices" >{{feature}}</li>
                     </ul>
                 </div>
             </div>
