@@ -14,4 +14,8 @@ private baseUrl=environment.baseUrl
 adminLogin(email:string,password:string) :Observable<any>{
 return this.http.post(`${this.baseUrl}admin/login`,{email,password})
 }
+
+adminAllEvents():Observable<any>{
+  return this.http.get(`${this.baseUrl}admin/allevents`,{})
+}
 }

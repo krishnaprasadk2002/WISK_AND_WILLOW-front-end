@@ -40,46 +40,40 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="bg-white border-b hover:bg-gray-50">
+            <tr *ngFor="let employee of employees"  class="bg-white border-b hover:bg-gray-50">
                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                    Apple MacBook Pro 17"
+                    {{employee.name}}
                 </th>
                 <td class="px-6 py-4">
-                    kpk
+                    {{employee.email}}
                 </td>
                 <td class="px-6 py-4">
-                    1234567890
+                    {{employee.mobile}}
                 </td>
                 <td class="px-6 py-4">
-                    wedding
+                    {{employee.type}}
                 </td>
                 <td class="px-6 py-4">
-                    blocked
+                    {{ employee.is_employee }}
                 </td>
-                <td class="flex px-6 py-4 gap-2">
 
-                    <div>
-                        <button *ngIf="status; else elseBlock" (click)="toggleStatus()"
-                            class="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded">
-                            Unblock
-                        </button>
-                        <ng-template #elseBlock>
-                            <button (click)="toggleStatus()"
-                                class="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded">
-                                Block
-                            </button>
-                        </ng-template>
-                    </div>
-
-                    <button
-                        class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
-                        Edit
-                    </button>
-                    <button
+                <td class="px-6 py-4 ">
+                    <div *ngIf="employee.is_employee === 'Pending'; else statusBlock">
+                      <button (click)="updateStatus(employee, 'Approved')"
+                        class="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded">
+                        Approve
+                      </button>
+                      <button (click)="updateStatus(employee, 'Rejected')"
                         class="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded">
-                        Delete
-                    </button>
-                </td>
+                        Reject
+                      </button>
+                    </div>
+                    <ng-template #statusBlock>
+                      <span *ngIf="employee.is_employee === 'Approved'" class="text-green-700 font-semibold">Approved</span>
+                      <span *ngIf="employee.is_employee === 'Rejected'" class="text-red-700 font-semibold">Rejected</span>
+                    </ng-template>
+                  </td>
+                  
             </tr>
         </tbody>
     </table>

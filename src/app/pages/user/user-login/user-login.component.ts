@@ -27,24 +27,30 @@ export class UserLoginComponent implements OnInit {
     });
   }
 
+
   onSubmit() {
     if (this.loginForm.valid) {
-      const { email, password } = this.loginForm.value
+      const { email, password } = this.loginForm.value;
 
       this.authService.userLogin(email, password).subscribe(
         response => {
-          console.log(response);
-
           this.toastService.show('Login successful', 'success');
-          this.router.navigate([''])
-        }, error => {
-          this.toastService.show(error.error.message || "Error during login", 'error')
+          this.router.navigate(['']);
+        },
+        error => {
+          if (error.status === 403 && error.error.message === 'Account not verified. Please verify your account.') {
+            localStorage.setItem('userId', error.error.userId);
+            this.router.navigate(['/otp']);
+          } else {
+            this.toastService.show(error.error.message || "Error during login", 'error');
+          }
           console.error("Error during login", error);
         }
-      )
+      );
     } else {
       this.toastService.show('Form is invalid', 'error');
       console.log('Form is invalid');
     }
   }
+
 }

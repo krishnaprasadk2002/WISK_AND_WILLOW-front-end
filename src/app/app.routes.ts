@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import { mapToCanActivate, Routes } from '@angular/router';
 import { HomeComponent } from './pages/user/home/home.component';
 import { DashboardComponent } from './pages/user/dashboard/dashboard.component';
 import { AdminComponent } from './pages/admin/admin/admin.component';
@@ -11,7 +11,7 @@ import { EmployeeLoginComponent } from './pages/employee/employee-login/employee
 import { EmployeeRegisterComponent } from './pages/employee/employee-register/employee-register.component';
 import { AdminSideBarComponent } from './shared/widgets/admin-side-bar/admin-side-bar.component';
 import { AdminAuthComponent } from './pages/admin/admin-auth/admin-auth.component';
-import { UserManagementComponent } from './pages/admin/user-management/user-management.component';
+import { AdminAuthGuard } from './core/guards/adminauth.guard';
 
 export const routes: Routes = [
 
@@ -83,7 +83,7 @@ export const routes: Routes = [
     {path:'admin',
         component:AdminAuthComponent,
         children:[
-            {path:'login',component:AdminLoginComponent}
+            {path:'login',component:AdminLoginComponent}, 
         ]
         
     },
@@ -94,6 +94,7 @@ export const routes: Routes = [
         component:AuthenticationComponent,
         children:[
             {path:'',component:EmployeeDashboardComponent},
+            {path:'dashboard',component:EmployeeDashboardComponent},
             {path:'login',component:EmployeeLoginComponent},
             {path:'register',component:EmployeeRegisterComponent}
         ]

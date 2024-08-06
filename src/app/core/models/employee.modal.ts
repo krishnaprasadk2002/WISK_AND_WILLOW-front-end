@@ -1,10 +1,10 @@
 export interface Employee{
+    _id?: string;
     employeeId?: string;
     name: string;
     email?: string;
     mobile: string;
     type:string
-    status?: boolean;
+    is_employee?:  'Approved' | 'Pending' | 'Rejected';
     password?: string
-    imageUrl?: string;
 }

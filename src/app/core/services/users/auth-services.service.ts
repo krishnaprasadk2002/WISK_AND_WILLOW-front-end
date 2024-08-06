@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -27,6 +27,12 @@ export class AuthServicesService {
 
   userLogin(email: string, password: string): Observable<any> {
     return this.http.post(`${this.baseUrl}user/login`, { email, password })
+    .pipe(
+      catchError(error => {
+        // Rethrow error so it can be handled by the component
+        return throwError(error);
+      })
+    );
   }
 
 }

@@ -1,29 +1,43 @@
 <div class="min-h-screen flex items-center justify-center bg-gray-100 py-4 px-4">
     <div class="container flex flex-col md:flex-row items-center justify-center bg-white border border-gray-300 rounded-lg shadow-lg p-4 md:p-8 w-full max-w-3xl">
-        <!-- Image -->
-        <div class="hidden md:flex md:w-1/2 p-4 justify-center items-center">
-            <img src="../../../../assets/Events.png" alt="Employee Login" class="max-w-full h-auto object-cover rounded-lg">
-        </div>
-        <!-- Login Form -->
-        <div class="w-full md:w-1/2 p-4 md:p-8">
-            <h3 class="text-gray-900 text-2xl md:text-3xl font-bold mb-4">Employee Login</h3>
-            <p class="text-gray-600 text-sm mb-6">Sign in to access your employee dashboard and manage your tasks.</p>
-            <form class="space-y-6">
-                <div>
-                    <label class="text-gray-800 text-sm mb-1 block" for="email">Email</label>
-                    <input id="email" name="email" type="email" required class="w-full text-sm bg-gray-100 text-gray-900 border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your email">
-                </div>
-                <div>
-                    <label class="text-gray-800 text-sm mb-1 block" for="password">Password</label>
-                    <input id="password" name="password" type="password" required class="w-full text-sm bg-gray-100 text-gray-900 border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your password">
-                </div>
-                <div>
-                    <button type="button" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        Log In
-                    </button>
-                </div>
-                <p class="text-sm text-center text-gray-700">Don't have an account? <a href="/employee/register" class="text-blue-600 font-semibold hover:underline">Register here</a></p>
-            </form>
-        </div>
+      <!-- Image -->
+      <div class="hidden md:flex md:w-1/2 p-4 justify-center items-center">
+        <img src="../../../../assets/Events.png" alt="Employee Login" class="max-w-full h-auto object-cover rounded-lg">
+      </div>
+      <!-- Login Form -->
+      <div class="w-full md:w-1/2 p-4 md:p-8">
+        <h3 class="text-gray-900 text-2xl md:text-3xl font-bold mb-4">Employee Login</h3>
+        <p class="text-gray-600 text-sm mb-6">Sign in to access your employee dashboard and manage your tasks.</p>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
+          <div>
+            <label class="text-gray-800 text-sm mb-1 block" for="email">Email</label>
+            <input id="email" formControlName="email" name="email" type="email" required class="w-full text-sm bg-gray-100 text-gray-900 border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your email">
+            <div *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)" class="text-red-600 text-sm">
+              <div *ngIf="loginForm.get('email')?.errors?.['required']">
+                Email is required.
+              </div>
+              <div *ngIf="loginForm.get('email')?.errors?.['email']">
+                Invalid email address.
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="text-gray-800 text-sm mb-1 block" for="password">Password</label>
+            <input id="password" formControlName="password" name="password" type="password" required class="w-full text-sm bg-gray-100 text-gray-900 border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your password">
+            <div *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)" class="text-red-600 text-sm">
+              <div *ngIf="loginForm.get('password')?.errors?.['required']">
+                Password is required.
+              </div>
+            </div>
+          </div>
+          <div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" [disabled]="loginForm.invalid">
+              Log In
+            </button>
+          </div>
+          <p class="text-sm text-center text-gray-700">Don't have an account? <a href="/employee/register" class="text-blue-600 font-semibold hover:underline">Register here</a></p>
+        </form>
+      </div>
     </div>
-</div>
+  </div>
+  

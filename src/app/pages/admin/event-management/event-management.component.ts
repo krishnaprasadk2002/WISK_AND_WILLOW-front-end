@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { EventService } from '../../../core/services/users/event.service';
 import { IEvent } from '../../../core/models/event.model';
 import { ToastrService } from 'ngx-toastr';
+import { AdminAuthService } from '../../../core/services/admin/admin-auth.service';
 
 @Component({
   selector: 'app-event-management',
@@ -30,14 +31,14 @@ export class EventManagementComponent {
 
 
 
-  constructor(private navservices: AdminNavService, private fb: FormBuilder, private eventService: EventService, private toastr: ToastrService) {
+  constructor(private navservices: AdminNavService, private adminServices: AdminAuthService, private fb: FormBuilder, private eventService: EventService, private toastr: ToastrService) {
     this.navservices.sidebarOpen$.subscribe(isOpen => {
       this.isSidebarOpen = isOpen
     })
   }
 
   ngOnInit(): void {
-    
+
     this.eventForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(100)]],
       description: ['', [Validators.required, Validators.maxLength(1000)]],
@@ -54,7 +55,7 @@ export class EventManagementComponent {
   }
 
   loadEvents() {
-    this.eventService.getEvent().subscribe((event) => {
+    this.adminServices.adminAllEvents().subscribe((event) => {
       this.events = event
     },
       (error) => {
@@ -84,13 +85,13 @@ export class EventManagementComponent {
   }
 
 
-  openModal(target:string) {
-    if(target==="edit"){
+  openModal(target: string) {
+    if (target === "edit") {
       this.isEditModalOpen = true
-    }else{
+    } else {
       this.isModalOpen = true;
     }
-    
+
   }
 
   closeModal() {
@@ -139,14 +140,14 @@ export class EventManagementComponent {
 
   onSubmit(): void {
 
-    if (this.eventForm.valid ) {
-      const formData = { ...this.eventForm.value,...this.images }
-      
+    if (this.eventForm.valid) {
+      const formData = { ...this.eventForm.value, ...this.images }
+
       // Only include images that have been changed
       if (this.images.image1 !== this.imagePreview1) formData.image1 = this.images.image1;
       if (this.images.image2 !== this.imagePreview2) formData.image2 = this.images.image2;
       if (this.images.image3 !== this.imagePreview3) formData.image3 = this.images.image3;
-      
+
       if (this.isEditMode && this.currentEventId) {
         console.log(this.isEditMode);
         this.eventService.updateEvent({ _id: this.currentEventId, ...formData }).subscribe(
