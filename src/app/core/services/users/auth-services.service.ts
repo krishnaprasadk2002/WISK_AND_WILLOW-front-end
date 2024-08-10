@@ -29,10 +29,22 @@ export class AuthServicesService {
     return this.http.post(`${this.baseUrl}user/login`, { email, password })
     .pipe(
       catchError(error => {
-        // Rethrow error so it can be handled by the component
         return throwError(error);
       })
     );
   }
+
+  authGoogleLogin(token: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}user/googlelogin`, { token });
+  }
+
+  forgotpassword(email:string):Observable<any>{
+    return this.http.post(`${this.baseUrl}user/forgot-password`,{email})
+  }
+  
+  resetPassword(newPassword: string, token: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}user/reset-password`, { password: newPassword, token });
+}
+
 
 }

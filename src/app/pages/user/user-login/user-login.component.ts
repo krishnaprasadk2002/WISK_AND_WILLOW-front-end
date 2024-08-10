@@ -1,9 +1,10 @@
+declare var google:any;
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthServicesService } from '../../../core/services/users/auth-services.service';
 import { ToastrService } from 'ngx-toastr';
-import { noWhitespaceValidator } from '../../../shared/validators/form.validator';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -25,7 +26,43 @@ export class UserLoginComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
     });
+
+    google.accounts.id.initialize({
+      client_id: '591241001232-o2idhtff6qrl68nm9m57tvd7msnua08v.apps.googleusercontent.com',
+      callback: (response: any) =>{ this.handleLogin(response)
+        console.log(response);
+      }
+      
+    });
+
+    google.accounts.id.renderButton(document.getElementById('google-btn'),{
+      theme:'filled_blue',
+      size:'large',
+      shape:'rectangle',
+      width:376
+    })
   }
+
+  private decodeToken(token:string){
+    return JSON.parse(atob(token.split('.')[1]))
+  }
+
+  handleLogin(response:any){
+    const payload = this.decodeToken(response.credential)
+    this.googleLogin(response.credential)
+  }
+
+  googleLogin(token:string){
+   this.authService.authGoogleLogin(token).subscribe(
+    (response)=>{
+      console.log("Google login Successful",response);
+      this.router.navigate(['']);
+    },error =>{
+      console.error("Google login failed",error);
+    }
+   )
+  }
+
 
 
   onSubmit() {
@@ -34,7 +71,7 @@ export class UserLoginComponent implements OnInit {
 
       this.authService.userLogin(email, password).subscribe(
         response => {
-          this.toastService.show('Login successful', 'success');
+           this.toastService.show('Google login successful', 'success'); 
           this.router.navigate(['']);
         },
         error => {

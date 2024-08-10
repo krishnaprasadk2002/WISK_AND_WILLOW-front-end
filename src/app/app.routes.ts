@@ -12,6 +12,8 @@ import { EmployeeRegisterComponent } from './pages/employee/employee-register/em
 import { AdminSideBarComponent } from './shared/widgets/admin-side-bar/admin-side-bar.component';
 import { AdminAuthComponent } from './pages/admin/admin-auth/admin-auth.component';
 import { AdminAuthGuard } from './core/guards/adminauth.guard';
+import { ForgetpasswordComponent } from './pages/user/forgetpassword/forgetpassword.component';
+import { ResetPasswordComponent } from './pages/user/reset-password/reset-password.component';
 
 export const routes: Routes = [
 
@@ -54,6 +56,14 @@ export const routes: Routes = [
                 path: "edit-profile",
                 loadComponent: () => import('./pages/user/edit-profile/edit-profile.component').then(a => a.EditProfileComponent)
             },
+            {
+                path:'forgetpassword',
+                component:ForgetpasswordComponent
+            },
+            {
+                path:'reset-password',
+                component:ResetPasswordComponent
+            }
         ]
     },
 
