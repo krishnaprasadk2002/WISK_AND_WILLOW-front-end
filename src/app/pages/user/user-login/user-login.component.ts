@@ -1,11 +1,14 @@
 declare var google:any;
-
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthServicesService } from '../../../core/services/users/auth-services.service';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
+import { userLogin } from '../../../shared/store/userLogin/login.model';
+import { selectUser } from '../../../shared/store/userLogin/login.selector';
+import { Store } from '@ngrx/store';
+import * as LoginAction from '../../../shared/store/userLogin/login.actions'
 
 @Component({
   selector: 'app-user-login',
@@ -18,7 +21,7 @@ export class UserLoginComponent implements OnInit {
   loginForm!: FormGroup
 
   constructor(private authService: AuthServicesService,
-    private fb: FormBuilder, private router: Router, private toastService: ToastrService
+    private fb: FormBuilder, private router: Router, private toastService: ToastrService,private store:Store
   ) { }
 
   ngOnInit(): void {
@@ -63,31 +66,51 @@ export class UserLoginComponent implements OnInit {
    )
   }
 
-
+  user$ = this.store.select(selectUser)
 
   onSubmit() {
     if (this.loginForm.valid) {
-      const { email, password } = this.loginForm.value;
-
-      this.authService.userLogin(email, password).subscribe(
-        response => {
-           this.toastService.show('Google login successful', 'success'); 
-          this.router.navigate(['']);
-        },
-        error => {
-          if (error.status === 403 && error.error.message === 'Account not verified. Please verify your account.') {
-            localStorage.setItem('userId', error.error.userId);
-            this.router.navigate(['/otp']);
-          } else {
-            this.toastService.show(error.error.message || "Error during login", 'error');
-          }
-          console.error("Error during login", error);
+      const userData: userLogin = this.loginForm.value;
+      console.log('Login value is getting', userData);
+      this.store.dispatch(LoginAction.login({ formData: userData }));
+      this.user$.subscribe((user) => {
+        if (user) {
+          this.toastService.success('Login successful');
+          this.router.navigate([' ']);
         }
-      );
+      });
+
     } else {
-      this.toastService.show('Form is invalid', 'error');
+      this.toastService.error('Form is invalid');
       console.log('Form is invalid');
     }
   }
-
 }
+
+
+//   onSubmit() {
+//   //   if (this.loginForm.valid) {
+//   //     const { email, password } = this.loginForm.value;
+
+//   //     this.authService.userLogin(email, password).subscribe(
+//   //       response => {
+//   //          this.toastService.show('Google login successful', 'success'); 
+//   //         this.router.navigate(['']);
+//   //       },
+//   //       error => {
+//   //         if (error.status === 403 && error.error.message === 'Account not verified. Please verify your account.') {
+//   //           localStorage.setItem('userId', error.error.userId);
+//   //           this.router.navigate(['/otp']);
+//   //         } else {
+//   //           this.toastService.show(error.error.message || "Error during login", 'error');
+//   //         }
+//   //         console.error("Error during login", error);
+//   //       }
+//   //     );
+//   //   } else {
+//   //     this.toastService.show('Form is invalid', 'error');
+//   //     console.log('Form is invalid');
+//   //   }
+//   // }
+// })
+

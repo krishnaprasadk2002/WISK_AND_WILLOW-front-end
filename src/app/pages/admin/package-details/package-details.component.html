@@ -1,0 +1,125 @@
+<!-- Top Navigation Bar -->
+<div class="fixed top-0 left-0 right-0 h-12 bg-[#1a2035] text-gray-300 flex items-center justify-between p-4 z-20">
+    <div class="flex items-center">
+      <p class="font-sans text-base font-semibold">
+        Package Details
+      </p>
+    </div>
+    <button class="md:hidden text-gray-300" (click)="toggleSidebar()">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="fixed inset-0 flex items-center justify-center bg-gray-100">
+    <div class="w-full max-w-3xl p-6 bg-white border border-gray-200 rounded-lg shadow-lg">
+      <h5 class="text-xl flex justify-center font-bold leading-none uppercase text-gray-700 mb-3">Package Details</h5>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left text-gray-700">
+          <thead class="text-xs uppercase bg-gray-200">
+            <tr>
+              <th scope="col" class="px-6 py-3">Included Features</th>
+              <th scope="col" class="px-6 py-3 text-center">Status</th>
+              <th scope="col" class="px-6 py-3 text-center">Actions</th>
+              <th scope="col" class="px-6 py-3 text-right">Total Amount</th>
+            </tr>
+          </thead>
+          <tbody class="bg-gray-100">
+            <tr class="border-b">
+              <td class="px-6 py-4">Stage Decoration: ₹35,000</td>
+              <td class="px-6 py-4 text-center">
+                <button
+                  class="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+                  >Available</button>
+              </td>
+              <td class="px-6 py-4 text-center">
+                <button
+                  class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                  Edit
+                </button>
+              </td>
+              <td class="px-6 py-4 text-right">35,000</td>
+            </tr>
+            <!-- Add more rows as needed -->
+            <tr class="font-bold">
+              <td colspan="3" class="px-6 py-4 text-right">Total</td>
+              <td class="px-6 py-4 text-right">300,000</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-6 text-right">
+        <button (click)="openModal('add')"
+          class="bg-transparent hover:bg-[#1a2035] text-[#1a2035] font-semibold hover:text-white py-2 px-4 border border-[#1a2035] hover:border-transparent rounded">
+          Add Features
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal -->
+  <div *ngIf="isModalOpen"
+    class="fixed inset-0 z-30 flex items-center justify-center bg-[#1a2035] bg-opacity-50 overflow-y-auto">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-lg">
+      <!-- Modal Header -->
+      <div class="flex justify-between items-center bg-[#1a2035] p-4 rounded-t-lg">
+        <p class="text-lg text-white font-bold m-0">Add Feature</p>
+        <button (click)="closeModal()" class="text-white hover:text-red-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <!-- Modal Body -->
+      <div class="p-4 max-h-[70vh] overflow-y-auto">
+        <form [formGroup]="packageFeatureForm" (ngSubmit)="onSubmit()">
+          <!-- Item Name -->
+          <div class="mb-4">
+            <label for="itemName" class="block text-sm font-medium text-gray-700">Feature Name</label>
+            <input formControlName="itemName" placeholder="Feature Name" required
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+            <div *ngIf="packageFeatureForm.controls['itemName'].invalid && packageFeatureForm.controls['itemName'].touched"
+              class="text-red-600 text-xs mt-1">
+              <p *ngIf="packageFeatureForm.controls['itemName'].errors?.['required']">Feature name is required.</p>
+            </div>
+          </div>
+  
+          <!-- Price -->
+          <div class="mb-4">
+            <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
+            <input type="number" formControlName="price" placeholder="Price" required
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+            <div *ngIf="packageFeatureForm.controls['price'].invalid && packageFeatureForm.controls['price'].touched"
+              class="text-red-600 text-xs mt-1">
+              <p *ngIf="packageFeatureForm.controls['price'].errors?.['required']">Price is required.</p>
+            </div>
+          </div>
+  
+          <!-- Status -->
+          <div class="mb-4">
+            <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+            <select formControlName="status" required
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              <option value="Available">Available</option>
+              <option value="Not Available">Not Available</option>
+            </select>
+            <div *ngIf="packageFeatureForm.controls['status'].invalid && packageFeatureForm.controls['status'].touched"
+              class="text-red-600 text-xs mt-1">
+              <p *ngIf="packageFeatureForm.controls['status'].errors?.['required']">Status is required.</p>
+            </div>
+          </div>
+  
+          <!-- Submit and Cancel Buttons -->
+          <div class="flex justify-end space-x-2">
+            <button type="button" (click)="closeModal()"
+              class="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg">Cancel</button>
+            <button type="submit"
+              class="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  

@@ -9,11 +9,20 @@ import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-das
 import { EmployeeDashboardComponent } from './pages/employee/employee-dashboard/employee-dashboard.component';
 import { EmployeeLoginComponent } from './pages/employee/employee-login/employee-login.component';
 import { EmployeeRegisterComponent } from './pages/employee/employee-register/employee-register.component';
-import { AdminSideBarComponent } from './shared/widgets/admin-side-bar/admin-side-bar.component';
 import { AdminAuthComponent } from './pages/admin/admin-auth/admin-auth.component';
-import { AdminAuthGuard } from './core/guards/adminauth.guard';
 import { ForgetpasswordComponent } from './pages/user/forgetpassword/forgetpassword.component';
 import { ResetPasswordComponent } from './pages/user/reset-password/reset-password.component';
+import { ServicesPageComponent } from './pages/user/services-page/services-page.component';
+import { EventComponent } from './pages/user/event/event.component';
+import { UserProfileComponent } from './pages/user/user-profile/user-profile.component';
+import { UserRegisterComponent } from './pages/user/user-register/user-register.component';
+import { OtpPageComponent } from './pages/user/otp-page/otp-page.component';
+import { EditProfileComponent } from './pages/user/edit-profile/edit-profile.component';
+import { UserManagementComponent } from './pages/admin/user-management/user-management.component';
+import { EventManagementComponent } from './pages/admin/event-management/event-management.component';
+import { EmployeeManagmentComponent } from './pages/admin/employee-managment/employee-managment.component';
+import { PackagesComponent } from './pages/admin/packages/packages.component';
+import { PackageDetailsComponent } from './pages/admin/package-details/package-details.component';
 
 export const routes: Routes = [
 
@@ -22,19 +31,19 @@ export const routes: Routes = [
         path: '', component: HomeComponent, children: [
             {
                 path: '',
-                loadComponent: () => import('./pages/user/dashboard/dashboard.component').then(a => a.DashboardComponent)
+                component: DashboardComponent
             },
             {
                 path: 'services',
-                loadComponent: () => import('./pages/user/services-page/services-page.component').then(a => a.ServicesPageComponent)
+                component: ServicesPageComponent
             },
             {
                 path: 'events/:name',
-                loadComponent: () => import('./pages/user/event/event.component').then(a => a.EventComponent)
+                component: EventComponent
             },
             {
                 path: 'user-profile',
-                loadComponent: () => import('./pages/user/user-profile/user-profile.component').then(a => a.UserProfileComponent)
+                component: UserProfileComponent
             }
         ]
     },
@@ -42,71 +51,81 @@ export const routes: Routes = [
         path: "", component: AuthenticationComponent, children: [
             {
                 path: "login",
-                component:UserLoginComponent
+                component: UserLoginComponent
             },
             {
                 path: "register",
-                loadComponent: () => import('./pages/user/user-register/user-register.component').then(a => a.UserRegisterComponent)
+                component: UserRegisterComponent
             },
             {
                 path: "otp",
-                loadComponent: () => import('./pages/user/otp-page/otp-page.component').then(a => a.OtpPageComponent)
+                component: OtpPageComponent
             },
             {
                 path: "edit-profile",
-                loadComponent: () => import('./pages/user/edit-profile/edit-profile.component').then(a => a.EditProfileComponent)
+                component: EditProfileComponent
             },
             {
-                path:'forgetpassword',
-                component:ForgetpasswordComponent
+                path: 'forgetpassword',
+                component: ForgetpasswordComponent
             },
             {
-                path:'reset-password',
-                component:ResetPasswordComponent
+                path: 'reset-password',
+                component: ResetPasswordComponent
             }
         ]
     },
-
 
     //Admin side
     {
         path: 'admin',
         component: AdminComponent,
-        children:[
-            {path:'',component:AdminDashboardComponent},
-            {
-                path:'user-management',
-                loadComponent:()=>import('./pages/admin/user-management/user-management.component').then(a=>a.UserManagementComponent)
+        children: [
+            { path: '', 
+                component: AdminDashboardComponent
             },
             {
-                path:'event-managemnt',
-                loadComponent:()=>import('./pages/admin/event-management/event-management.component').then(a=>a.EventManagementComponent)
+                path: 'user-management',
+                component: UserManagementComponent
             },
             {
-                path:'employee-managemnt',
-                loadComponent:()=>import('./pages/admin/employee-managment/employee-managment.component').then(a=>a.EmployeeManagmentComponent)
+                path: 'event-managemnt',
+                component: EventManagementComponent
+            },
+            {
+                path: 'employee-managemnt',
+                component: EmployeeManagmentComponent
+            },
+            {
+                path:'package-management',
+                component:PackagesComponent
+            },
+            {
+                path:'package-details/:id',
+                component:PackageDetailsComponent
             }
         ]
-        
+
     },
 
-    {path:'admin',
-        component:AdminAuthComponent,
-        children:[
-            {path:'login',component:AdminLoginComponent}, 
+    {
+        path: 'admin',
+        component: AdminAuthComponent,
+        children: [
+            { path: 'login', component: AdminLoginComponent },
         ]
-        
+
     },
 
     //Employee side
     {
-        path:'employee',
-        component:AuthenticationComponent,
-        children:[
-            {path:'',component:EmployeeDashboardComponent},
-            {path:'dashboard',component:EmployeeDashboardComponent},
-            {path:'login',component:EmployeeLoginComponent},
-            {path:'register',component:EmployeeRegisterComponent}
+        path: 'employee',
+        component: AuthenticationComponent,
+        children: [
+            { path: '', component: EmployeeDashboardComponent },
+            { path: 'dashboard', component: EmployeeDashboardComponent },
+            { path: 'login', component: EmployeeLoginComponent },
+            { path: 'register', component: EmployeeRegisterComponent }
         ]
     }
 

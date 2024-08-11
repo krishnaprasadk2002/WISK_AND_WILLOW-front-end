@@ -18,6 +18,11 @@ export class UserservicesService {
     return this.http.get<User[]>(`${this.baseUrl}admin/userdata`)
   }
 
+  setUsertoLocalstorage(response:any){
+    localStorage.setItem('token', response.token)
+    localStorage.setItem('userdata' , JSON.stringify(response.userData))
+  }
+
   UpdateUser(user: User): Observable<User> {
     return this.http.post<User>(`${this.baseUrl}admin/updateUserStaus`, user)
   }
