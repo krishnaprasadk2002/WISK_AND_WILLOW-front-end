@@ -7,11 +7,14 @@ import { PackageService } from '../../../core/services/admin/package.service';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
 import { Ipackages } from '../../../core/models/packages.model';
+import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
+import { InputboxComponent } from '../../../shared/reusable/inputbox/inputbox.component';
+import { ButtonComponent } from '../../../shared/reusable/button/button.component';
 
 @Component({
   selector: 'app-package-details',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule,ModalComponent,InputboxComponent,ButtonComponent],
   templateUrl: './package-details.component.html',
   styleUrl: './package-details.component.css'
 })
@@ -26,6 +29,7 @@ export class PackageDetailsComponent implements OnInit {
   editFeatureId!: string | null; 
   isModalEditOpen:boolean = false
   packageFeatureEditForm!:FormGroup
+  statusEnum:string[]=['Available','Not Available']
 
   constructor(private navServices: AdminNavService, private fb: FormBuilder, private packageService: PackageService, private toastr: ToastrService, private route: ActivatedRoute) { }
 
@@ -42,11 +46,12 @@ export class PackageDetailsComponent implements OnInit {
       status: ['Available', Validators.required]
     })
 
-    this.packageFeatureEditForm = this.fb.group({
-      itemName: ['', Validators.required],
-      price: ['', Validators.required],
-      status: ['Available', Validators.required]
-    })
+this.packageFeatureEditForm = this.fb.group({
+  itemName: ['', Validators.required],
+  price: ['', Validators.required],
+  status: ['Available', Validators.required]
+});
+
   }
 
 

@@ -5,28 +5,29 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { GalleryService } from '../../../core/services/admin/gallery.service';
 import { ToastrService } from 'ngx-toastr';
 import { IGallery, IGalleryCategory } from '../../../core/models/gallery.entity';
+import { InputboxComponent } from '../../../shared/reusable/inputbox/inputbox.component';
+import { ButtonComponent } from '../../../shared/reusable/button/button.component';
+import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
 
 @Component({
   selector: 'app-gallery',
   standalone: true,
-  imports: [CommonModule,FormsModule,ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, InputboxComponent, ButtonComponent, ModalComponent],
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.css'
 })
 export class GalleryComponent implements OnInit {
-  galleryItems:IGallery[] = []
-  isGalleryImageModalOpen:boolean = false;
-  isCategoryModalOpen:boolean = false
-  categories: string[] = []; 
-  galleryImageForm!:FormGroup;
+  galleryItems: IGallery[] = []
+  isGalleryImageModalOpen: boolean = false;
+  isCategoryModalOpen: boolean = false
+  categories: string[] = [];
+  galleryImageForm!: FormGroup;
   imagePreview: string | ArrayBuffer | null = null;
-  categoryForm!:FormGroup
-
-  form!:FormGroup
-
+  categoryForm!: FormGroup
+  form!: FormGroup
 
 
-  constructor(private navService:AdminNavService,private fb: FormBuilder,private galleryService:GalleryService, private toastr: ToastrService){
+  constructor(private navService: AdminNavService, private fb: FormBuilder, private galleryService: GalleryService, private toastr: ToastrService) {
     this.galleryImageForm = this.fb.group({
       name: ['', Validators.required],
       image: ['', Validators.required],
@@ -38,18 +39,17 @@ export class GalleryComponent implements OnInit {
     });
   }
 
-
   ngOnInit(): void {
     this.loadGalleryCategory()
     this.loadGalleryImage()
   }
 
 
-  editGalleryItem(Images:IGallery){
+  editGalleryItem(Images: IGallery) {
 
   }
 
-  deleteGalleryItem(imageId:string){
+  deleteGalleryItem(imageId: string) {
 
   }
 
@@ -69,7 +69,6 @@ export class GalleryComponent implements OnInit {
     this.isCategoryModalOpen = false;
   }
 
-
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -84,24 +83,23 @@ export class GalleryComponent implements OnInit {
     }
   }
 
-  toggleSidebar(){
- this.navService.toggleSidebar()
+  toggleSidebar() {
+    this.navService.toggleSidebar()
   }
 
-  loadGalleryCategory(){
+  loadGalleryCategory() {
     this.galleryService.getGalleryCategory().subscribe(
       category => {
         this.categories = category.map(cat => cat.name);
-        
+
       },
       error => {
         console.error('Failed to load categories:', error);
       }
     )
-   
   }
 
-  loadGalleryImage(){
+  loadGalleryImage() {
     this.galleryService.getGalleryImage().subscribe(
       galleryData => {
         this.galleryItems = galleryData
@@ -116,16 +114,17 @@ export class GalleryComponent implements OnInit {
   onSubmitGalleryImage(): void {
     if (this.galleryImageForm.valid) {
       const galleryData = this.galleryImageForm.value;
-      console.log('Submitting gallery data', galleryData); 
+      console.log('Submitting gallery data', galleryData);
       this.galleryService.addGallery(galleryData).subscribe(
         response => {
           this.toastr.success('Gallery image added successfully!', 'Success');
           this.galleryImageForm.reset();
           this.imagePreview = null;
           this.closeGalleryImageModal();
+          this.loadGalleryImage()
         },
         error => {
-          console.error('Error adding gallery image', error); 
+          console.error('Error adding gallery image', error);
           this.toastr.error('Failed to add gallery image.', 'Error');
         }
       );
@@ -134,21 +133,22 @@ export class GalleryComponent implements OnInit {
     }
   }
 
-
-
-  onSubmitCategory():void{
-    if(this.categoryForm.value){
-      const galleryCategory = this.categoryForm.value
+  onSubmitCategory(): void {
+    if (this.categoryForm.valid) {
+      const galleryCategory = this.categoryForm.value;
       this.galleryService.addGalleryCategory(galleryCategory).subscribe(
-        response =>{
+        response => {
           this.toastr.success('Gallery category added successfully!', 'Success');
-          this.categoryForm.reset()
-          this.closeCategoryModal()
+          this.categoryForm.reset();
+          this.closeCategoryModal();
+          this.loadGalleryCategory()
         },
         error => {
-          this.toastr.error('Failed to add gallery image.', 'Error');
+          this.toastr.error('Failed to add gallery category.', 'Error');
         }
-      )
+      );
+    } else {
+      this.toastr.error('Please fill all required fields.', 'Error');
     }
   }
 }

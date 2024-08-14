@@ -10,28 +10,27 @@ import { ControlValueAccessor, FormControl, FormsModule, NgControl, ReactiveForm
   styleUrl: './inputbox.component.css'
 })
 export class InputboxComponent implements ControlValueAccessor {
+  @Input() label: string = '';
+  @Input() type: string = 'text';
+  @Input() options: string[] | null = null;
 
-  @Input() label:string = ''
-  @Input() type:string = 'text'
-  @Input() labelClass:string = ''
-  @Input() inputClass:string = ''
-
-  constructor(@Self() public ngControl:NgControl){
-    this.ngControl.valueAccessor = this
+  constructor(@Self() public ngControl: NgControl) {
+    this.ngControl.valueAccessor = this;
   }
 
-  get Control():FormControl{
-    return this.ngControl.control as FormControl
+  get control(): FormControl {
+    return this.ngControl.control as FormControl;
   }
-
 
   writeValue(obj: any): void {
   }
+
   registerOnChange(fn: any): void {
   }
+
   registerOnTouched(fn: any): void {
   }
+
   setDisabledState?(isDisabled: boolean): void {
   }
-
 }
