@@ -16,32 +16,34 @@
 
 
 <div class="w-full mt-12 overflow-x-auto shadow-md sm:rounded-lg">
-    <table class="w-full text-sm text-left text-gray-500 relative">
-      <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-        <tr>
-          <th scope="col" class="px-6 py-3">Package Name</th>
-          <th scope="col" class="px-6 py-3">Type of Event</th>
-          <th scope="col" class="px-6 py-3">Starting Amount</th>
-          <th scope="col" class="px-6 py-3">Status</th>
-          <th scope="col" class="px-6 py-3 text-center">More Info</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let pkg of packages" class="bg-white border-b hover:bg-gray-50">
-          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ pkg.name }}</th>
-          <td class="px-6 py-4">{{ pkg.type_of_event }}</td>
-          <td class="px-6 py-4">{{ pkg.startingAt }}</td>
-          <td class="px-6 py-4">{{ pkg.status }}</td>
-          <td class="text-center px-6 py-4">
-            <button
-              class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-              *ngIf="pkg._id"
-              (click)="openPackageDetails(pkg._id)">More Info</button>
-          </td>
-          
-        </tr>
-      </tbody>
-    </table>
+  <table class="w-full text-sm text-left text-gray-500 relative">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+      <tr>
+        <th scope="col" class="px-6 py-3">Package Name</th>
+        <th scope="col" class="px-6 py-3">Type of Event</th>
+        <th scope="col" class="px-6 py-3">Starting Amount</th>
+        <th scope="col" class="px-6 py-3">Image</th>
+        <th scope="col" class="px-6 py-3 text-center">More Info</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let pkg of packages" class="bg-white border-b hover:bg-gray-50">
+        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ pkg.name }}</th>
+        <td class="px-6 py-4">{{ pkg.type_of_event }}</td>
+        <td class="px-6 py-4">{{ pkg.startingAt }}</td>
+        <td class="px-6 py-4">
+          <img [src]="pkg.image" alt="{{ pkg.name }}" class="w-16 h-16 object-cover rounded-lg" />
+        </td>
+        <td class="text-center px-6 py-4">
+          <button
+            class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+            *ngIf="pkg._id"
+            (click)="openPackageDetails(pkg._id)">More Info</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
   </div>
   
 
@@ -92,7 +94,7 @@
               <p *ngIf="packageForm.controls['type_of_event'].errors?.['required']">Type of event is required.</p>
             </div>
           </div>
-          
+
           <!-- Starting Amount -->
           <div class="mb-4">
             <label for="startingAmount" class="block text-sm font-medium text-gray-700">Starting Amount</label>
@@ -104,6 +106,18 @@
             </div>
           </div>
 
+           <!-- Image Upload -->
+           <div class="mb-4">
+            <label for="image" class="block text-sm font-medium text-gray-700">Upload Image</label>
+            <input type="file" (change)="onImageSelected($event)" accept="image/*"
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+          </div>
+
+          <!-- Image Preview -->
+          <div class="mb-4" *ngIf="selectedImage">
+            <p class="block text-sm font-medium text-gray-700">Image Preview:</p>
+            <img [src]="selectedImage" alt="Image Preview" class="mt-2 rounded-md max-h-40 object-cover" />
+          </div>
 
           <!-- Submit and Cancel Buttons -->
           <div class="flex justify-end">
@@ -117,4 +131,5 @@
     </div>
   </div>
 </div>
+
 

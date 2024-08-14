@@ -20,6 +20,7 @@ export class PackagesComponent implements OnInit {
   isModalOpen:Boolean = false
   eventNames:string[] = []
   packages:Ipackages[] = []
+  selectedImage: string | ArrayBuffer | null = null;
 
   constructor(private navServices:AdminNavService,private eventService:EventService,private fb:FormBuilder,private packageService:PackageService,private toastr:ToastrService,private router:Router){}
 
@@ -29,6 +30,7 @@ export class PackagesComponent implements OnInit {
        name: ['', [Validators.required, Validators.maxLength(100)]],
        type_of_event: ['', [Validators.required, Validators.maxLength(100)]],
        startingAmount: ['', [Validators.required, Validators.min(0)]],
+       image: [null] 
       })
    
        this.getEventName()
@@ -55,17 +57,37 @@ getEventName(){
 
   closeModal(){
     this.isModalOpen = false
+    this.selectedImage = null;
+    this.packageForm.reset();
   }
 
   getPackages(){
     this.packageService.getPackages().subscribe(
       (packagesData)=>{
         console.log(packagesData);
-        
         this.packages = packagesData
       }
     )
   }
+
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result;
+        if (result) {
+          this.selectedImage = result;
+          this.packageForm.patchValue({
+            image: this.selectedImage 
+          });
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  
 
   onSubmit() {
     if (this.packageForm.valid) {
@@ -73,8 +95,9 @@ getEventName(){
       this.packageService.addPackages(packageData).subscribe(
         response => {
           console.log('Package added successfully', response);
+          this.getPackages();
           this.toastr.success('Package added successfully!', 'Success'); 
-          this.closeModal();
+          this.closeModal(); 
         },
         error => {
           console.error('Package adding failed', error);

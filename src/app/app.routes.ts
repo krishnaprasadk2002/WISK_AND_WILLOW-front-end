@@ -23,6 +23,9 @@ import { EventManagementComponent } from './pages/admin/event-management/event-m
 import { EmployeeManagmentComponent } from './pages/admin/employee-managment/employee-managment.component';
 import { PackagesComponent } from './pages/admin/packages/packages.component';
 import { PackageDetailsComponent } from './pages/admin/package-details/package-details.component';
+import { UserPackagesComponent } from './pages/user/user-packages/user-packages.component';
+import { FoodComponent } from './pages/admin/food/food.component';
+import { GalleryComponent } from './pages/admin/gallery/gallery.component';
 
 export const routes: Routes = [
 
@@ -44,6 +47,10 @@ export const routes: Routes = [
             {
                 path: 'user-profile',
                 component: UserProfileComponent
+            },
+            {
+                path:'user-packages',
+                component:UserPackagesComponent
             }
         ]
     },
@@ -103,6 +110,14 @@ export const routes: Routes = [
             {
                 path:'package-details/:id',
                 component:PackageDetailsComponent
+            },
+            {
+                path:'food-management',
+                component:FoodComponent
+            },
+            {
+                path:'gallery-management',
+                component:GalleryComponent
             }
         ]
 

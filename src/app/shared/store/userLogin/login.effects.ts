@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { AuthServicesService } from '../../../core/services/users/auth-services.service';
-import { switchMap, map, catchError } from 'rxjs/operators';
+import { switchMap, map, catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import * as  LoginAction from '../userLogin/login.actions'
 import { UserservicesService } from '../../../core/services/users/userservices.service';
@@ -18,6 +18,7 @@ export class AuthEffects {
 
   login$ = createEffect(() =>
     this.actions$.pipe(
+      tap((res)=>console.log(res,"RESSSS")),
       ofType(LoginAction.login),
       switchMap(({ formData: { email, password } }) => 
         this.authService.userLogin(email, password).pipe(
@@ -25,8 +26,8 @@ export class AuthEffects {
             console.log(response);
 
   
-            this.userService.setUsertoLocalstorage(response);
-            return LoginAction.loginSuccess({ user: response.userData });
+            // this.userService.setUsertoLocalstorage(response);
+            return LoginAction.loginSuccess({ user: response.token });
           }),
           catchError((error) => of(LoginAction.loginFailure({ error })))
         )

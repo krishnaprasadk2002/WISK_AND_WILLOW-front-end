@@ -1,0 +1,56 @@
+<!-- banner image -->
+<div class="relative mt-16 sm:mt-15 md:mt-15 lg:mt-15 w-full">
+    <img src="assets/Banner.jpg" alt="Banner" class="w-full h-auto object-cover md:h-screen md:max-h-96 md:min-h-64">
+    <div class="absolute inset-0 flex items-center justify-center">
+      <p class="text-white text-xl sm:text-2xl md:text-4xl lg:text-6xl font-semibold text-center px-4">
+        WISK AND WILLOW
+        <span class="block text-4xl font-light">PACKAGES</span>
+      </p>
+    </div>
+  </div>
+  
+  <!-- Package listing with pagination -->
+  <div class="bg-gray-100 w-full py-8">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div *ngFor="let package of paginatedPackages" class="bg-white shadow-lg rounded-lg overflow-hidden">
+          <img [src]="package.image ? package.image : 'https://via.placeholder.com/300x200'" alt="{{ package.name }}" class="w-full h-48 object-cover">
+          <div class="p-4">
+            <h2 class="text-lg font-bold">{{ package.name }}</h2>
+            <p class="text-gray-600 mb-2">{{ package.type_of_event }}</p>
+            <p class="text-sm font-semibold">Starting At: {{ package.startingAt | currency:'INR' }}</p>
+  
+            <!-- Short Summary -->
+            <div *ngIf="!package.showFullDetails" class="mt-4">
+              <p class="text-gray-700">
+                {{ getPackageSummary(package) }}
+              </p>
+              <button (click)="toggleDetails(package)" class="mt-2 text-blue-500 hover:text-blue-700">More Info</button>
+            </div>
+  
+            <!-- Full Details -->
+            <div *ngIf="package.showFullDetails" class="mt-4">
+              <h6 class="font-bold text-sm mb-2">Package Features:</h6>
+              <ul class="list-disc pl-5 space-y-1 text-sm">
+                <li *ngFor="let item of package.packageItems">{{ item.itemName }} - ₹{{ item.price }}</li>
+              </ul>
+              <p class="text-right mt-4">
+                <button (click)="toggleDetails(package)" class="text-blue-500 hover:text-blue-700">Show Less</button>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Pagination Controls -->
+      <div class="mt-8 flex justify-center space-x-2">
+        <button (click)="previousPage()" [disabled]="currentPage === 1" class="px-3 py-1 bg-black' text-white rounded hover:bg-blue-600">
+          Previous
+        </button>
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="px-3 py-1 bg-black text-white rounded hover:bg-blue-600">
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+  

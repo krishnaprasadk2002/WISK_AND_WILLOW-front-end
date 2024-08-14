@@ -10,17 +10,22 @@
         <!-- Menu for desktop -->
         <div class="hidden md:flex items-center space-x-8 relative">
             <a [routerLink]="['/services']" class="text-sm text-center text-stone-900 cursor-pointer">SERVICES</a>
-            <a [routerLink]="['/packages']" class="text-sm text-center text-stone-900 cursor-pointer">PACKAGES</a>
+            <a [routerLink]="['/user-packages']" class="text-sm text-center text-stone-900 cursor-pointer">PACKAGES</a>
             <a [routerLink]="['/gallery']" class="text-sm text-center text-stone-900 cursor-pointer">GALLERY</a>
             <a [routerLink]="['/contact']" class="text-sm text-center text-stone-900 cursor-pointer">CONTACT</a>
             <div class="relative">
               <i class="fa-solid fa-user cursor-pointer" style="color: #000000;" id="userIcon" (click)="toggleDropdown($event)"></i>
-              <div *ngIf="isDropdownVisible" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20 dropdown">
-                <a [routerLink]="['/login']" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">User Login</a>
-                <a [routerLink]="['/employee/login']" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Employee Login</a>
-                <a [routerLink]="['/user-profile']" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
-                <a (click)="logout()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Logout</a>
-              </div>
+              @if (isDropdownVisible) {
+                  <div  class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20 dropdown">
+                    @if (!isLogged) {
+                        <a [routerLink]="['/login']" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">User Login</a>
+                        <a [routerLink]="['/employee/login']" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Employee Login</a>
+                    }@else {
+                        <a [routerLink]="['/user-profile']" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                        <a (click)="logout()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Logout</a>
+                    }
+                  </div>
+              }
             </div>
           </div>
 

@@ -41,6 +41,9 @@
                   <div *ngIf="registerForm.controls['password'].touched && registerForm.controls['password'].invalid" class="text-red-500 text-sm mt-1">
                     <div *ngIf="hasError('password', 'required')">Password is required.</div>
                     <div *ngIf="hasError('password', 'whitespace')">Password cannot contain spaces.</div>
+                    <div *ngIf="hasError('password', 'strongPassword')">
+                      Password must be at least 8 characters long, and include an uppercase letter, a lowercase letter, a number, and a special character.
+                    </div>
                   </div>
                 </div>
                 <div>
@@ -54,8 +57,9 @@
                 <div *ngIf="registerForm.touched && registerForm.invalid && hasFormError('passwordMismatch')" class="text-red-500 text-sm mt-1">
                   <div>Password and confirm password do not match.</div>
                 </div>
+                
                 <div class="!mt-6">
-                  <button type="submit" [disabled]="registerForm.invalid" class="w-full shadow-xl py-2 px-4 text-sm tracking-wide rounded-lg text-white bg-black hover:bg-gray-700 focus:outline-none">
+                  <button type="submit"  class="w-full shadow-xl py-2 px-4 text-sm tracking-wide rounded-lg text-white bg-black hover:bg-gray-700 focus:outline-none">
                     Register
                   </button>
                 </div>

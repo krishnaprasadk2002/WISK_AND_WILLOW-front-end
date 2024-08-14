@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { alphabetsOnlyValidator,noWhitespaceValidator,mobileNumberValidator, passwordMatchValidator } from '../../../shared/validators/form.validator';
+import { alphabetsOnlyValidator,noWhitespaceValidator,mobileNumberValidator, passwordMatchValidator, strongPasswordValidator } from '../../../shared/validators/form.validator';
 import { CommonModule } from '@angular/common';
 import { AuthServicesService } from '../../../core/services/users/auth-services.service';
 import { ToastrService } from 'ngx-toastr';
@@ -26,7 +26,7 @@ export class UserRegisterComponent {
       username: ['', [Validators.required, alphabetsOnlyValidator(), noWhitespaceValidator()]],
       email: ['', [Validators.required, Validators.email]],
       mobile: ['', [Validators.required, mobileNumberValidator()]],
-      password: ['', [Validators.required, noWhitespaceValidator()]],
+      password: ['', [Validators.required, noWhitespaceValidator(), strongPasswordValidator()]],
       confirmPassword: ['', [Validators.required, noWhitespaceValidator()]]
     }, { validators: passwordMatchValidator });
   }
@@ -47,7 +47,9 @@ export class UserRegisterComponent {
           console.error('Error during registration', error);
         }
       );
-    } else {
+    } else {console.log('hai');
+    
+      this.registerForm.markAllAsTouched()
       this.toastService.show('Form is invalid', 'error');
       console.log('Form is invalid');
     }

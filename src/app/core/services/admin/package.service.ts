@@ -25,5 +25,13 @@ addPackageFeatures(packageId: string, packageItems: { itemName: string; price: n
   return this.http.post<any>(`${this.baseUrl}package/addpackagefeatures/${packageId}`, { packageItems });
 }
 
+getPackageFeaturesById(packageId:string):Observable<Ipackages>{
+  return this.http.get<Ipackages>(`${this.baseUrl}package/getpackagebyid/${packageId}`)
+}
+
+editPackageFeature(packageId:string,featureData:Ipackages):Observable<Ipackages>{
+  return this.http.put<Ipackages>(`${this.baseUrl}package/editpackagefeature`,{packageId,featureData})
+
+}
 
 }

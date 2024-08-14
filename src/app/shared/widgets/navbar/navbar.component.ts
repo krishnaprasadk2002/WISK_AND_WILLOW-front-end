@@ -1,9 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { ToastrService } from 'ngx-toastr';
+import { Store } from '@ngrx/store';
+import { selectUser } from '../../store/userLogin/login.selector';
+import { AuthServicesService } from '../../../core/services/users/auth-services.service';
 
 @Component({
   selector: 'app-navbar',
@@ -12,15 +15,34 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
+  user$:any
+  isLogged:boolean = false
+  isMenuOpen = false;
+  isDropdownVisible = false;
 
-  constructor(private http:HttpClient,private route:Router,private toastrService:ToastrService){
+  constructor(private http:HttpClient,private route:Router,private toastrService:ToastrService,private store:Store,private authService:AuthServicesService){
+  }
+  ngOnInit(): void {
+    // this.user$ = this.store.select(selectUser);
+    // this.store.select(selectUser).subscribe((res:any)=>{
+    //   if(res){
+    //     this.isLogged = true
+    //   }
+    // });
+    
+    if(this.authService.isLoggedIn()==="true"){
+      this.isLogged = true  ;
+    }else{
+      this.isLogged = false;
+    }
   }
 
 private baseUrl = environment.baseUrl
 
-  isMenuOpen = false;
-  isDropdownVisible = false;
+ 
+
+  
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
@@ -31,6 +53,7 @@ private baseUrl = environment.baseUrl
   }
 
   toggleDropdown(event: Event) {
+    console.log("toggled",this.isDropdownVisible);
     this.isDropdownVisible = !this.isDropdownVisible;
     event.stopPropagation();
   }
@@ -50,6 +73,7 @@ private baseUrl = environment.baseUrl
     this.http.post(`${this.baseUrl}user/logout`,{}).subscribe(
       response =>{
         console.log('User logged out');
+        this.authService.setLoggedIn('false')
         this.toastrService.show('Logout successful', 'success')
         this.route.navigate(['/login'])
       },error=>{

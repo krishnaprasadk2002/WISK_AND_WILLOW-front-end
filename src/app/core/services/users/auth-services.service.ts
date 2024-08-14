@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, Observable, of, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -46,5 +46,23 @@ export class AuthServicesService {
     return this.http.post(`${this.baseUrl}user/reset-password`, { password: newPassword, token });
 }
 
+tokenVerify():Observable<any>{
+  return this.http.get(`${this.baseUrl}user/tokenverify`).pipe(
+    catchError((err)=> of(false))
+  )
+}
+
+isLoggedIn():string | null{
+  return localStorage.getItem('isLoggedIn')
+}
+
+setLoggedIn(status: string){
+  localStorage.setItem('isLoggedIn',status)
+
+}
+
+setLoggout(){
+  localStorage.removeItem('isLoggedIn')
+}
 
 }

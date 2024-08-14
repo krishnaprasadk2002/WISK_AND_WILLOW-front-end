@@ -27,26 +27,39 @@
             </tr>
           </thead>
           <tbody class="bg-gray-100">
-            <tr class="border-b">
-              <td class="px-6 py-4">Stage Decoration: ₹35,000</td>
-              <td class="px-6 py-4 text-center">
-                <button
-                  class="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
-                  >Available</button>
-              </td>
-              <td class="px-6 py-4 text-center">
-                <button
-                  class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
-                  Edit
-                </button>
-              </td>
-              <td class="px-6 py-4 text-right">35,000</td>
-            </tr>
+     @for (item of packageDetails.packageItems; track $index) {
+      <tr class="border-b">
+        <td class="px-6 py-4">{{item.itemName}}</td>
+        <td class="px-6 py-4 text-center">
+          @if (item.status) {
+            <button
+              class="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+              >Available
+            </button>
+          }@else {
+            <button
+            class="bg-red-500 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded"
+            >Not Available
+          </button>
+          }
+        </td>
+        <td class="px-6 py-4 text-center">
+          <button
+            (click)="openModal('edit', item._id)"
+            class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+            Edit
+          </button>
+        </td>
+                
+        <td class="px-6 py-4 text-right">{{item.price}}</td>
+      </tr>
+     }
             <!-- Add more rows as needed -->
-            <tr class="font-bold">
-              <td colspan="3" class="px-6 py-4 text-right">Total</td>
-              <td class="px-6 py-4 text-right">300,000</td>
-            </tr>
+          <tr class="font-bold">
+            <td colspan="3" class="px-6 py-4 text-right">Total</td>
+            <td class="px-6 py-4 text-right">{{ totalAmount | currency:'INR' }}</td>
+          </tr>
+
           </tbody>
         </table>
       </div>
@@ -122,4 +135,66 @@
       </div>
     </div>
   </div>
+
+
+
+  <!-- Edit Feature Modal -->
+  <div *ngIf="isModalEditOpen" class="fixed inset-0 z-30 flex items-center justify-center bg-[#1a2035] bg-opacity-50 overflow-y-auto">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-lg">
+      <!-- Modal Header -->
+      <div class="flex justify-between items-center bg-[#1a2035] p-4 rounded-t-lg">
+        <p class="text-lg text-white font-bold m-0">Edit Feature</p>
+        <button (click)="closeModal()" class="text-white hover:text-red-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <!-- Modal Body -->
+      <div class="p-4 max-h-[70vh] overflow-y-auto">
+        <form [formGroup]="packageFeatureEditForm" (ngSubmit)="onEditSubmit()">
+          <!-- Item Name -->
+          <div class="mb-4">
+            <label for="itemName" class="block text-sm font-medium text-gray-700">Feature Name</label>
+            <input formControlName="itemName" placeholder="Feature Name" required
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+            <div *ngIf="packageFeatureEditForm.controls['itemName'].invalid && packageFeatureEditForm.controls['itemName'].touched" class="text-red-600 text-xs mt-1">
+              <p *ngIf="packageFeatureEditForm.controls['itemName'].errors?.['required']">Feature name is required.</p>
+            </div>
+          </div>
+  
+          <!-- Price -->
+          <div class="mb-4">
+            <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
+            <input type="number" formControlName="price" placeholder="Price" required
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+            <div *ngIf="packageFeatureEditForm.controls['price'].invalid && packageFeatureEditForm.controls['price'].touched" class="text-red-600 text-xs mt-1">
+              <p *ngIf="packageFeatureEditForm.controls['price'].errors?.['required']">Price is required.</p>
+            </div>
+          </div>
+  
+          <!-- Status -->
+          <div class="mb-4">
+            <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+            <select formControlName="status" required
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              <option value="Available">Available</option>
+              <option value="Not Available">Not Available</option>
+            </select>
+            <div *ngIf="packageFeatureEditForm.controls['status'].invalid && packageFeatureEditForm.controls['status'].touched" class="text-red-600 text-xs mt-1">
+              <p *ngIf="packageFeatureEditForm.controls['status'].errors?.['required']">Status is required.</p>
+            </div>
+          </div>
+  
+          <!-- Buttons -->
+          <div class="flex justify-end space-x-4">
+            <button type="button" (click)="closeModal()" class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Cancel</button>
+            <button type="submit" class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+
   

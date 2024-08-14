@@ -5,11 +5,11 @@ import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptros/auth.interceptor';
 import { provideState, provideStore } from '@ngrx/store';
-import { authReducer } from './shared/store/userLogin/login.reducer';
+import { authReducer } from './shared/store/userLogin/login.reducer'; 
 import { AuthEffects } from './shared/store/userLogin/login.effects';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
-
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 
 
@@ -22,8 +22,9 @@ export const appConfig: ApplicationConfig = {
      provideHttpClient(withInterceptors([authInterceptor])), 
      provideToastr(),
      provideStoreDevtools(),
-     provideStore({user:authReducer}),
+     provideStore({auth:authReducer}),
      provideState({name:'user',reducer:authReducer}),
-     provideEffects(AuthEffects)
+     provideEffects(AuthEffects),
+    provideAnimations()
     ]
 };

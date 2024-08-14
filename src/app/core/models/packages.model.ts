@@ -1,13 +1,16 @@
 export interface Ipackages{
+    showFullDetails: any;
     _id:string
     name:string
     type_of_event:string
     startingAt:string
+    image?:string;
     status?:string
-    packeageItems : {
+    packageItems : {
+        _id: string;
         itemName: String;
         price: Number;
-        Status: Boolean;
+        status: Boolean;
      }[] | null;
 
 }
