@@ -32,15 +32,15 @@
         <td class="px-6 py-4">{{item.itemName}}</td>
         <td class="px-6 py-4 text-center">
           @if (item.status) {
-            <button
-              class="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+            <p
+              class="text-green-500 font-semibold py-2 px-4 rounded"
               >Available
-            </button>
+          </p>
           }@else {
-            <button
-            class="bg-red-500 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded"
+            <p
+            class=" text-red-800 font-semibold py-2 px-4 rounded"
             >Not Available
-          </button>
+          </p>
           }
         </td>
         <td class="px-6 py-4 text-center">
@@ -88,40 +88,9 @@
 
   <app-modal [isOpen]="isModalEditOpen" [title]="'Edit Feature'" (closeModal)="closeModal()">
     <form [formGroup]="packageFeatureEditForm" (ngSubmit)="onEditSubmit()">
-    
-          <!-- Item Name -->
-          <div class="mb-4">
-            <label for="itemName" class="block text-sm font-medium text-gray-700">Feature Name</label>
-            <input formControlName="itemName" placeholder="Feature Name" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            <div *ngIf="packageFeatureEditForm.controls['itemName'].invalid && packageFeatureEditForm.controls['itemName'].touched" class="text-red-600 text-xs mt-1">
-              <p *ngIf="packageFeatureEditForm.controls['itemName'].errors?.['required']">Feature name is required.</p>
-            </div>
-          </div>
-  
-          <!-- Price -->
-          <div class="mb-4">
-            <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
-            <input type="number" formControlName="price" placeholder="Price" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            <div *ngIf="packageFeatureEditForm.controls['price'].invalid && packageFeatureEditForm.controls['price'].touched" class="text-red-600 text-xs mt-1">
-              <p *ngIf="packageFeatureEditForm.controls['price'].errors?.['required']">Price is required.</p>
-            </div>
-          </div>
-  
-          <!-- Status -->
-          <div class="mb-4">
-            <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-            <select formControlName="status" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-              <option value="Available">Available</option>
-              <option value="Not Available">Not Available</option>
-            </select>
-            <div *ngIf="packageFeatureEditForm.controls['status'].invalid && packageFeatureEditForm.controls['status'].touched" class="text-red-600 text-xs mt-1">
-              <p *ngIf="packageFeatureEditForm.controls['status'].errors?.['required']">Status is required.</p>
-            </div>
-          </div>
-  
+              <app-inputbox [label]="'Feature Name'" [type]="'text'" [formControl]="$any(packageFeatureEditForm.controls['itemName'])"></app-inputbox>
+              <app-inputbox [label]="'Price'" [type]="'number'" [formControl]="$any(packageFeatureEditForm.controls['price'])"></app-inputbox>
+              <app-inputbox label="Status" [options]="statusEnum" [formControl]="$any(packageFeatureEditForm.controls['status'])"></app-inputbox>
           <div class="flex justify-end">
             <app-button label="Cancel" buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2" (click)="closeModal()"></app-button>
             <app-button label="Submit" type="submit" buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"></app-button>

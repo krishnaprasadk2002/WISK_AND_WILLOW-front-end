@@ -14,6 +14,7 @@ export class InputboxComponent implements ControlValueAccessor {
   @Input() type: string = 'text';
   @Input() options: string[] | null = null;
 
+
   constructor(@Self() public ngControl: NgControl) {
     this.ngControl.valueAccessor = this;
   }

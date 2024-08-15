@@ -6,11 +6,14 @@ import { EventService } from '../../../core/services/users/event.service';
 import { IEvent } from '../../../core/models/event.model';
 import { ToastrService } from 'ngx-toastr';
 import { AdminAuthService } from '../../../core/services/admin/admin-auth.service';
+import { ButtonComponent } from '../../../shared/reusable/button/button.component';
+import { InputboxComponent } from '../../../shared/reusable/inputbox/inputbox.component';
+import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
 
 @Component({
   selector: 'app-event-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, FormsModule,ButtonComponent,InputboxComponent,ModalComponent],
   templateUrl: './event-management.component.html',
   styleUrl: './event-management.component.css'
 })

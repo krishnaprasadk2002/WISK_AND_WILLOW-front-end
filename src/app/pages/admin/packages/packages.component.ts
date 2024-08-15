@@ -7,11 +7,14 @@ import { PackageService } from '../../../core/services/admin/package.service';
 import { ToastrService } from 'ngx-toastr';
 import { Ipackages } from '../../../core/models/packages.model';
 import { Router } from '@angular/router';
+import { InputboxComponent } from '../../../shared/reusable/inputbox/inputbox.component';
+import { ButtonComponent } from '../../../shared/reusable/button/button.component';
+import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
 
 @Component({
   selector: 'app-packages',
   standalone: true,
-  imports: [CommonModule,FormsModule,ReactiveFormsModule],
+  imports: [CommonModule,FormsModule,ReactiveFormsModule,InputboxComponent,ButtonComponent,ModalComponent],
   templateUrl: './packages.component.html',
   styleUrl: './packages.component.css'
 })

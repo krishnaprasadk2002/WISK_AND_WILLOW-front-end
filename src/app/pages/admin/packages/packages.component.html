@@ -43,10 +43,8 @@
       </tr>
     </tbody>
   </table>
-  
   </div>
   
-
 <div class="flex justify-start mt-4 ">
     <button (click)="openModal('add')"
       class="bg-transparent hover:bg-[#1a2035] text-[#1a2035] font-semibold hover:text-white py-2 px-4 border border-[#1a2035] hover:border-transparent rounded">
@@ -55,81 +53,21 @@
   </div>
 
 
-  <div *ngIf="isModalOpen"
-  class="fixed inset-0 z-30 flex items-center justify-center bg-[#1a2035] bg-opacity-50 overflow-y-auto">
-  <div class="bg-white rounded-lg shadow-xl w-full max-w-lg">
-    <div class="flex justify-between items-center bg-[#1a2035] p-4 rounded-t-lg">
-      <p class="text-lg text-white font-bold m-0">Add Package</p>
-      <button (click)="closeModal()" class="text-white hover:text-red-500">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-    <div class="overflow-y-auto max-h-[70vh]">
-      <div class="p-4">
-        <form [formGroup]="packageForm" (ngSubmit)="onSubmit()">
-          <!-- Package Name -->
-          <div class="mb-4">
-            <label for="name" class="block text-sm font-medium text-gray-700">Package Name</label>
-            <input formControlName="name" placeholder="Package Name" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            <div *ngIf="packageForm.controls['name'].invalid && packageForm.controls['name'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="packageForm.controls['name'].errors?.['required']">Package name is required.</p>
-              <p *ngIf="packageForm.controls['name'].errors?.['maxlength']">Package name cannot exceed 100 characters.</p>
-            </div>
-          </div>
-
-          <!-- Type of Event -->
-          <div class="mb-4">
-            <label for="type_of_event" class="block text-sm font-medium text-gray-700">Type of Event</label>
-            <select formControlName="type_of_event" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-              <option value="" disabled selected>Select Type</option>
-              <option *ngFor="let eventName of eventNames" [value]="eventName">{{ eventName }}</option>
-            </select>
-            <div *ngIf="packageForm.controls['type_of_event'].invalid && packageForm.controls['type_of_event'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="packageForm.controls['type_of_event'].errors?.['required']">Type of event is required.</p>
-            </div>
-          </div>
-
-          <!-- Starting Amount -->
-          <div class="mb-4">
-            <label for="startingAmount" class="block text-sm font-medium text-gray-700">Starting Amount</label>
-            <input type="number" formControlName="startingAmount" placeholder="Starting Amount" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            <div *ngIf="packageForm.controls['startingAmount'].invalid && packageForm.controls['startingAmount'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="packageForm.controls['startingAmount'].errors?.['required']">Starting amount is required.</p>
-            </div>
-          </div>
-
-           <!-- Image Upload -->
-           <div class="mb-4">
-            <label for="image" class="block text-sm font-medium text-gray-700">Upload Image</label>
-            <input type="file" (change)="onImageSelected($event)" accept="image/*"
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-          </div>
-
-          <!-- Image Preview -->
-          <div class="mb-4" *ngIf="selectedImage">
-            <p class="block text-sm font-medium text-gray-700">Image Preview:</p>
-            <img [src]="selectedImage" alt="Image Preview" class="mt-2 rounded-md max-h-40 object-cover" />
-          </div>
-
-          <!-- Submit and Cancel Buttons -->
-          <div class="flex justify-end">
-            <button type="button" (click)="closeModal()"
-              class="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2">Cancel</button>
-            <button type="submit"
-              class="bg-[#1a2035] text-white border py-2 px-4  hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg">Submit</button>
-          </div>
-        </form>
+  <app-modal [isOpen]="isModalOpen" [title]="'Add Package'" (closeModal)="closeModal()">
+    <form [formGroup]="packageForm" (ngSubmit)="onSubmit()">
+      <app-inputbox [label]="'Package Name'" [type]="'text'" [formControl]="$any(packageForm.controls['name'])"></app-inputbox>
+      <app-inputbox label="Type of Event" [options]="eventNames" [formControl]="$any(packageForm.controls['type_of_event'])"></app-inputbox>
+      <app-inputbox [label]="'Starting Amount'" [type]="'number'" [formControl]="$any(packageForm.controls['startingAmount'])"></app-inputbox>
+      <app-inputbox [label]="'Upload Image'" [type]="'file'" [formControl]="$any(packageForm.controls['image'])" accept="image/*" (change)="onImageSelected($event)"></app-inputbox>
+      <div *ngIf="selectedImage" class="mt-2">
+        <img [src]="selectedImage" alt="Image preview" class="max-w-full h-auto border border-gray-300 rounded-md">
       </div>
-    </div>
-  </div>
-</div>
+      <div class="flex justify-end">
+        <app-button label="Cancel" buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2" (click)="closeModal()"></app-button>
+        <app-button label="Submit" type="submit" buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"></app-button>
+      </div>
+    </form>
+  </app-modal>
+
 
 

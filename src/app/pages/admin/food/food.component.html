@@ -51,196 +51,37 @@
   </div>
 
 
-  <div *ngIf="isFoodModalOpen"
-  class="fixed inset-0 z-30 flex items-center justify-center bg-[#1a2035] bg-opacity-50 overflow-y-auto">
-  <div class="bg-white rounded-lg shadow-xl w-full max-w-lg">
-    <div class="flex justify-between items-center bg-[#1a2035] p-4 rounded-t-lg">
-      <p class="text-lg text-white font-bold m-0">Add Food</p>
-      <button (click)="closeFoodModal()" class="text-white hover:text-red-500">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-    <div class="overflow-y-auto max-h-[70vh]">
-      <div class="p-4">
-        <form [formGroup]="foodForm" (ngSubmit)="onSubmitFood()">
-          <!-- Food Name -->
-          <div class="mb-4">
-            <label for="name" class="block text-sm font-medium text-gray-700">Food Name</label>
-            <input formControlName="name" placeholder="Food Name" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            <div *ngIf="foodForm.controls['name'].invalid && foodForm.controls['name'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="foodForm.controls['name'].errors?.['required']">Food name is required.</p>
-            </div>
-          </div>
-
-          <!-- Category -->
-          <div class="mb-4">
-            <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
-            <select formControlName="category" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-              <option value="" selected disabled>Select Category</option>
-              <option value="Vegetarian">Vegetarian</option>
-              <option value="Non-vegetarian">Non-vegetarian</option>
-            </select>
-            <div *ngIf="foodForm.controls['category'].invalid && foodForm.controls['category'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="foodForm.controls['category'].errors?.['required']">Category is required.</p>
-            </div>
-          </div>
-
-          <!-- Price Per Plate -->
-          <div class="mb-4">
-            <label for="pricePerPlate" class="block text-sm font-medium text-gray-700">Price Per Plate</label>
-            <input type="number" formControlName="pricePerPlate" placeholder="Price Per Plate" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            <div *ngIf="foodForm.controls['pricePerPlate'].invalid && foodForm.controls['pricePerPlate'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="foodForm.controls['pricePerPlate'].errors?.['required']">Price per plate is required.</p>
-            </div>
-          </div>
-
-          <!-- Section -->
-          <div class="mb-4">
-            <label for="section" class="block text-sm font-medium text-gray-700">Section</label>
-            <select formControlName="section" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-              <option value="" selected disabled>Select Section</option>
-              <option value="Welcome Drink">Welcome Drink</option>
-              <option value="Main Food">Main Food</option>
-              <option value="Dessert">Dessert</option>
-              <option value="Other">Other</option>
-            </select>
-            <div *ngIf="foodForm.controls['section'].invalid && foodForm.controls['section'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="foodForm.controls['section'].errors?.['required']">Section is required.</p>
-            </div>
-          </div>
-
-          <!-- Status -->
-          <div class="mb-4">
-            <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-            <select formControlName="status" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-              <option value="" selected disabled>Select Status</option>
-              <option value="Available">Available</option>
-              <option value="Unavailable">Unavailable</option>
-            </select>
-            <div *ngIf="foodForm.controls['status'].invalid && foodForm.controls['status'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="foodForm.controls['status'].errors?.['required']">Status is required.</p>
-            </div>
-          </div>
-
-          <!-- Submit and Cancel Buttons -->
-          <div class="flex justify-end">
-            <button type="button" (click)="closeFoodModal()"
-              class="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2">Cancel</button>
-            <button type="submit"
-              class="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg">Submit</button>
-          </div>
-        </form>
+  <app-modal [isOpen]="isFoodModalOpen" [title]="'Add Food'" (closeModal)="closeFoodModal()">
+    <form [formGroup]="foodForm" (ngSubmit)="onSubmitFood()">
+      <app-inputbox [label]="'Food Name'" [type]="'text'" [formControl]="$any(foodForm.controls['name'])"></app-inputbox>
+      <app-inputbox label="Category" [options]="foodCategoryEnum" [formControl]="$any(foodForm.controls['category'])"></app-inputbox>
+      <app-inputbox [label]="'Price Per Plate'" [type]="'number'" [formControl]="$any(foodForm.controls['pricePerPlate'])"></app-inputbox>
+      <app-inputbox label="Food Sections" [options]="foodSection" [formControl]="$any(foodForm.controls['section'])"></app-inputbox>
+      <app-inputbox label="Status" [options]="statusEnum" [formControl]="$any(foodForm.controls['status'])"></app-inputbox>
+     
+      <div class="flex justify-end">
+        <app-button label="Cancel" buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2" (click)="closeFoodModal()"></app-button>
+        <app-button label="Submit" type="submit" buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"></app-button>
       </div>
-    </div>
-  </div>
-</div>
+    </form>
+  </app-modal>
 
 
-<!-- Edit Food Modal -->
-<div *ngIf="isEditFoodModalOpen"
-  class="fixed inset-0 z-30 flex items-center justify-center bg-[#1a2035] bg-opacity-50 overflow-y-auto">
-  <div class="bg-white rounded-lg shadow-xl w-full max-w-lg">
-    <div class="flex justify-between items-center bg-[#1a2035] p-4 rounded-t-lg">
-      <p class="text-lg text-white font-bold m-0">Edit Food</p>
-      <button (click)="closeEditFoodModal()" class="text-white hover:text-red-500">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-    <div class="overflow-y-auto max-h-[70vh]">
-      <div class="p-4">
-        <form [formGroup]="editFoodForm" (ngSubmit)="onSubmitEditFood()">
-          <!-- Food Name -->
-          <div class="mb-4">
-            <label for="name" class="block text-sm font-medium text-gray-700">Food Name</label>
-            <input formControlName="name" placeholder="Food Name" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            <div *ngIf="editFoodForm.controls['name'].invalid && editFoodForm.controls['name'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="editFoodForm.controls['name'].errors?.['required']">Food name is required.</p>
-            </div>
-          </div>
+  <!-- edit food modal -->
 
-          <!-- Category -->
-          <div class="mb-4">
-            <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
-            <select formControlName="category" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-              <option value="" [ngValue]="null" disabled>Select Category</option>
-              <option value="Vegetarian">Vegetarian</option>
-              <option value="Non-vegetarian">Non-vegetarian</option>
-            </select>
-            <div *ngIf="editFoodForm.controls['category'].invalid && editFoodForm.controls['category'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="editFoodForm.controls['category'].errors?.['required']">Category is required.</p>
-            </div>
-          </div>
-
-          <!-- Price Per Plate -->
-          <div class="mb-4">
-            <label for="pricePerPlate" class="block text-sm font-medium text-gray-700">Price Per Plate</label>
-            <input type="number" formControlName="pricePerPlate" placeholder="Price Per Plate" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            <div *ngIf="editFoodForm.controls['pricePerPlate'].invalid && editFoodForm.controls['pricePerPlate'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="editFoodForm.controls['pricePerPlate'].errors?.['required']">Price per plate is required.</p>
-            </div>
-          </div>
-
-          <!-- Section -->
-          <div class="mb-4">
-            <label for="section" class="block text-sm font-medium text-gray-700">Section</label>
-            <select formControlName="section" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-              <option value="" [ngValue]="null" disabled>Select Section</option>
-              <option value="Welcome Drink">Welcome Drink</option>
-              <option value="Main Food">Main Food</option>
-              <option value="Dessert">Dessert</option>
-              <option value="Other">Other</option>
-            </select>
-            <div *ngIf="editFoodForm.controls['section'].invalid && editFoodForm.controls['section'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="editFoodForm.controls['section'].errors?.['required']">Section is required.</p>
-            </div>
-          </div>
-
-          <!-- Status -->
-          <div class="mb-4">
-            <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-            <select formControlName="status" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-              <option value="" [ngValue]="null" disabled>Select Status</option>
-              <option value="Available">Available</option>
-              <option value="Unavailable">Unavailable</option>
-            </select>
-            <div *ngIf="editFoodForm.controls['status'].invalid && editFoodForm.controls['status'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="editFoodForm.controls['status'].errors?.['required']">Status is required.</p>
-            </div>
-          </div>
-
-          <!-- Submit and Cancel Buttons -->
-          <div class="flex justify-end">
-            <button type="button" (click)="closeEditFoodModal()"
-              class="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2">Cancel</button>
-            <button type="submit"
-              class="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg">Submit</button>
-          </div>
-        </form>
+  <app-modal [isOpen]="isEditFoodModalOpen" [title]="'Edit Food'" (closeModal)="closeEditFoodModal()">
+    <form [formGroup]="editFoodForm" (ngSubmit)="onSubmitEditFood()">
+      <app-inputbox [label]="'Food Name'" [type]="'text'" [formControl]="$any(editFoodForm.controls['name'])"></app-inputbox>
+      <app-inputbox label="Category" [options]="foodCategoryEnum" [formControl]="$any(editFoodForm.controls['category'])"></app-inputbox>
+      <app-inputbox [label]="'Price Per Plate'" [type]="'number'" [formControl]="$any(editFoodForm.controls['pricePerPlate'])"></app-inputbox>
+      <app-inputbox label="Food Sections" [options]="foodSection" [formControl]="$any(editFoodForm.controls['section'])"></app-inputbox>
+      <app-inputbox label="Status" [options]="statusEnum" [formControl]="$any(editFoodForm.controls['status'])"></app-inputbox>
+     
+      <div class="flex justify-end">
+        <app-button label="Cancel" buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2" (click)="closeEditFoodModal()"></app-button>
+        <app-button label="Submit" type="submit" buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"></app-button>
       </div>
-    </div>
-  </div>
-</div>
+    </form>
+  </app-modal>
+
+

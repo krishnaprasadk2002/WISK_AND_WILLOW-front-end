@@ -83,161 +83,34 @@
 
 
 
-
-
-
-<!-- Add Event Modal -->
-<div *ngIf="isModalOpen"
-  class="fixed inset-0 z-30 flex items-center justify-center bg-[#1a2035] bg-opacity-50 overflow-y-auto">
-  <div class="bg-white rounded-lg shadow-xl w-full max-w-lg">
-    <div class="flex justify-between items-center bg-[#1a2035] p-4 rounded-t-lg">
-      <p class="text-lg text-white font-bold m-0">Add Event</p>
-      <button (click)="closeModal()" class="text-white hover:text-red-500">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
+<app-modal [isOpen]="isModalOpen" [title]="'Add Event'" (closeModal)="closeModal()">
+  <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+    <app-inputbox [label]="'Event Name'" [type]="'text'" [formControl]="$any(eventForm.controls['name'])"></app-inputbox>
+    <app-inputbox [label]="'Description'" [type]="'text'" [formControl]="$any(eventForm.controls['description'])"></app-inputbox>
+    <app-inputbox [label]="'Event Image'" [type]="'file'" [formControl]="$any(eventForm.controls['image1'])" accept="image/*" (change)="onImageChange($event,'image1')"></app-inputbox>
+    <div *ngIf="imagePreview1" class="mt-2">
+      <img [src]="imagePreview1" alt="Image preview" class="max-w-full h-auto border border-gray-300 rounded-md">
     </div>
-    <div class="overflow-y-auto max-h-[70vh]">
-      <div class="p-4">
-        <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
-          <!-- Event Name -->
-          <div class="mb-4">
-            <label for="name" class="block text-sm font-medium text-gray-700">Event Name</label>
-            <input formControlName="name" placeholder="Event Name" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            <div *ngIf="eventForm.controls['name'].invalid && eventForm.controls['name'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="eventForm.controls['name'].errors?.['required']">Event name is required.</p>
-              <p *ngIf="eventForm.controls['name'].errors?.['maxlength']">Event name cannot exceed 100 characters.</p>
-            </div>
-          </div>
-
-          <!-- Description -->
-          <div class="mb-4">
-            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-            <input formControlName="description" placeholder="Description" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            <div *ngIf="eventForm.controls['description'].invalid && eventForm.controls['description'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="eventForm.controls['description'].errors?.['required']">Description is required.</p>
-              <p *ngIf="eventForm.controls['description'].errors?.['maxlength']">Description cannot exceed 1000
-                characters.</p>
-            </div>
-          </div>
-          
-          <!-- Event Image -->
-          <div class="mb-4">
-            <label for="image1" class="block text-sm font-medium text-gray-700">Event Image</label>
-            <input type="file" id="image1" name="image1" accept="image/*" (change)="onImageChange($event, 'image1')"
-              formControlName="image1"
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            <div *ngIf="imagePreview1" class="mt-2">
-              <img [src]="imagePreview1" alt="Image 1 preview"
-                class="max-w-full h-auto border border-gray-300 rounded-md" />
-            </div>
-            <div *ngIf="eventForm.controls['image1'].invalid && eventForm.controls['image1'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="eventForm.controls['image1'].errors?.['required']">Event image is required.</p>
-            </div>
-          </div>
-
-          <!-- Event Heading -->
-          <div class="mb-4">
-            <label for="event_heading" class="block text-sm font-medium text-gray-700">Event Heading</label>
-            <input formControlName="event_heading" placeholder="Event Heading" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            <div *ngIf="eventForm.controls['event_heading'].invalid && eventForm.controls['event_heading'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="eventForm.controls['event_heading'].errors?.['required']">Event heading is required.</p>
-              <p *ngIf="eventForm.controls['event_heading'].errors?.['maxlength']">Event heading cannot exceed 100
-                characters.</p>
-            </div>
-          </div>
-
-          <!-- Event Content -->
-          <div class="mb-4">
-            <label for="event_content" class="block text-sm font-medium text-gray-700">Event Content</label>
-            <input formControlName="event_content" placeholder="Event Content" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            <div *ngIf="eventForm.controls['event_content'].invalid && eventForm.controls['event_content'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="eventForm.controls['event_content'].errors?.['required']">Event content is required.</p>
-              <p *ngIf="eventForm.controls['event_content'].errors?.['maxlength']">Event content cannot exceed 1000
-                characters.</p>
-            </div>
-          </div>
-
-          <!-- Event Content Image -->
-          <div class="mb-4">
-            <label for="image2" class="block text-sm font-medium text-gray-700">Event Content Image</label>
-            <input type="file" id="image2" name="image2" accept="image/*" (change)="onImageChange($event, 'image2')"
-              formControlName="image2"
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            <div *ngIf="imagePreview2" class="mt-2">
-              <img [src]="imagePreview2" alt="Image 2 preview"
-                class="max-w-full h-auto border border-gray-300 rounded-md" />
-            </div>
-            <div *ngIf="eventForm.controls['image2'].invalid && eventForm.controls['image2'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="eventForm.controls['image2'].errors?.['required']">Event content image is required.</p>
-            </div>
-          </div>
-
-          <!-- Event Services -->
-          <div class="mb-4">
-            <label for="event_services" class="block text-sm font-medium text-gray-700">Event Services</label>
-            <input formControlName="event_services" placeholder="Event Services" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            <div *ngIf="eventForm.controls['event_services'].invalid && eventForm.controls['event_services'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="eventForm.controls['event_services'].errors?.['required']">Event services are required.</p>
-              <p *ngIf="eventForm.controls['event_services'].errors?.['maxlength']">Event services cannot exceed 100
-                characters.</p>
-            </div>
-          </div>
-
-          <!-- Event Features -->
-          <div class="mb-4">
-            <label for="event_features" class="block text-sm font-medium text-gray-700">Event Features</label>
-            <input formControlName="event_features" placeholder="Event Features" required
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            <div *ngIf="eventForm.controls['event_features'].invalid && eventForm.controls['event_features'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="eventForm.controls['event_features'].errors?.['required']">Event features are required.</p>
-              <p *ngIf="eventForm.controls['event_features'].errors?.['maxlength']">Event features cannot exceed 1000
-                characters.</p>
-            </div>
-          </div>
-
-          <!-- Event Services Image -->
-          <div class="mb-4">
-            <label for="image3" class="block text-sm font-medium text-gray-700">Event Services Image</label>
-            <input type="file" id="image3" name="image3" accept="image/*" (change)="onImageChange($event, 'image3')"
-              formControlName="image3"
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-            <div *ngIf="imagePreview3" class="mt-2">
-              <img [src]="imagePreview3" alt="Image 3 preview"
-                class="max-w-full h-auto border border-gray-300 rounded-md" />
-            </div>
-            <div *ngIf="eventForm.controls['image3'].invalid && eventForm.controls['image3'].touched"
-              class="text-red-600 text-xs mt-1">
-              <p *ngIf="eventForm.controls['image3'].errors?.['required']">Event services image is required.</p>
-            </div>
-          </div>
-
-          <!-- Submit and Cancel Buttons -->
-          <div class="flex justify-end">
-            <button type="button" (click)="closeModal()"
-              class="bg-red-600 text-white  hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2">Cancel</button>
-            <button type="submit"
-              class="bg-[#1a2035] text-white border py-2 px-4  hover:bg-white hover:text-[#1a2035]  hover:border border-[#1a2035] rounded-lg">Submit</button>
-          </div>
-        </form>
-      </div>
+    <app-inputbox [label]="'Event Heading'" [type]="'text'" [formControl]="$any(eventForm.controls['event_heading'])"></app-inputbox>
+    <app-inputbox [label]="'Event Content'" [type]="'text'" [formControl]="$any(eventForm.controls['event_content'])"></app-inputbox>
+    <app-inputbox [label]="'Event Content Image'" [type]="'file'" [formControl]="$any(eventForm.controls['image2'])" accept="image/*" (change)="onImageChange($event,'image2')"></app-inputbox>
+    <div *ngIf="imagePreview2" class="mt-2">
+      <img [src]="imagePreview2" alt="Image preview" class="max-w-full h-auto border border-gray-300 rounded-md">
     </div>
-  </div>
-</div>
+    <app-inputbox [label]="'Event Services'" [type]="'text'" [formControl]="$any(eventForm.controls['event_services'])"></app-inputbox>
+    <app-inputbox [label]="'Event Features'" [type]="'text'" [formControl]="$any(eventForm.controls['event_features'])"></app-inputbox>
+    <app-inputbox [label]="'Event Services Image'" [type]="'file'" [formControl]="$any(eventForm.controls['image3'])" accept="image/*" (change)="onImageChange($event,'image3')"></app-inputbox>
+    <div *ngIf="imagePreview3" class="mt-2">
+      <img [src]="imagePreview3" alt="Image preview" class="max-w-full h-auto border border-gray-300 rounded-md">
+    </div>
+    
+    <div class="flex justify-end">
+      <app-button label="Cancel" buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2" (click)="closeModal()"></app-button>
+      <app-button label="Submit" type="submit" buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"></app-button>
+    </div>
+  </form>
+</app-modal>
+
 
 
 

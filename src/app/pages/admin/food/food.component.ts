@@ -5,11 +5,14 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ToastrService } from 'ngx-toastr';
 import { FoodService } from '../../../core/services/admin/food.service';
 import { IFood } from '../../../core/models/food.model';
+import { ButtonComponent } from '../../../shared/reusable/button/button.component';
+import { InputboxComponent } from '../../../shared/reusable/inputbox/inputbox.component';
+import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
 
 @Component({
   selector: 'app-food',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule,ButtonComponent,InputboxComponent,ModalComponent],
   templateUrl: './food.component.html',
   styleUrl: './food.component.css'
 })
@@ -20,6 +23,9 @@ export class FoodComponent implements OnInit {
   editFoodForm!:FormGroup
   foods: IFood[] = []
   foodID!:string
+  foodCategoryEnum:string[]=['Vegetarian','Non-vegetarian']
+  foodSection:string[]=['Welcome Drink','Main Food','Dessert','Other']
+  statusEnum:string[]=['Available','Not Available']
 
 
   constructor(private navServices: AdminNavService, private fb: FormBuilder, private toastr: ToastrService, private foodService: FoodService) {
@@ -51,7 +57,6 @@ export class FoodComponent implements OnInit {
 
   editFood(foodData: IFood,foodId:string) {
     this.foodID = foodId
-    console.log(foodData,"hfdjsahkj",foodId); 
     this.isEditFoodModalOpen = true
     this.editFoodForm.patchValue(foodData);
     
@@ -79,6 +84,7 @@ export class FoodComponent implements OnInit {
           this.toastr.success('Food item added successfully!', 'Success');
           this.closeFoodModal();
           this.foodForm.reset();
+          this.loadFoods()
         },
         (error) => {
           this.toastr.error('Failed to add food item. Please try again.', 'Error');
