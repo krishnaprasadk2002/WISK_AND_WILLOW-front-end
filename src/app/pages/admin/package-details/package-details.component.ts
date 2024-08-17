@@ -10,11 +10,12 @@ import { Ipackages } from '../../../core/models/packages.model';
 import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
 import { InputboxComponent } from '../../../shared/reusable/inputbox/inputbox.component';
 import { ButtonComponent } from '../../../shared/reusable/button/button.component';
+import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
 
 @Component({
   selector: 'app-package-details',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule,ModalComponent,InputboxComponent,ButtonComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule,ModalComponent,InputboxComponent,ButtonComponent,AdminNavComponent],
   templateUrl: './package-details.component.html',
   styleUrl: './package-details.component.css'
 })
@@ -31,7 +32,7 @@ export class PackageDetailsComponent implements OnInit {
   packageFeatureEditForm!:FormGroup
   statusEnum:string[]=['Available','Not Available']
 
-  constructor(private navServices: AdminNavService, private fb: FormBuilder, private packageService: PackageService, private toastr: ToastrService, private route: ActivatedRoute) { }
+  constructor( private fb: FormBuilder, private packageService: PackageService, private toastr: ToastrService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.route.params.subscribe((params: any) => {
@@ -52,11 +53,6 @@ this.packageFeatureEditForm = this.fb.group({
   status: ['Available', Validators.required]
 });
 
-  }
-
-
-  toggleSidebar() {
-    this.navServices.toggleSidebar()
   }
 
   openModal(target: string,featureId?: string) {

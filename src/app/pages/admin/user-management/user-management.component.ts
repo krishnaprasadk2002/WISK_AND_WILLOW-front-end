@@ -5,57 +5,41 @@ import { User } from '../../../core/models/user.model';
 import { UserservicesService } from '../../../core/services/users/userservices.service';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { ReusableTableComponent } from '../../../shared/reusable/reusable-table/reusable-table.component';
+import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule, ReusableTableComponent, AdminNavComponent],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.css'
 })
 export class UserManagementComponent implements OnInit {
   isSidebarOpen = false;
   users: User[] = [];
-  paginatedUsers: User[] = [];
-  currentPage = 1;
-  itemsPerPage = 7;
-  totalPages = 0;
+  filteredUsers: User[] = [];
+  headArray: any[] = [
+    { header: "UserName", fieldName: "name", datatype: "string" },
+    { header: "Email", fieldName: "email", datatype: "string" },
+    { header: "Mobile", fieldName: "mobile", datatype: "string" },
+    { header: "Status", fieldName: "status", datatype: "boolean" }
+  ]
 
-  constructor(private navServices: AdminNavService, private userService: UserservicesService, private toastr: ToastrService) {
-    this.navServices.sidebarOpen$.subscribe(isOpen => {
-      this.isSidebarOpen = isOpen;
-    });
+  currentPage = 1;
+  itemsPerPage = 5;
+  totalItems: number = 0;
+
+
+
+  constructor( private userService: UserservicesService, private toastr: ToastrService) {
+
   }
 
   ngOnInit(): void {
-    this.loadUsers();
+    this.loadUsers(this.currentPage);
   }
 
-  toggleSidebar() {
-    this.navServices.toggleSidebar();
-  }
-
-  updatePaginatedUsers(): void {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    console.log(startIndex,endIndex,"kokokok");
-    
-    this.paginatedUsers = this.users.slice(startIndex, endIndex);
-  }
-
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.updatePaginatedUsers();
-    }
-  }
-
-  previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updatePaginatedUsers();
-    }
-  }
 
   toggleStatus(user: User) {
     user.status = !user.status;
@@ -64,7 +48,7 @@ export class UserManagementComponent implements OnInit {
       () => {
         const message = user.status ? 'User blocked successfully' : 'User unblocked successfully';
         this.toastr.success(message);
-        this.loadUsers(); 
+        this.loadUsers(this.currentPage);
       },
       error => {
         console.error('Error updating user status:', error);
@@ -74,16 +58,37 @@ export class UserManagementComponent implements OnInit {
     );
   }
 
-  private loadUsers(): void {
-    this.userService.getUsers().subscribe(
-      users => {
-        this.users = users;
-        this.totalPages = Math.ceil(this.users.length / this.itemsPerPage);
-        this.updatePaginatedUsers(); 
+  loadUsers(page: number): void {
+    this.userService.getUsers(page, this.itemsPerPage).subscribe(
+      data => {
+        this.users = data.users; 
+        this.filteredUsers = data.users;
+        this.totalItems = data.totalItems; 
       },
       error => {
         console.error(error);
       }
     );
+  }
+
+  onSearchTermChanged(value: string) {
+    const searchTerm = value.toLowerCase()
+    if(searchTerm){
+      this.userService.searchUsers(searchTerm).subscribe(
+        item => {
+          this.filteredUsers = item
+        }, error => {
+          console.error(error);
+  
+        }
+      )
+    }else{
+     this.loadUsers(this.currentPage)
+    }
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadUsers(page);
   }
 }

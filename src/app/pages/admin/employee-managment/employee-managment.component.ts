@@ -4,11 +4,12 @@ import { AdminNavService } from '../../../core/services/adminNav/admin-nav.servi
 import { EmployeeService } from '../../../core/services/employee/employee.service';
 import { Employee } from '../../../core/models/employee.modal';
 import { FormsModule } from '@angular/forms';
+import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
 
 @Component({
   selector: 'app-employee-managment',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule,FormsModule,AdminNavComponent],
   templateUrl: './employee-managment.component.html',
   styleUrl: './employee-managment.component.css'
 })
@@ -16,17 +17,11 @@ export class EmployeeManagmentComponent implements OnInit {
   isSidebarOpen = false
   employees:Employee[] = []
 
-  constructor(private navServices:AdminNavService ,private emplyeeService:EmployeeService){
-    this.navServices.sidebarOpen$.subscribe(isopen =>{
-      this.isSidebarOpen = isopen
-    })
+  constructor(private emplyeeService:EmployeeService){
+  
   }
   ngOnInit(): void {
     this.loadEmployees()
-  }
-
-  toggleSidebar(){
-    this.navServices.toggleSidebar()
   }
 
   updateStatus(employee: Employee, status: 'Approved' | 'Rejected') {

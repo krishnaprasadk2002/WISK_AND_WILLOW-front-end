@@ -10,11 +10,12 @@ import { Router } from '@angular/router';
 import { InputboxComponent } from '../../../shared/reusable/inputbox/inputbox.component';
 import { ButtonComponent } from '../../../shared/reusable/button/button.component';
 import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
+import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
 
 @Component({
   selector: 'app-packages',
   standalone: true,
-  imports: [CommonModule,FormsModule,ReactiveFormsModule,InputboxComponent,ButtonComponent,ModalComponent],
+  imports: [CommonModule,FormsModule,ReactiveFormsModule,InputboxComponent,ButtonComponent,ModalComponent,AdminNavComponent],
   templateUrl: './packages.component.html',
   styleUrl: './packages.component.css'
 })
@@ -39,10 +40,6 @@ export class PackagesComponent implements OnInit {
        this.getEventName()
        this.getPackages()
      }
-
-  toggleSidebar() {
-    this.navServices.toggleSidebar()
-  }
 
   openModal(target:string){
     if(target == 'add'){

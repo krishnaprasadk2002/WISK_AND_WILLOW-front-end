@@ -8,11 +8,13 @@ import { IFood } from '../../../core/models/food.model';
 import { ButtonComponent } from '../../../shared/reusable/button/button.component';
 import { InputboxComponent } from '../../../shared/reusable/inputbox/inputbox.component';
 import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
+import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
+import { ReusableTableComponent } from '../../../shared/reusable/reusable-table/reusable-table.component';
 
 @Component({
   selector: 'app-food',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule,ButtonComponent,InputboxComponent,ModalComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule,ButtonComponent,InputboxComponent,ModalComponent,AdminNavComponent,ReusableTableComponent],
   templateUrl: './food.component.html',
   styleUrl: './food.component.css'
 })
@@ -26,9 +28,21 @@ export class FoodComponent implements OnInit {
   foodCategoryEnum:string[]=['Vegetarian','Non-vegetarian']
   foodSection:string[]=['Welcome Drink','Main Food','Dessert','Other']
   statusEnum:string[]=['Available','Not Available']
+  currentPage = 1;
+  itemsPerPage = 5;
+  totalItems: number = 0;
+  filteredFood:IFood[] = []
+  headArray: any[] = [
+    { header: "Name", fieldName: "name", datatype: "string" },
+    { header: "Food Category", fieldName: "category", datatype: "string" },
+    { header: "Price", fieldName: "pricePerPlate", datatype: "string" },
+    { header: "Section", fieldName: "section", datatype: "string" },
+    { header: "Status", fieldName: "status", datatype: "string" }
+
+  ]
 
 
-  constructor(private navServices: AdminNavService, private fb: FormBuilder, private toastr: ToastrService, private foodService: FoodService) {
+  constructor( private fb: FormBuilder, private toastr: ToastrService, private foodService: FoodService) {
     this.foodForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(100)]],
       category: ['', Validators.required],
@@ -49,18 +63,12 @@ export class FoodComponent implements OnInit {
   ngOnInit(): void {
     this.loadFoods()
   }
-
-
-  toggleSidebar() {
-    this.navServices.toggleSidebar()
-  }
-
-  editFood(foodData: IFood,foodId:string) {
-    this.foodID = foodId
-    this.isEditFoodModalOpen = true
+  editFood(foodData: IFood, foodId: string) {
+    this.foodID = foodData._id
+    this.isEditFoodModalOpen = true;
     this.editFoodForm.patchValue(foodData);
-    
   }
+  
 
   openModal(target: string) {
     if (target == 'add') {
@@ -96,16 +104,20 @@ export class FoodComponent implements OnInit {
     }
   }
 
-  loadFoods() {
-    this.foodService.getFood().subscribe(
-      food => {
-        this.foods = food;
+
+  loadFoods(page: number = this.currentPage): void {
+    this.foodService.getFood(page, this.itemsPerPage).subscribe(
+      data => {
+        this.foods = data.foods;
+        this.filteredFood = this.foods;
+        this.totalItems = data.totalItems;
       },
       error => {
         console.error(error);
       }
     );
   }
+  
 
   closeEditFoodModal(){
    this.isEditFoodModalOpen = false
@@ -131,6 +143,27 @@ export class FoodComponent implements OnInit {
     } else {
       this.toastr.warning('Please fill out the form correctly.', 'Warning');
     }
+  }
+
+  onSearchTermChanged(value:string){
+    const searchTerm = value.toLowerCase()
+    if(searchTerm){
+      this.foodService.searchUsers(searchTerm).subscribe(
+        item => {
+          this.filteredFood = item
+        }, error => {
+          console.error(error);
+        }
+      )
+    }else{
+      this.filteredFood = this.foods
+     
+    }
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadFoods(this.currentPage)
   }
 
 

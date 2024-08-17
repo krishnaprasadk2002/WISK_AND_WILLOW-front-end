@@ -9,11 +9,12 @@ import { AdminAuthService } from '../../../core/services/admin/admin-auth.servic
 import { ButtonComponent } from '../../../shared/reusable/button/button.component';
 import { InputboxComponent } from '../../../shared/reusable/inputbox/inputbox.component';
 import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
+import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
 
 @Component({
   selector: 'app-event-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, FormsModule,ButtonComponent,InputboxComponent,ModalComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, FormsModule,ButtonComponent,InputboxComponent,ModalComponent,AdminNavComponent],
   templateUrl: './event-management.component.html',
   styleUrl: './event-management.component.css'
 })

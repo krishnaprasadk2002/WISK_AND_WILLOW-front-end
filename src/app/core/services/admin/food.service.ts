@@ -16,12 +16,23 @@ export class FoodService {
     return this.http.post<IFood>(`${this.baseUrl}food/addFood`,foodData)
   }
 
-  getFood(): Observable<IFood[]> {
-    return this.http.get<IFood[]>(`${this.baseUrl}food/getfoods`);
-}
+  getFood(page: number, itemsPerPage: number): Observable<{ foods: IFood[], totalItems: number }> {
+    return this.http.get<{ foods: IFood[], totalItems: number }>(`${this.baseUrl}food/getfoods`, {
+      params: { 
+        page: page.toString(),
+        itemsPerPage: itemsPerPage.toString()
+      }
+    })
+  }
 
 editFoods(editFoodData: IFood,foodId:string): Observable<IFood> {
   return this.http.put<IFood>(`${this.baseUrl}food/editfooddata`, {editFoodData,foodId});
 }
+searchUsers(searchTerm: string): Observable<IFood[]> {
+  return this.http.get<IFood[]>(`${this.baseUrl}food/search`, {
+    params: { searchTerm }
+  });
+}
+
 
 }

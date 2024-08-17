@@ -8,11 +8,13 @@ import { IGallery, IGalleryCategory } from '../../../core/models/gallery.entity'
 import { InputboxComponent } from '../../../shared/reusable/inputbox/inputbox.component';
 import { ButtonComponent } from '../../../shared/reusable/button/button.component';
 import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
+import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
+import { ReusableTableComponent } from '../../../shared/reusable/reusable-table/reusable-table.component';
 
 @Component({
   selector: 'app-gallery',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, InputboxComponent, ButtonComponent, ModalComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, InputboxComponent, ButtonComponent, ModalComponent,AdminNavComponent,ReusableTableComponent],
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.css'
 })
@@ -25,7 +27,15 @@ export class GalleryComponent implements OnInit {
   imagePreview: string | ArrayBuffer | null = null;
   categoryForm!: FormGroup
   form!: FormGroup
-
+  headArray:any[] = [
+    { header: "Name", fieldName: "name", datatype: "string" },
+    { header: "Image", fieldName: "image", datatype: "string" },
+    { header: "Category", fieldName: "image_category", datatype: "string" },
+  ]
+  currentPage = 1;
+  itemsPerPage = 5;
+  totalItems: number = 0;
+  filteredGallery:IGallery[] = []
 
   constructor(private navService: AdminNavService, private fb: FormBuilder, private galleryService: GalleryService, private toastr: ToastrService) {
     this.galleryImageForm = this.fb.group({
@@ -45,7 +55,7 @@ export class GalleryComponent implements OnInit {
   }
 
 
-  editGalleryItem(Images: IGallery) {
+  editGalleryItem(Images: IGallery,imageId:string) {
 
   }
 
@@ -83,10 +93,6 @@ export class GalleryComponent implements OnInit {
     }
   }
 
-  toggleSidebar() {
-    this.navService.toggleSidebar()
-  }
-
   loadGalleryCategory() {
     this.galleryService.getGalleryCategory().subscribe(
       category => {
@@ -103,6 +109,7 @@ export class GalleryComponent implements OnInit {
     this.galleryService.getGalleryImage().subscribe(
       galleryData => {
         this.galleryItems = galleryData
+        this.filteredGallery = this.galleryItems
       },
       error => {
         console.error('Failed to load categories:', error);
@@ -150,5 +157,13 @@ export class GalleryComponent implements OnInit {
     } else {
       this.toastr.error('Please fill all required fields.', 'Error');
     }
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+  }
+
+  onSearchTermChanged(value:string){
+
   }
 }

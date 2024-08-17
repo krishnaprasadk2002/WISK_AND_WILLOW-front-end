@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
+import { User } from '../../models/user.model';
 
 
 @Injectable({
@@ -18,4 +19,5 @@ return this.http.post(`${this.baseUrl}admin/login`,{email,password})
 adminAllEvents():Observable<any>{
   return this.http.get(`${this.baseUrl}admin/allevents`,{})
 }
+
 }
