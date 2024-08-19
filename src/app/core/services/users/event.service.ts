@@ -33,4 +33,10 @@ export class EventService {
   updateEventStatus(event: IEvent): Observable<IEvent> {
     return this.http.post<IEvent>(`${this.baseUrl}event/eventstatus`, event);
   }  
+
+  searchEvent(searchTerm:string):Observable<IEvent[]>{
+    return this.http.get<IEvent[]>(`${this.baseUrl}event/search`,{
+      params: { searchTerm }
+    })
+  }
 }

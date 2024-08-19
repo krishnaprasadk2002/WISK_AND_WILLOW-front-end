@@ -16,19 +16,19 @@ export class UserPackagesComponent implements OnInit {
   packages: Ipackages[] = [];
   paginatedPackages: Ipackages[] = [];
   currentPage = 1;
-  itemsPerPage = 6;
+  itemsPerPage = 5;
   totalPages = 0;
 
   constructor(private packageService: PackageService, private router: Router) {}
 
   ngOnInit(): void {
-    this.getPackages();
+    this.getPackages(this.currentPage);
   }
 
-  getPackages(): void {
-    this.packageService.getPackages().subscribe(
+  getPackages(page:number): void {
+    this.packageService.getPackages(page,this.itemsPerPage).subscribe(
       (packages) => {
-        this.packages = packages.map(pkg => ({ ...pkg, showFullDetails: false }));
+        this.packages = packages.packages.map(pkg => ({ ...pkg, showFullDetails: false }));
         this.totalPages = Math.ceil(this.packages.length / this.itemsPerPage);
         this.updatePaginatedPackages(); 
       },

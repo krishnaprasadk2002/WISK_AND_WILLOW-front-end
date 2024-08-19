@@ -17,8 +17,13 @@ export class PackageService {
   return this.http.post<Ipackages>(`${this.baseUrl}package/addpackage`, packagesData);
 }
 
-getPackages():Observable<Ipackages[]>{
-  return this.http.get<Ipackages[]>(`${this.baseUrl}package/getpackages`)
+getPackages(page: number, limit: number): Observable<{ packages: Ipackages[], totalItems: number }> {
+  return this.http.get<{ packages: Ipackages[], totalItems: number }>(`${this.baseUrl}package/getpackages`, {
+    params: {
+      page: page.toString(),
+      limit: limit.toString()
+    }
+  });
 }
 
 addPackageFeatures(packageId: string, packageItems: { itemName: string; price: number; status: boolean }[]): Observable<any> {
@@ -32,6 +37,12 @@ getPackageFeaturesById(packageId:string):Observable<Ipackages>{
 editPackageFeature(packageId:string,featureData:Ipackages):Observable<Ipackages>{
   return this.http.put<Ipackages>(`${this.baseUrl}package/editpackagefeature`,{packageId,featureData})
 
+}
+
+searchPackages(searchTerm:string):Observable<Ipackages[]>{
+  return this.http.get<Ipackages[]>(`${this.baseUrl}package/search`,{
+    params: { searchTerm }
+  })
 }
 
 }

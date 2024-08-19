@@ -25,6 +25,7 @@ export class GalleryComponent implements OnInit {
   categories: string[] = [];
   galleryImageForm!: FormGroup;
   imagePreview: string | ArrayBuffer | null = null;
+  selectedImage: any = null;
   categoryForm!: FormGroup
   form!: FormGroup
   headArray:any[] = [
@@ -33,9 +34,10 @@ export class GalleryComponent implements OnInit {
     { header: "Category", fieldName: "image_category", datatype: "string" },
   ]
   currentPage = 1;
-  itemsPerPage = 5;
+  itemsPerPage = 4;
   totalItems: number = 0;
   filteredGallery:IGallery[] = []
+  isEditModalOpen:boolean = false
 
   constructor(private navService: AdminNavService, private fb: FormBuilder, private galleryService: GalleryService, private toastr: ToastrService) {
     this.galleryImageForm = this.fb.group({
@@ -54,14 +56,23 @@ export class GalleryComponent implements OnInit {
     this.loadGalleryImage()
   }
 
-
-  editGalleryItem(Images: IGallery,imageId:string) {
-
+  closeEditModal(){
+    this.isEditModalOpen = false
   }
 
   deleteGalleryItem(imageId: string) {
-
+    this.galleryService.DeleteGalleryData(imageId).subscribe(
+      () => {
+        this.toastr.success('Gallery image deleted successfully!', 'Success');
+        this.loadGalleryImage(); // Reload the gallery items after deletion
+      },
+      (error: any) => {
+        console.error('Error deleting gallery image:', error);
+        this.toastr.error('Failed to delete gallery image.', 'Error');
+      }
+    );
   }
+  
 
   openGalleryImageModal(): void {
     this.isGalleryImageModalOpen = true;
@@ -93,6 +104,18 @@ export class GalleryComponent implements OnInit {
     }
   }
 
+  editGalleryItem(image: IGallery, imageId: string) {
+    this.isEditModalOpen = true;
+    this.selectedImage = image;
+    this.galleryImageForm.patchValue({
+      name: image.name,
+      category: image.image_category,
+      image: image.image
+    });
+    this.imagePreview = image.image ? image.image.toString() : null;
+  }
+  
+  
   loadGalleryCategory() {
     this.galleryService.getGalleryCategory().subscribe(
       category => {
@@ -106,15 +129,16 @@ export class GalleryComponent implements OnInit {
   }
 
   loadGalleryImage() {
-    this.galleryService.getGalleryImage().subscribe(
+    this.galleryService.getGalleryImage(this.currentPage, this.itemsPerPage).subscribe(
       galleryData => {
-        this.galleryItems = galleryData
-        this.filteredGallery = this.galleryItems
+        this.galleryItems = galleryData.gallery;
+        this.filteredGallery = this.galleryItems;
+        this.totalItems = galleryData.totalItems;
       },
       error => {
-        console.error('Failed to load categories:', error);
+        console.error('Failed to load gallery images:', error);
       }
-    )
+    );
   }
 
 
@@ -129,6 +153,7 @@ export class GalleryComponent implements OnInit {
           this.imagePreview = null;
           this.closeGalleryImageModal();
           this.loadGalleryImage()
+          this.galleryImageForm.reset();
         },
         error => {
           console.error('Error adding gallery image', error);
@@ -161,9 +186,49 @@ export class GalleryComponent implements OnInit {
 
   onPageChange(page: number): void {
     this.currentPage = page;
+    this.loadGalleryImage(); 
+  }
+  
+
+  onSearchTermChanged(value: string) {
+    const searchTerm = value.toLowerCase();
+    if (searchTerm) {
+      this.galleryService.searchImage(searchTerm).subscribe(
+        items => {
+          this.filteredGallery = items;
+          this.totalItems = items.length;
+        },
+        error => {
+          console.error('Error searching images:', error);
+        }
+      );
+    } else {
+      this.loadGalleryImage(); 
+    }
   }
 
-  onSearchTermChanged(value:string){
-
+  onSubmitEditGalleryImage(): void {
+    if (this.galleryImageForm.valid && this.selectedImage) {
+      const updatedData = this.galleryImageForm.value;
+      updatedData.image = this.imagePreview;
+  
+      this.galleryService.updateGallery(this.selectedImage._id, updatedData).subscribe(
+        response => {
+          this.toastr.success('Gallery image updated successfully!', 'Success');
+          this.loadGalleryImage(); 
+          this.closeEditModal();
+          this.imagePreview = null;
+        },
+        error => {
+          console.error('Error updating gallery image', error);
+          this.toastr.error('Failed to update gallery image.', 'Error');
+        }
+      );
+    } else {
+      this.toastr.error('Please fill all required fields.', 'Error');
+    }
   }
+  
+  
+  
 }

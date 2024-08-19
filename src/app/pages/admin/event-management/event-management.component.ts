@@ -10,11 +10,12 @@ import { ButtonComponent } from '../../../shared/reusable/button/button.componen
 import { InputboxComponent } from '../../../shared/reusable/inputbox/inputbox.component';
 import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
 import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
+import { ReusableTableComponent } from '../../../shared/reusable/reusable-table/reusable-table.component';
 
 @Component({
   selector: 'app-event-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, FormsModule,ButtonComponent,InputboxComponent,ModalComponent,AdminNavComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, FormsModule,ButtonComponent,InputboxComponent,ModalComponent,AdminNavComponent,ReusableTableComponent],
   templateUrl: './event-management.component.html',
   styleUrl: './event-management.component.css'
 })
@@ -32,6 +33,17 @@ export class EventManagementComponent {
   imagePreview2: string | ArrayBuffer | null = null;
   imagePreview3: string | ArrayBuffer | null = null;
   currentEventId: string | null = null;
+  filteredEvent:IEvent[]=[];
+  currentPage = 1;
+  itemsPerPage = 4;
+  totalItems: number = 0;
+
+  headArray:any[] = [
+    { header: "EventName", fieldName: "name", datatype: "string" },
+    // { header: "Description", fieldName: "description", datatype: "string" },
+    { header: "Image", fieldName: "image1", datatype: "string" },
+    { header: "Status", fieldName: "status", datatype: "boolean" }
+  ]
 
 
 
@@ -59,13 +71,35 @@ export class EventManagementComponent {
   }
 
   loadEvents() {
-    this.adminServices.adminAllEvents().subscribe((event) => {
-      this.events = event
-    },
+    const params = {
+      page: this.currentPage,
+      limit: this.itemsPerPage,
+    };
+  
+    this.adminServices.adminAllEvents(params).subscribe(
+      (response: { event: IEvent[], totalItems: number }) => { 
+        console.log('Response:', response); // Log the response
+  
+        // Ensure response.event is an array
+        if (Array.isArray(response.event)) {  // Adjusted to response.event
+          this.events = response.event;
+          this.filteredEvent = [...this.events]; // Make a copy of the array
+          this.totalItems = response.totalItems;  // Adjusted to response.totalItems
+        } else {
+          console.error('Expected response.event to be an array');
+          this.events = [];
+          this.filteredEvent = [];
+        }
+        console.log('Filtered Events:', this.filteredEvent);
+      },
       (error) => {
         console.error('Error fetching events', error);
-      })
+      }
+    );
   }
+  
+  
+  
 
   toggleSidebar() {
     this.navservices.toggleSidebar()
@@ -193,33 +227,66 @@ export class EventManagementComponent {
     }
   }
 
-  editEvent(event: IEvent) {
-    this.isEditMode = true
+  editEvent(event: { item: IEvent; id: string }) {
+    const eventData = event.item;
+  
+    console.log("Received event data:", eventData);
+  
+    if (!eventData) {
+      console.error("Event data is undefined");
+      return;
+    }
+  
+    this.isEditMode = true;
+  
     this.eventForm.get('image1')?.removeValidators(Validators.required);
     this.eventForm.get('image2')?.removeValidators(Validators.required);
     this.eventForm.get('image3')?.removeValidators(Validators.required);
+  
+    this.currentEventId = event.id;
+  
+    this.openModal("edit");
 
-    this.currentEventId = event._id
-    this.openModal("edit")
     this.eventForm.patchValue({
-      name: event.name,
-      description: event.description,
-      event_heading: event.event_heading,
-      event_content: event.event_content,
-      event_services: event.event_services,
-      event_features: event.event_features,
+      name: eventData.name,
+      description: eventData.description,
+      event_heading: eventData.event_heading,
+      event_content: eventData.event_content,
+      event_services: eventData.event_services,
+      event_features: eventData.event_features,
     });
 
-    // Set image previews
-    this.imagePreview1 = event.image1;
-    this.imagePreview2 = event.image2;
-    this.imagePreview3 = event.image3;
-
-    // Set the images object for editing
+    this.imagePreview1 = eventData.image1;
+    this.imagePreview2 = eventData.image2;
+    this.imagePreview3 = eventData.image3;
+  
     this.images = {
-      image1: event.image1,
-      image2: event.image2,
-      image3: event.image3,
+      image1: eventData.image1,
+      image2: eventData.image2,
+      image3: eventData.image3,
     };
+  
+    console.log(this.eventForm.value);
+  }
+  
+  onSearchTermChanged(value: string) {
+    const searchTerm = value.toLowerCase()
+    if(searchTerm){
+      this.eventService.searchEvent(searchTerm).subscribe(
+        item => {
+          this.filteredEvent = item
+        }, error => {
+          console.error(error);
+  
+        }
+      )
+    }else{
+     this.loadEvents()
+    }
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadEvents();
   }
 }

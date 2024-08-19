@@ -26,8 +26,17 @@ import { PackageDetailsComponent } from './pages/admin/package-details/package-d
 import { UserPackagesComponent } from './pages/user/user-packages/user-packages.component';
 import { FoodComponent } from './pages/admin/food/food.component';
 import { GalleryComponent } from './pages/admin/gallery/gallery.component';
+import { adminGuard } from './core/guards/admin.guard';
+import { adminLogGuard } from './core/guards/admin-log.guard';
+import { ErrorComponent } from './shared/reusable/error/error.component';
 
 export const routes: Routes = [
+
+
+     {
+      path:'error/:errorCode',
+      component:ErrorComponent
+     },
 
     //userSide
     {
@@ -49,8 +58,8 @@ export const routes: Routes = [
                 component: UserProfileComponent
             },
             {
-                path:'user-packages',
-                component:UserPackagesComponent
+                path: 'user-packages',
+                component: UserPackagesComponent
             }
         ]
     },
@@ -87,13 +96,15 @@ export const routes: Routes = [
     {
         path: 'admin',
         component: AdminComponent,
+        canActivateChild:[adminGuard],
         children: [
-            { path: '', 
+            {
+                path: '',
                 component: AdminDashboardComponent
             },
             {
                 path: 'user-management',
-                component: UserManagementComponent
+                component: UserManagementComponent,
             },
             {
                 path: 'event-managemnt',
@@ -104,20 +115,20 @@ export const routes: Routes = [
                 component: EmployeeManagmentComponent
             },
             {
-                path:'package-management',
-                component:PackagesComponent
+                path: 'package-management',
+                component: PackagesComponent
             },
             {
-                path:'package-details/:id',
-                component:PackageDetailsComponent
+                path: 'package-details/:id',
+                component: PackageDetailsComponent
             },
             {
-                path:'food-management',
-                component:FoodComponent
+                path: 'food-management',
+                component: FoodComponent
             },
             {
-                path:'gallery-management',
-                component:GalleryComponent
+                path: 'gallery-management',
+                component: GalleryComponent
             }
         ]
 
@@ -127,7 +138,11 @@ export const routes: Routes = [
         path: 'admin',
         component: AdminAuthComponent,
         children: [
-            { path: 'login', component: AdminLoginComponent },
+            { path: 'login', 
+            component: AdminLoginComponent,
+            canActivate:[adminLogGuard],
+         },
+
         ]
 
     },

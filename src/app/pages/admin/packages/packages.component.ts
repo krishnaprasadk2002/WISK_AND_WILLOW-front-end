@@ -11,11 +11,12 @@ import { InputboxComponent } from '../../../shared/reusable/inputbox/inputbox.co
 import { ButtonComponent } from '../../../shared/reusable/button/button.component';
 import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
 import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
+import { ReusableTableComponent } from '../../../shared/reusable/reusable-table/reusable-table.component';
 
 @Component({
   selector: 'app-packages',
   standalone: true,
-  imports: [CommonModule,FormsModule,ReactiveFormsModule,InputboxComponent,ButtonComponent,ModalComponent,AdminNavComponent],
+  imports: [CommonModule,FormsModule,ReactiveFormsModule,InputboxComponent,ButtonComponent,ModalComponent,AdminNavComponent,ReusableTableComponent],
   templateUrl: './packages.component.html',
   styleUrl: './packages.component.css'
 })
@@ -25,8 +26,19 @@ export class PackagesComponent implements OnInit {
   eventNames:string[] = []
   packages:Ipackages[] = []
   selectedImage: string | ArrayBuffer | null = null;
+  headArray:any[] = [
+    { header: "Name", fieldName: "name", datatype: "string" },
+    { header: "Type Of Event", fieldName: "type_of_event", datatype: "string" },
+    { header: "StartingAmount", fieldName: "startingAt", datatype: "string" },
+    { header: "image", fieldName: "image", datatype: "string" },
+  ]
 
-  constructor(private navServices:AdminNavService,private eventService:EventService,private fb:FormBuilder,private packageService:PackageService,private toastr:ToastrService,private router:Router){}
+  filteredPackage:Ipackages[]=[]
+  currentPage = 1;
+  itemsPerPage = 4 ;
+  totalItems: number = 0;
+
+  constructor(private eventService:EventService,private fb:FormBuilder,private packageService:PackageService,private toastr:ToastrService,private router:Router){}
 
 
     ngOnInit(): void {
@@ -38,7 +50,7 @@ export class PackagesComponent implements OnInit {
       })
    
        this.getEventName()
-       this.getPackages()
+       this.getPackages(this.currentPage)
      }
 
   openModal(target:string){
@@ -61,13 +73,18 @@ getEventName(){
     this.packageForm.reset();
   }
 
-  getPackages(){
-    this.packageService.getPackages().subscribe(
-      (packagesData)=>{
+  getPackages(page: number): void {
+    this.packageService.getPackages(page, this.itemsPerPage).subscribe(
+      (packagesData) => {
         console.log(packagesData);
-        this.packages = packagesData
+        this.packages = packagesData.packages;
+        this.filteredPackage = [...this.packages];
+        this.totalItems = packagesData.totalItems;
+      },
+      (error) => {
+        console.error('Error fetching packages', error);
       }
-    )
+    );
   }
 
   onImageSelected(event: Event): void {
@@ -95,7 +112,7 @@ getEventName(){
       this.packageService.addPackages(packageData).subscribe(
         response => {
           console.log('Package added successfully', response);
-          this.getPackages();
+          this.getPackages(this.currentPage);
           this.toastr.success('Package added successfully!', 'Success'); 
           this.closeModal(); 
         },
@@ -108,8 +125,33 @@ getEventName(){
       this.toastr.warning('Please fill out the form correctly.', 'Warning');
     }
   }
+  
+  openPackageDetails(item: any) {
+    const packageId = item._id;
+    this.router.navigate(['/admin/package-details', packageId]);
+  }
 
-  openPackageDetails(PackageId:string){
-    this.router.navigate(['/admin/package-details', PackageId]);
+  editPackges(packageData:Ipackages){
+
+  }
+
+  onSearchTermChanged(value: string) {
+    const searchTerm = value.toLowerCase()
+    if(searchTerm){
+      this.packageService.searchPackages(searchTerm).subscribe(
+        item => {
+          this.filteredPackage = item
+        }, error => {
+          console.error(error);
+  
+        }
+      )
+    }else{
+     this.getPackages(this.currentPage)
+    }
+  }
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.getPackages(this.currentPage);
   }
 }

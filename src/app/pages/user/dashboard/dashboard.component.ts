@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class DashboardComponent implements OnInit {
   events: IEvent[] = [];
+  isLoding:boolean = true
 
   constructor(private eventService: EventService) {}
 
@@ -27,6 +28,7 @@ export class DashboardComponent implements OnInit {
       (events: IEvent[]) => {
         console.log('Events fetched:', events); 
         this.events = events;
+        this.isLoding = false
       },
       (error: any) => console.error('Error fetching events', error)
     );

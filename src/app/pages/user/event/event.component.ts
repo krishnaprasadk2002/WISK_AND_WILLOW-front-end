@@ -16,6 +16,7 @@ export class EventComponent implements OnInit {
 event: IEvent | null = null;
 eventName:string | null= null ;
 ulServices:string[] = []
+isLoding:boolean = true
 constructor(private route:ActivatedRoute,private eventService:EventService){
 
 }
@@ -36,6 +37,7 @@ constructor(private route:ActivatedRoute,private eventService:EventService){
     this.eventService.getEventByName(name).subscribe(
       (event:IEvent)=>{
         this.event = event
+        this.isLoding = false
         console.log("event",this.event);
         this.ulServices = event.event_features.split(',').map(feature => feature.trim());
       },

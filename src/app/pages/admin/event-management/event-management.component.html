@@ -1,5 +1,20 @@
 <app-admin-nav [PageName]="'Event Management'" ></app-admin-nav>
 
+<app-reusable-table 
+  [HeadArray]="headArray" 
+  [GridArray]="filteredEvent" 
+  [is_status]="true"
+  [is_edit]="true"
+  [currentPage]="currentPage"
+  [pageSize]="itemsPerPage"
+  [totalItems]="totalItems"
+  (onStatus)="eventStatus($event)" 
+  (onEdit)="editEvent($event)"
+  (searchChanged)="onSearchTermChanged($event)" 
+  (pageChange)="onPageChange($event)">
+</app-reusable-table>
+
+<!-- 
 <div class="w-full mt-12 overflow-x-auto shadow-md sm:rounded-lg">
   <table class="w-full text-sm text-left text-gray-500 relative">
     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
@@ -55,7 +70,7 @@
       </tr>
     </tbody>
   </table>
-</div>
+</div> -->
 
 
 <div class="flex justify-start mt-4 ">

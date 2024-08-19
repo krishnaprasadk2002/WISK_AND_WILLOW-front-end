@@ -14,6 +14,7 @@ import { IEvent } from '../../../core/models/event.model';
 })
 export class ServicesPageComponent implements OnInit {
   events:IEvent[] = []
+  isLoading:boolean=true
 constructor(private eventSevice:EventService){}
 
   ngOnInit(): void {
@@ -24,6 +25,7 @@ loadEvents(){
 this.eventSevice.getEvent().subscribe(
   (event)=>{
     this.events = event
+    this.isLoading = false
   },(error)=>{
     (error: any) => console.error('Error fetching events', error)
   }

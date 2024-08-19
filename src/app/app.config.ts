@@ -10,6 +10,7 @@ import { AuthEffects } from './shared/store/userLogin/login.effects';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { errorInterceptor } from './core/interceptros/error.interceptor';
 
 
 

@@ -20,7 +20,7 @@ export class ReusableTableComponent {
 @Input() is_delete:boolean = false
 searchTerm: string = '';
 @Input() currentPage: number = 1;
-@Input() pageSize: number = 5;
+@Input() pageSize: number = 4;
 @Input() totalItems: number = 0;
 
 @Output() onEdit = new EventEmitter<any>();
@@ -39,8 +39,10 @@ deleteRecord(item: any) {
 }
 
 showMoreInfo(item: any) {
+  console.log('Emitting item:', item); // Check what is being emitted
   this.onMoreInfo.emit(item);
 }
+
 onStatusRecord(item:any){
   this.onStatus.emit(item)
   console.log(item);

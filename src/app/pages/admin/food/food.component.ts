@@ -29,7 +29,7 @@ export class FoodComponent implements OnInit {
   foodSection:string[]=['Welcome Drink','Main Food','Dessert','Other']
   statusEnum:string[]=['Available','Not Available']
   currentPage = 1;
-  itemsPerPage = 5;
+  itemsPerPage = 4;
   totalItems: number = 0;
   filteredFood:IFood[] = []
   headArray: any[] = [
