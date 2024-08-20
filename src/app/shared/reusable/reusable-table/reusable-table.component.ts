@@ -31,7 +31,7 @@ searchTerm: string = '';
 @Output() pageChange = new EventEmitter<number>();
 
 editRecord(item: any) {
-  this.onEdit.emit({ item, id: item.id });
+  this.onEdit.emit({ item, id: item._id });
 }
 
 deleteRecord(item: any) {
@@ -39,7 +39,6 @@ deleteRecord(item: any) {
 }
 
 showMoreInfo(item: any) {
-  console.log('Emitting item:', item); // Check what is being emitted
   this.onMoreInfo.emit(item);
 }
 

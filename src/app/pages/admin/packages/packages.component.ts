@@ -16,67 +16,70 @@ import { ReusableTableComponent } from '../../../shared/reusable/reusable-table/
 @Component({
   selector: 'app-packages',
   standalone: true,
-  imports: [CommonModule,FormsModule,ReactiveFormsModule,InputboxComponent,ButtonComponent,ModalComponent,AdminNavComponent,ReusableTableComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, InputboxComponent, ButtonComponent, ModalComponent, AdminNavComponent, ReusableTableComponent],
   templateUrl: './packages.component.html',
   styleUrl: './packages.component.css'
 })
 export class PackagesComponent implements OnInit {
-  packageForm!:FormGroup
-  isModalOpen:Boolean = false
-  eventNames:string[] = []
-  packages:Ipackages[] = []
+  packageForm!: FormGroup
+  isModalOpen: Boolean = false
+  eventNames: string[] = []
+  packages: Ipackages[] = []
   selectedImage: string | ArrayBuffer | null = null;
-  headArray:any[] = [
+  isEditModalOpen: boolean = false
+  packageId!: string
+
+  headArray: any[] = [
     { header: "Name", fieldName: "name", datatype: "string" },
     { header: "Type Of Event", fieldName: "type_of_event", datatype: "string" },
     { header: "StartingAmount", fieldName: "startingAt", datatype: "string" },
     { header: "image", fieldName: "image", datatype: "string" },
   ]
 
-  filteredPackage:Ipackages[]=[]
+  filteredPackage: Ipackages[] = []
   currentPage = 1;
-  itemsPerPage = 4 ;
+  itemsPerPage = 4;
   totalItems: number = 0;
 
-  constructor(private eventService:EventService,private fb:FormBuilder,private packageService:PackageService,private toastr:ToastrService,private router:Router){}
+  constructor(private eventService: EventService, private fb: FormBuilder, private packageService: PackageService, private toastr: ToastrService, private router: Router) { }
 
 
-    ngOnInit(): void {
-      this.packageForm = this.fb.group({
-       name: ['', [Validators.required, Validators.maxLength(100)]],
-       type_of_event: ['', [Validators.required, Validators.maxLength(100)]],
-       startingAmount: ['', [Validators.required, Validators.min(0)]],
-       image: [null] 
-      })
-   
-       this.getEventName()
-       this.getPackages(this.currentPage)
-     }
+  ngOnInit(): void {
+    this.packageForm = this.fb.group({
+      name: ['', [Validators.required, Validators.maxLength(100)]],
+      type_of_event: ['', [Validators.required, Validators.maxLength(100)]],
+      startingAmount: ['', [Validators.required, Validators.min(0)]],
+      image: [null]
+    })
 
-  openModal(target:string){
-    if(target == 'add'){
-    this.isModalOpen = true
+    this.getEventName()
+    this.getPackages(this.currentPage);
+  }
+
+  openModal(target: string) {
+    if (target == 'add') {
+      this.isModalOpen = true
     }
   }
 
-getEventName(){
-  this.eventService.getEvent().subscribe(
-    (events) => {  
-      this.eventNames = events.map(event => event.name);
-    }
-  );
-}
+  getEventName() {
+    this.eventService.getEvent().subscribe(
+      (events) => {
+        this.eventNames = events.map(event => event.name);
+      }
+    );
+  }
 
-  closeModal(){
+  closeModal() {
     this.isModalOpen = false
+    this.isEditModalOpen = false
     this.selectedImage = null;
     this.packageForm.reset();
   }
 
-  getPackages(page: number): void {
+  getPackages(page: number = this.currentPage): void {
     this.packageService.getPackages(page, this.itemsPerPage).subscribe(
       (packagesData) => {
-        console.log(packagesData);
         this.packages = packagesData.packages;
         this.filteredPackage = [...this.packages];
         this.totalItems = packagesData.totalItems;
@@ -87,6 +90,7 @@ getEventName(){
     );
   }
 
+
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -96,62 +100,119 @@ getEventName(){
         const result = e.target?.result;
         if (result) {
           this.selectedImage = result;
-          this.packageForm.patchValue({
-            image: this.selectedImage 
-          });
+          // this.packageForm.patchValue({
+          //   image: this.selectedImage 
+          // });
         }
       };
       reader.readAsDataURL(file);
     }
   }
-  
+
+
+
+
 
   onSubmit() {
     if (this.packageForm.valid) {
-      const packageData = this.packageForm.value;
+      let packageData = this.packageForm.value;
+      packageData = { ...packageData, image: this.selectedImage };
+
       this.packageService.addPackages(packageData).subscribe(
         response => {
           console.log('Package added successfully', response);
-          this.getPackages(this.currentPage);
-          this.toastr.success('Package added successfully!', 'Success'); 
-          this.closeModal(); 
+          this.getPackages(this.currentPage);;
+          this.toastr.success('Package added successfully!', 'Success');
+          this.closeModal();
         },
         error => {
           console.error('Package adding failed', error);
-          this.toastr.error('Failed to add package. Please try again.', 'Error'); 
+          this.toastr.error('Failed to add package. Please try again.', 'Error');
         }
       );
     } else {
       this.toastr.warning('Please fill out the form correctly.', 'Warning');
     }
   }
-  
+
+
   openPackageDetails(item: any) {
     const packageId = item._id;
     this.router.navigate(['/admin/package-details', packageId]);
   }
 
-  editPackges(packageData:Ipackages){
 
+
+  editPackages({ item, id }: { item: Ipackages; id: string }) {
+    console.log(item);
+    console.log(id);
+    this.packageId = id
+
+    this.isEditModalOpen = true;
+    this.packageForm.patchValue({
+      name: item.name,
+      type_of_event: item.type_of_event,
+      startingAmount: item.startingAt,
+      image: item.image
+    });
+    this.selectedImage = item.image ? item.image : null;
   }
+
+
 
   onSearchTermChanged(value: string) {
     const searchTerm = value.toLowerCase()
-    if(searchTerm){
+    if (searchTerm) {
       this.packageService.searchPackages(searchTerm).subscribe(
         item => {
           this.filteredPackage = item
         }, error => {
           console.error(error);
-  
+
         }
       )
-    }else{
-     this.getPackages(this.currentPage)
+    } else {
+      this.getPackages(this.currentPage);
     }
   }
+
   onPageChange(page: number): void {
     this.currentPage = page;
     this.getPackages(this.currentPage);
+  }
+
+  onEditSubmit() {
+    if (this.packageForm.valid) {
+      let packageData = this.packageForm.value;
+      packageData = { ...packageData, image: this.selectedImage };
+
+      this.packageService.editPackage(packageData, this.packageId).subscribe(
+        response => {
+          console.log('Package updated successfully', response);
+          this.getPackages(this.currentPage);;
+          this.toastr.success('Package updated successfully!', 'Success');
+          this.closeModal();
+        },
+        error => {
+          console.error('Package updating failed', error);
+          this.toastr.error('Failed to update package. Please try again.', 'Error');
+        }
+      );
+    } else {
+      this.toastr.warning('Please fill out the form correctly.', 'Warning');
+    }
+  }
+
+  deletePackage(item: string) {
+    this.packageService.deletePackage(item).subscribe(
+      () => {
+        this.toastr.success('Package deleted successfully');
+        console.log("Package deleted successfully");
+        this.getPackages()
+      },
+      (error) => {
+        this.toastr.error('Error deleting package');
+        console.error('Error deleting package:', error);
+      })
   }
 }

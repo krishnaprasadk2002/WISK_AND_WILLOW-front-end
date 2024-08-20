@@ -49,6 +49,12 @@ baseUrl = environment.baseUrl
       params: { id: galleryId }
     });
   }
+
+  getGalleryData():Observable<string[]>{
+    return this.http.get<string[]>(`${this.baseUrl}gallery/getuniquecategory`)
+  }
   
-  
+  getImagesByCategory(category: string): Observable<IGallery[]> {
+    return this.http.get<IGallery[]>(`${this.baseUrl}gallery/images/${category}`);
+}
 }

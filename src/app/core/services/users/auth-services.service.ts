@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, of, throwError } from 'rxjs';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -65,4 +65,10 @@ setLoggout(){
   localStorage.removeItem('isLoggedIn')
 }
 
+isAuthenticated(): Observable<boolean> {
+  return this.http.get(`${this.baseUrl}user/isAuth`).pipe(
+    map(() => true),
+    catchError(() => of(false))
+  );
+}
 }

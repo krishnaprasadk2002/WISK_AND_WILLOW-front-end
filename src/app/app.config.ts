@@ -20,7 +20,7 @@ import { errorInterceptor } from './core/interceptros/error.interceptor';
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }),
      provideRouter(routes, withInMemoryScrolling({scrollPositionRestoration:"top"})),
-     provideHttpClient(withInterceptors([authInterceptor])), 
+     provideHttpClient(withInterceptors([authInterceptor,errorInterceptor])), 
      provideToastr(),
      provideStoreDevtools(),
      provideStore({auth:authReducer}),

@@ -15,48 +15,24 @@ import { FormsModule } from '@angular/forms';
 export class UserPackagesComponent implements OnInit {
   packages: Ipackages[] = [];
   paginatedPackages: Ipackages[] = [];
-  currentPage = 1;
-  itemsPerPage = 5;
-  totalPages = 0;
 
   constructor(private packageService: PackageService, private router: Router) {}
 
   ngOnInit(): void {
-    this.getPackages(this.currentPage);
+    this.getPackages();
   }
 
-  getPackages(page:number): void {
-    this.packageService.getPackages(page,this.itemsPerPage).subscribe(
+  getPackages(): void {
+    this.packageService.loadPackage().subscribe(
       (packages) => {
-        this.packages = packages.packages.map(pkg => ({ ...pkg, showFullDetails: false }));
-        this.totalPages = Math.ceil(this.packages.length / this.itemsPerPage);
-        this.updatePaginatedPackages(); 
+        this.packages = packages.map(pkg => ({ ...pkg, showFullDetails: false }));
       },
       (error) => {
         console.error('Error fetching packages:', error);
       }
     );
   }
-
-  updatePaginatedPackages(): void {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    this.paginatedPackages = this.packages.slice(startIndex, endIndex);
-  }
-
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.updatePaginatedPackages();
-    }
-  }
-
-  previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updatePaginatedPackages();
-    }
-  }
+  
 
   getPackageSummary(packageItem: Ipackages): string {
     if (packageItem.packageItems && packageItem.packageItems.length > 0) {

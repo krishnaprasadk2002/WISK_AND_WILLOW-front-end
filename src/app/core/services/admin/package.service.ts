@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Ipackages } from '../../models/packages.model';
 import { Observable } from 'rxjs';
@@ -11,38 +11,57 @@ export class PackageService {
 
   baseUrl = environment.baseUrl
 
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) { }
 
- addPackages(packagesData: Ipackages): Observable<Ipackages> {
-  return this.http.post<Ipackages>(`${this.baseUrl}package/addpackage`, packagesData);
-}
+  addPackages(packagesData: Ipackages): Observable<Ipackages> {
+    return this.http.post<Ipackages>(`${this.baseUrl}package/addpackage`, packagesData);
+  }
 
-getPackages(page: number, limit: number): Observable<{ packages: Ipackages[], totalItems: number }> {
-  return this.http.get<{ packages: Ipackages[], totalItems: number }>(`${this.baseUrl}package/getpackages`, {
-    params: {
-      page: page.toString(),
-      limit: limit.toString()
-    }
-  });
-}
+  getPackages(page: number, itemsPerPage: number): Observable<{ packages: Ipackages[], totalItems: number }> {
+    return this.http.get<{ packages: Ipackages[], totalItems: number }>(`${this.baseUrl}package/getpackages`,
+      {
+        params: {
+          page: page.toString(),
+          itemsPerPage: itemsPerPage.toString()
+        }
+      })
+  }
 
-addPackageFeatures(packageId: string, packageItems: { itemName: string; price: number; status: boolean }[]): Observable<any> {
-  return this.http.post<any>(`${this.baseUrl}package/addpackagefeatures/${packageId}`, { packageItems });
-}
+  loadPackage():Observable<Ipackages[]>{
+    return this.http.get<Ipackages[]>(`${this.baseUrl}package/loadpackage`)
+  }
 
-getPackageFeaturesById(packageId:string):Observable<Ipackages>{
-  return this.http.get<Ipackages>(`${this.baseUrl}package/getpackagebyid/${packageId}`)
-}
 
-editPackageFeature(packageId:string,featureData:Ipackages):Observable<Ipackages>{
-  return this.http.put<Ipackages>(`${this.baseUrl}package/editpackagefeature`,{packageId,featureData})
 
-}
 
-searchPackages(searchTerm:string):Observable<Ipackages[]>{
-  return this.http.get<Ipackages[]>(`${this.baseUrl}package/search`,{
-    params: { searchTerm }
-  })
-}
+  addPackageFeatures(packageId: string, packageItems: { itemName: string; price: number; status: boolean }[]): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}package/addpackagefeatures/${packageId}`, { packageItems });
+  }
+
+  getPackageFeaturesById(packageId: string): Observable<Ipackages> {
+    return this.http.get<Ipackages>(`${this.baseUrl}package/getpackagebyid/${packageId}`)
+  }
+
+  editPackageFeature(packageId: string, featureData: Ipackages): Observable<Ipackages> {
+    return this.http.put<Ipackages>(`${this.baseUrl}package/editpackagefeature`, { packageId, featureData })
+
+  }
+
+  searchPackages(searchTerm: string): Observable<Ipackages[]> {
+    return this.http.get<Ipackages[]>(`${this.baseUrl}package/search`, {
+      params: { searchTerm }
+    })
+  }
+
+  editPackage(packageData: Ipackages, packageId: string): Observable<Ipackages> {
+    return this.http.put<Ipackages>(`${this.baseUrl}package/editpackages`, { packageData,packageId })
+  }
+
+  deletePackage(packageId: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}package/deletepackage`,
+      {params:{packageId}}
+    );
+  }
+  
 
 }

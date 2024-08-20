@@ -1,6 +1,6 @@
 export interface IGallery{
-    _id: string;
-    name: String;
+    _id ? : string;
+    name ?: String;
     image: String;
     image_category: String;
   }

@@ -29,6 +29,10 @@ import { GalleryComponent } from './pages/admin/gallery/gallery.component';
 import { adminGuard } from './core/guards/admin.guard';
 import { adminLogGuard } from './core/guards/admin-log.guard';
 import { ErrorComponent } from './shared/reusable/error/error.component';
+import { userGuard } from './core/guards/user.guard';
+import { userAuthGuard } from './core/guards/user-auth.guard';
+import { GalleryCategoryComponent } from './pages/user/gallery-category/gallery-category.component';
+import { UserGalleryComponent } from './pages/user/user-gallery/user-gallery.component';
 
 export const routes: Routes = [
 
@@ -55,11 +59,20 @@ export const routes: Routes = [
             },
             {
                 path: 'user-profile',
-                component: UserProfileComponent
+                component: UserProfileComponent,
+                canActivate:[userGuard]
             },
             {
                 path: 'user-packages',
                 component: UserPackagesComponent
+            },
+            {
+                path:'gallery-category',
+                component:GalleryCategoryComponent
+            },
+            {
+                path:'gallery/:category',
+                component:UserGalleryComponent
             }
         ]
     },
@@ -67,15 +80,18 @@ export const routes: Routes = [
         path: "", component: AuthenticationComponent, children: [
             {
                 path: "login",
-                component: UserLoginComponent
+                component: UserLoginComponent,
+                canActivate:[userAuthGuard]
             },
             {
                 path: "register",
-                component: UserRegisterComponent
+                component: UserRegisterComponent,
+                canActivate:[userAuthGuard]
             },
             {
                 path: "otp",
-                component: OtpPageComponent
+                component: OtpPageComponent,
+                canActivate:[userAuthGuard]
             },
             {
                 path: "edit-profile",
@@ -83,7 +99,8 @@ export const routes: Routes = [
             },
             {
                 path: 'forgetpassword',
-                component: ForgetpasswordComponent
+                component: ForgetpasswordComponent,
+                canActivate:[userAuthGuard]
             },
             {
                 path: 'reset-password',
