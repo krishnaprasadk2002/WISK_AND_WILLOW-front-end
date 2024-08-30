@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AdminNavService } from '../../../core/services/adminNav/admin-nav.service';
 import { EmployeeService } from '../../../core/services/employee/employee.service';
-import { Employee } from '../../../core/models/employee.modal';
+import { Employee } from '../../../core/models/employee.model';
 import { FormsModule } from '@angular/forms';
 import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
 

@@ -26,7 +26,6 @@ constructor(private userServices:UserservicesService){}
     this.userServices.getUserProfile().subscribe(
       (profile)=>{
         console.log(profile);
-        
          this.userProfile = profile
       },(error)=>{
         console.error('Error fetching user profile', error);

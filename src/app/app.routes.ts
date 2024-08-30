@@ -82,7 +82,8 @@ export const routes: Routes = [
             },
             {
                 path:'booking',
-                component:BookingComponent
+                component:BookingComponent,
+                canActivate:[userGuard]
             }
         ]
     },

@@ -1,35 +1,27 @@
 <div class="mb-3">
-    <label class="block text-sm font-medium text-gray-700">{{label}}</label>
-    
-    <!-- 'options'  -->
-    <ng-container *ngIf="options && options.length > 0; else textInput">
-      <select 
-        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-        [formControl]="control">
-        <option value="" disabled selected>Select {{ label }}</option>
-        <option *ngFor="let option of options" [value]="option">{{ option }}</option>
-      </select>
+  <label class="block text-sm font-medium text-gray-700">{{label}}</label>
+  
+  <ng-container *ngIf="options && options.length > 0; else textInput">
+    <select 
+      class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+      [formControl]="control">
+      <option value="" disabled selected>Select {{ label }}</option>
+      <option *ngFor="let option of options" [value]="option">{{ option }}</option>
+    </select>
+  </ng-container>
+  
+  <ng-template #textInput>
+    <input 
+      [type]="type" 
+      class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"  
+      placeholder="Enter Your {{label}}"
+      [formControl]="control">
+  </ng-template>
 
-<!-- input fields -->
-
-    </ng-container>
-    <ng-template #textInput>
-
-      <input 
-        [type]="type" 
-        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"  placeholder="Enter Your {{label}}"
-        [formControl]="control">
-    </ng-template>
-
-    <div class="text-red-600 text-sm" *ngIf="control.touched && control.invalid && control?.errors?.['required']">
-      Please enter {{ label }}
-    </div>  
-    <div class="text-red-600 text-sm mt-1" *ngIf="control.touched && control.invalid">
-      <div *ngIf="control.errors?.['maxlength']">Maximum length exceeded.</div>
-      <div *ngIf="control.errors?.['min']">Value must be greater than zero.</div>
-      <div *ngIf="control.errors?.['whitespace']">Whitespace is not allowed.</div>
-      <!-- Add more error messages as needed -->
-    </div>    
+  <div class="text-red-600 text-sm" *ngIf="control.touched && control.invalid">
+    <div *ngIf="control.errors?.['required']">Please enter {{ label }}</div>
+    <div *ngIf="control.errors?.['maxlength']">Maximum length exceeded.</div>
+    <div *ngIf="control.errors?.['min']">Value must be greater than zero.</div>
+    <div *ngIf="control.errors?.['whitespace']">{{ label }} cannot be empty or just whitespace.</div>
+  </div>    
 </div>
-
-

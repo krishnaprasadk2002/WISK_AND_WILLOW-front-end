@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Self } from '@angular/core';
-import { ControlValueAccessor, FormControl, FormsModule, NgControl, ReactiveFormsModule } from '@angular/forms';
+import { ControlValueAccessor, FormControl, FormsModule, NgControl, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 
 @Component({
   selector: 'app-inputbox',
@@ -21,6 +21,15 @@ export class InputboxComponent implements ControlValueAccessor {
 
   get control(): FormControl {
     return this.ngControl.control as FormControl;
+  }
+
+  validate(): ValidationErrors | null {
+    if (this.control && this.control.errors) {
+      if (this.control.errors['whitespace']) {
+        return { whitespace: true };
+      }
+    }
+    return null;
   }
 
   writeValue(obj: any): void {

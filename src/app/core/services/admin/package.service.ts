@@ -74,4 +74,8 @@ export class PackageService {
     return this.http.get<IFood[]>(`${this.baseUrl}package/getfoods`)
   }
 
+  updateStartingAmount(packageId: string, startingAmount: number): Observable<Ipackages> {
+    return this.http.put<Ipackages>(`${this.baseUrl}package/updatestartingamount`, { packageId, startingAmount });
+  }
+  
 }

@@ -146,16 +146,23 @@ this.packageFeatureEditForm = this.fb.group({
   getPackageById() {
     this.packageService.getPackageFeaturesById(this.packageId).subscribe(
       (packageFeatureData) => {
-        this.packageDetails = packageFeatureData
+        this.packageDetails = packageFeatureData;
         this.totalAmount = this.calculateTotalPrice();
-        console.log(this.packageDetails.packageItems);
-        
-      }, error => {
-        console.error("geting packageFeature have an issue", error);
-
+        this.packageService.updateStartingAmount(this.packageId, this.totalAmount).subscribe(
+          (response) => {
+            console.log('Starting amount updated successfully:', response);
+          },
+          (error) => {
+            console.error('Error updating starting amount:', error);
+          }
+        );
+      },
+      (error) => {
+        console.error('Getting package feature has an issue', error);
       }
-    )
+    );
   }
+  
 
   calculateTotalPrice(): number {
     if (this.packageDetails && this.packageDetails.packageItems) {

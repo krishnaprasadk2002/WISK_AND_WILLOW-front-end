@@ -26,6 +26,7 @@ export class SpecificPackageComponent implements OnInit {
   cart: CartItem[] = [];
   buttonEnabled: boolean = false;
 
+
   constructor(private route: ActivatedRoute, private packageService: PackageService,private router:Router) {}
 
   ngOnInit(): void {
@@ -95,14 +96,20 @@ export class SpecificPackageComponent implements OnInit {
   }
 
   getTotalAmount(): number {
-    return this.cart.reduce((total, item) => total + item.food.pricePerPlate * item.quantity, 0);
+    const foodTotal = this.cart.reduce((total, item) => total + item.food.pricePerPlate * item.quantity, 0);
+    const packageTotal = this.packageDetails ? Number(this.packageDetails.startingAt) : 0;
+    return foodTotal + packageTotal;
   }
+  
 
   continueToBooking(){
+    const totalAmount = this.getTotalAmount(); 
     sessionStorage.setItem('bookingData', JSON.stringify({
       packageDetails: this.packageDetails,
-      cart: this.cart
+      cart: this.cart,
+      totalAmount: totalAmount
     }));
     this.router.navigate(['/booking']);
   }
+  
 }

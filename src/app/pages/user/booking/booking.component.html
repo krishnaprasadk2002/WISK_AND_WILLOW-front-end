@@ -9,4 +9,74 @@
     </div>
   </div>
 
+
+  <section class="bg-white py-8 antialiased md:py-16">
+    <h2 class="text-xl font-semibold text-gray-900 flex justify-center">Your Booking</h2>
+    <form [formGroup]="bookingForm" (ngSubmit)="onSubmitBooking()" class="mx-auto max-w-screen-xl px-4 2xl:px-0">
+      <div class="mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12 xl:gap-16">
+        <div class="min-w-0 flex-1 space-y-8">
+          <div class="space-y-4">
   
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <app-inputbox label="Name" type="text" [formControl]="$any(bookingForm.controls['name'])"></app-inputbox>
+              <app-inputbox label="Email" type="text" [formControl]="$any(bookingForm.controls['email'])"></app-inputbox>
+              <app-inputbox label="Mobile" type="number" [formControl]="$any(bookingForm.controls['mobile'])"></app-inputbox>
+              <app-inputbox label="Package Name" type="text" [formControl]="$any(bookingForm.controls['packageName'])"></app-inputbox>
+              <app-inputbox label="Type of Event" type="select" [options]="eventNames" [formControl]="$any(bookingForm.controls['type_of_event'])"></app-inputbox>
+              <app-inputbox label="Requested Date" type="date" [formControl]="$any(bookingForm.controls['requested_date'])"></app-inputbox>
+              <app-inputbox label="Payment Option" type="select" [options]="paymentOption" [formControl]="$any(bookingForm.controls['payment_option'])"></app-inputbox>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Order Summary -->
+        <div class="mt-6 w-full space-y-6 sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
+          <div class="flow-root">
+            <div class="-my-3 divide-y divide-gray-200">
+              <dl class="flex items-center justify-between gap-4 py-3">
+                <dt class="text-base font-normal text-gray-500">Package Price (Without Food)</dt>
+                <dd class="text-base font-medium text-gray-900">{{eventWithoutFoodPrice | currency:'INR':'symbol':'1.0-0'}}</dd>
+              </dl>
+              <dl class="flex items-center justify-between gap-4 py-3">
+                <dt class="text-base font-normal text-gray-500">Food Price</dt>
+                <dd class="text-base font-medium text-gray-900">{{foodPrice | currency:'INR':'symbol':'1.0-0'}}</dd>
+              </dl>
+              <dl class="flex items-center justify-between gap-4 py-3">
+                <dt class="text-base font-bold text-gray-900">Total Amount</dt>
+                <dd class="text-base font-bold text-gray-900">{{totalAmount | currency:'INR':'symbol':'1.0-0'}}</dd>
+              </dl>
+              <dl class="flex items-center justify-between gap-4 py-3">
+                <dt class="text-base font-normal text-gray-500">
+                  {{ bookingForm.get('payment_option')?.value === 'Advance' ? 'Advance Payment (10%)' : 'Full Payment' }}
+                </dt>
+                <dd class="text-base font-medium text-gray-900">
+                  {{ bookingForm.get('payment_option')?.value === 'Advance' ? (advancePayment | currency:'INR':'symbol':'1.0-0') : (totalAmount | currency:'INR':'symbol':'1.0-0') }}
+                </dd>
+              </dl>
+              <dl *ngIf="bookingForm.get('payment_option')?.value === 'Advance'" class="flex items-center justify-between gap-4 py-3">
+                <dt class="text-base font-normal text-gray-500">Balance Amount</dt>
+                <dd class="text-base font-medium text-gray-900">{{balanceAmount | currency:'INR':'symbol':'1.0-0'}}</dd>
+              </dl>
+              <dl class="flex items-center justify-between gap-4 py-3">
+                <dt class="text-base font-bold text-gray-900">Now Payable Amount</dt>
+                <dd class="text-base font-bold text-gray-900">
+                  {{ bookingForm.get('payment_option')?.value === 'Advance' ? (advancePayment | currency:'INR':'symbol':'1.0-0') : (totalAmount | currency:'INR':'symbol':'1.0-0') }}
+                </dd>
+              </dl>
+            </div>
+          </div>
+  
+          <div class="space-y-3">
+            <button
+              type="submit"
+              [disabled]="!bookingForm.valid"
+              class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 w-full"
+            >
+              Submit Booking
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+
