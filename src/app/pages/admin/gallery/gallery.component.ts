@@ -24,6 +24,7 @@ export class GalleryComponent implements OnInit {
   isCategoryModalOpen: boolean = false
   categories: string[] = [];
   galleryImageForm!: FormGroup;
+  editGalleryImageForm!: FormGroup;
   imagePreview: string | ArrayBuffer | null = null;
   selectedImage: any = null;
   categoryForm!: FormGroup
@@ -45,9 +46,15 @@ export class GalleryComponent implements OnInit {
       image: ['', Validators.required],
       category: ['', Validators.required]
     });
+    this.editGalleryImageForm = this.fb.group({
+      name: ['', Validators.required],
+      image: ['', Validators.required],
+      category: ['', Validators.required]
+    });
 
     this.categoryForm = this.fb.group({
-      categoryName: ['', Validators.required]
+      categoryName: ['', Validators.required],
+      categoryImage:['',Validators.required]
     });
   }
 
@@ -56,15 +63,17 @@ export class GalleryComponent implements OnInit {
     this.loadGalleryImage()
   }
 
-  closeEditModal(){
-    this.isEditModalOpen = false
+  closeEditModal(): void {
+    this.isEditModalOpen = false;
+    this.editGalleryImageForm.reset();
+    this.imagePreview = null;
   }
 
   deleteGalleryItem(imageId: string) {
     this.galleryService.DeleteGalleryData(imageId).subscribe(
       () => {
         this.toastr.success('Gallery image deleted successfully!', 'Success');
-        this.loadGalleryImage(); // Reload the gallery items after deletion
+        this.loadGalleryImage();
       },
       (error: any) => {
         console.error('Error deleting gallery image:', error);
@@ -76,18 +85,24 @@ export class GalleryComponent implements OnInit {
 
   openGalleryImageModal(): void {
     this.isGalleryImageModalOpen = true;
+    this.imagePreview = null; 
+    this.categoryForm.reset()
   }
 
   closeGalleryImageModal(): void {
     this.isGalleryImageModalOpen = false;
+    this.galleryImageForm.reset();
+    this.imagePreview = null;
   }
-
   openCategoryModal(): void {
     this.isCategoryModalOpen = true;
+    this.imagePreview = null
   }
 
   closeCategoryModal(): void {
     this.isCategoryModalOpen = false;
+    this.categoryForm.reset()
+    this.imagePreview = null
   }
 
   onImageSelected(event: Event): void {
@@ -104,16 +119,41 @@ export class GalleryComponent implements OnInit {
     }
   }
 
+  onCategoryImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+  
+      reader.onload = () => {
+        const base64String = reader.result as string;
+  
+        console.log('Base64 String:', base64String);
+        this.imagePreview = base64String;
+        this.categoryForm.patchValue({
+          categoryImage: base64String
+        });
+      };
+  
+      reader.readAsDataURL(file);
+    }
+  }
+  
+  
+  originalGalleryItem: IGallery | null = null;
+
   editGalleryItem(image: IGallery, imageId: string) {
     this.isEditModalOpen = true;
     this.selectedImage = image;
-    this.galleryImageForm.patchValue({
+    this.originalGalleryItem = { ...image }; 
+  
+    this.editGalleryImageForm.patchValue({
       name: image.name,
       category: image.image_category,
-      image: image.image
     });
     this.imagePreview = image.image ? image.image.toString() : null;
   }
+  
   
   
   loadGalleryCategory() {
@@ -149,11 +189,9 @@ export class GalleryComponent implements OnInit {
       this.galleryService.addGallery(galleryData).subscribe(
         response => {
           this.toastr.success('Gallery image added successfully!', 'Success');
-          this.galleryImageForm.reset();
           this.imagePreview = null;
           this.closeGalleryImageModal();
           this.loadGalleryImage()
-          this.galleryImageForm.reset();
         },
         error => {
           console.error('Error adding gallery image', error);
@@ -167,22 +205,23 @@ export class GalleryComponent implements OnInit {
 
   onSubmitCategory(): void {
     if (this.categoryForm.valid) {
-      const galleryCategory = this.categoryForm.value;
-      this.galleryService.addGalleryCategory(galleryCategory).subscribe(
+      const categoryData = this.categoryForm.value;
+      this.galleryService.addGalleryCategory(categoryData).subscribe(
         response => {
-          this.toastr.success('Gallery category added successfully!', 'Success');
-          this.categoryForm.reset();
+          this.toastr.success('Category added successfully!', 'Success');
           this.closeCategoryModal();
-          this.loadGalleryCategory()
+          this.loadGalleryCategory();
         },
         error => {
-          this.toastr.error('Failed to add gallery category.', 'Error');
+          console.error('Error adding category:', error);
+          this.toastr.error('Failed to add category.', 'Error');
         }
       );
     } else {
-      this.toastr.error('Please fill all required fields.', 'Error');
+      this.toastr.error('Please fill in all the required fields.', 'Error');
     }
   }
+  
 
   onPageChange(page: number): void {
     this.currentPage = page;
@@ -208,8 +247,8 @@ export class GalleryComponent implements OnInit {
   }
 
   onSubmitEditGalleryImage(): void {
-    if (this.galleryImageForm.valid && this.selectedImage) {
-      const updatedData = this.galleryImageForm.value;
+    if (this.editGalleryImageForm.valid && this.selectedImage) {
+      const updatedData = this.editGalleryImageForm.value;
       updatedData.image = this.imagePreview;
   
       this.galleryService.updateGallery(this.selectedImage._id, updatedData).subscribe(
@@ -217,7 +256,6 @@ export class GalleryComponent implements OnInit {
           this.toastr.success('Gallery image updated successfully!', 'Success');
           this.loadGalleryImage(); 
           this.closeEditModal();
-          this.imagePreview = null;
         },
         error => {
           console.error('Error updating gallery image', error);

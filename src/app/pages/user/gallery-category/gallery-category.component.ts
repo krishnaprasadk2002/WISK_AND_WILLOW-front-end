@@ -1,54 +1,40 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GalleryService } from '../../../core/services/admin/gallery.service';
-import { IGallery } from '../../../core/models/gallery.entity';
+import { IGallery, IGalleryCategory } from '../../../core/models/gallery.entity';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-gallery-category',
   standalone: true,
-  imports: [],
+  imports: [CommonModule,FormsModule],
   templateUrl: './gallery-category.component.html',
   styleUrl: './gallery-category.component.css'
 })
 export class GalleryCategoryComponent implements OnInit {
-  categories: string[] = [];
-  categoryImages: { [key: string]: IGallery[] } = {};
-  galleryImagesData:IGallery[] = []
+  categories: IGalleryCategory[] = [];
+  galleryImages:IGallery[] = []
 
 
   constructor(private router:Router,private galleryService:GalleryService){}
   ngOnInit(): void {
-    this.loadCategories();
+    this.loadGalleryCategory();
   }
 
-  loadCategories(): void {
-    this.galleryService.getGalleryData().subscribe(
-      (categories) => {
-        this.categories = categories;
-        // this.loadImagesForCategories(categories);
+  loadGalleryCategory() {
+    this.galleryService.getGalleryCategoryData().subscribe(
+      categoryData => {
+        this.categories = categoryData;
       },
-      (error) => {
-        console.error('Error loading categories:', error);
+      error => {
+        console.error('Error fetching gallery categories', error);
       }
     );
   }
 
-  // loadImagesForCategories(categories: string[]): void {
-  //   categories.forEach(category => {
-  //     this.galleryService.getImagesByCategory(category).subscribe(
-  //       (images) => {
-           
-  //         console.log("dat",images);
-  //         this.categoryImages[category] = images;
-       
-          
-          
-  //       },
-  //       (error) => {
-  //         console.error(`Error loading images for category ${category}:`, error);
-  //       }
-  //     );
-  //   });
-  // }
+  onCategoryClick(categoryName: string) {
+    this.router.navigate(['/user-gallery', categoryName]);
+  }
 
 }

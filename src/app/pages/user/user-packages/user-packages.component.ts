@@ -33,7 +33,6 @@ export class UserPackagesComponent implements OnInit {
     );
   }
   
-
   getPackageSummary(packageItem: Ipackages): string {
     if (packageItem.packageItems && packageItem.packageItems.length > 0) {
       return packageItem.packageItems.slice(0, 3).map(item => item.itemName).join(', ') + '...';
@@ -44,5 +43,9 @@ export class UserPackagesComponent implements OnInit {
 
   toggleDetails(pkg: Ipackages): void {
     pkg.showFullDetails = !pkg.showFullDetails;
+  }
+
+  goToPackageDetail(packageName: string): void {
+    this.router.navigate(['/package', packageName]);
   }
 }

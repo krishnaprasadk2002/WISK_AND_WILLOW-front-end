@@ -33,6 +33,8 @@ import { userGuard } from './core/guards/user.guard';
 import { userAuthGuard } from './core/guards/user-auth.guard';
 import { GalleryCategoryComponent } from './pages/user/gallery-category/gallery-category.component';
 import { UserGalleryComponent } from './pages/user/user-gallery/user-gallery.component';
+import { SpecificPackageComponent } from './pages/user/specific-package/specific-package.component';
+import { BookingComponent } from './pages/user/booking/booking.component';
 
 export const routes: Routes = [
 
@@ -67,12 +69,20 @@ export const routes: Routes = [
                 component: UserPackagesComponent
             },
             {
+                path:'package/:name',
+                component:SpecificPackageComponent
+            },
+            {
                 path:'gallery-category',
                 component:GalleryCategoryComponent
             },
             {
-                path:'gallery/:category',
+                path:'user-gallery/:category',
                 component:UserGalleryComponent
+            },
+            {
+                path:'booking',
+                component:BookingComponent
             }
         ]
     },

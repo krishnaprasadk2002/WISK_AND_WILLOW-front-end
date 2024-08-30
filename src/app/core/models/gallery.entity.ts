@@ -6,5 +6,6 @@ export interface IGallery{
   }
 
   export interface IGalleryCategory{
-    name:string
+    name:string,
+    image:string
   }

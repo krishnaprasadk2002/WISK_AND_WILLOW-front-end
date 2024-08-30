@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { catchError, map, Observable, of } from 'rxjs';
-import { User } from '../../models/user.model';
 import { IEvent } from '../../models/event.model';
 
 
@@ -13,8 +12,8 @@ export class AdminAuthService {
 private baseUrl=environment.baseUrl
   constructor(private http:HttpClient) { }
 
-adminLogin(email:string,password:string) :Observable<any>{
-return this.http.post(`${this.baseUrl}admin/login`,{email,password})
+adminLogin(email:string,password:string) :Observable<string>{
+return this.http.post<string>(`${this.baseUrl}admin/login`,{email,password})
 }
 
 adminAllEvents(params: { page: number; limit: number }): Observable<{ event: IEvent[], totalItems: number }> {

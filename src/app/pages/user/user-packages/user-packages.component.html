@@ -10,37 +10,39 @@
   </div>
   
   <!-- Package listing without pagination -->
-<div class="bg-gray-100 w-full py-8">
-  <div class="container mx-auto px-4">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <div *ngFor="let package of packages" class="bg-white shadow-lg rounded-lg overflow-hidden">
-        <img [src]="package.image ? package.image : 'https://via.placeholder.com/300x200'" alt="{{ package.name }}" class="w-full h-48 object-cover">
-        <div class="p-4">
-          <h2 class="text-lg font-bold">{{ package.name }}</h2>
-          <p class="text-gray-600 mb-2">{{ package.type_of_event }}</p>
-          <p class="text-sm font-semibold">Starting At: {{ package.startingAt | currency:'INR' }}</p>
-
-          <!-- Short Summary -->
-          <div *ngIf="!package.showFullDetails" class="mt-4">
-            <p class="text-gray-700">
-              {{ getPackageSummary(package) }}
-            </p>
-            <button (click)="toggleDetails(package)" class="mt-2 text-blue-500 hover:text-blue-700">More Info</button>
-          </div>
-
-          <!-- Full Details -->
-          <div *ngIf="package.showFullDetails" class="mt-4">
-            <h6 class="font-bold text-sm mb-2">Package Features:</h6>
-            <ul class="list-disc pl-5 space-y-1 text-sm">
-              <li *ngFor="let item of package.packageItems">{{ item.itemName }} - ₹{{ item.price }}</li>
-            </ul>
-            <p class="text-right mt-4">
-              <button (click)="toggleDetails(package)" class="text-blue-500 hover:text-blue-700">Show Less</button>
-            </p>
+  <div class="bg-gray-100 w-full py-8">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div *ngFor="let package of packages" class="bg-white shadow-lg rounded-lg overflow-hidden">
+          <img [src]="package.image ? package.image : 'https://via.placeholder.com/300x200'" alt="{{ package.name }}" class="w-full h-48 object-cover">
+          <div class="p-4">
+            <h2 class="text-lg font-bold">{{ package.name }}</h2>
+            <p class="text-gray-600 mb-2">{{ package.type_of_event }}</p>
+            <p class="text-sm font-semibold">Starting At: {{ package.startingAt | currency:'INR' }}</p>
+  
+            <!-- Short Summary -->
+            <div *ngIf="!package.showFullDetails" class="mt-4">
+              <p class="text-gray-700">
+                {{ getPackageSummary(package) }}
+              </p>
+              <!-- Navigate to the package detail page -->
+              <button (click)="goToPackageDetail(package.name)" class="mt-2 text-blue-500 hover:text-blue-700">More Info</button>
+            </div>
+  
+            <!-- Full Details -->
+            <div *ngIf="package.showFullDetails" class="mt-4">
+              <h6 class="font-bold text-sm mb-2">Package Features:</h6>
+              <ul class="list-disc pl-5 space-y-1 text-sm">
+                <li *ngFor="let item of package.packageItems">{{ item.itemName }} - ₹{{ item.price }}</li>
+              </ul>
+              <p class="text-right mt-4">
+                <button (click)="toggleDetails(package)" class="text-blue-500 hover:text-blue-700">Show Less</button>
+              </p>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+  
   

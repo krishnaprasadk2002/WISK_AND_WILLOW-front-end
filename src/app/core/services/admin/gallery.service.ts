@@ -50,11 +50,20 @@ baseUrl = environment.baseUrl
     });
   }
 
-  getGalleryData():Observable<string[]>{
-    return this.http.get<string[]>(`${this.baseUrl}gallery/getuniquecategory`)
+  getGalleryCategoryData(): Observable<IGalleryCategory[]> {
+    return this.http.get<IGalleryCategory[]>(`${this.baseUrl}gallery/getuniquecategory`);
   }
   
   getImagesByCategory(category: string): Observable<IGallery[]> {
     return this.http.get<IGallery[]>(`${this.baseUrl}gallery/images/${category}`);
 }
+
+getImagesByCategoryName(categoryName: string): Observable<IGallery[]> {
+  console.log(`Fetching images for category: ${categoryName}`);
+  return this.http.get<IGallery[]>(`${this.baseUrl}gallery/getgalleryimages`, {
+    params: { name: categoryName }
+  });
+}
+
+
 }

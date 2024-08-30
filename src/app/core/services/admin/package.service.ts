@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Ipackages } from '../../models/packages.model';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { IFood } from '../../models/food.model';
 
 @Injectable({
   providedIn: 'root'
@@ -63,5 +64,14 @@ export class PackageService {
     );
   }
   
+  getPackageDetailsByName(name: string): Observable<Ipackages> {
+    return this.http.get<Ipackages>(`${this.baseUrl}package/getpackagedatabyname`,
+      {params:{name}}
+    );
+  }
+
+  getPackageFood():Observable<IFood[]>{
+    return this.http.get<IFood[]>(`${this.baseUrl}package/getfoods`)
+  }
 
 }

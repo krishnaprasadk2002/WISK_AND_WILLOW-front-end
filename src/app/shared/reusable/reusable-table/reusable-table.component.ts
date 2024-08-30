@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { ReusableButtonsComponent } from '../reusable-buttons/reusable-buttons.component';
 import { FormsModule } from '@angular/forms';
+import { debounce, debounceTime, Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-reusable-table',
@@ -10,7 +11,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './reusable-table.component.html',
   styleUrl: './reusable-table.component.css'
 })
-export class ReusableTableComponent {
+export class ReusableTableComponent implements OnDestroy {
 
 @Input() HeadArray:any[] = []
 @Input() GridArray:any[] = []
@@ -29,6 +30,25 @@ searchTerm: string = '';
 @Output() onMoreInfo = new EventEmitter<any>();
 @Output() searchChanged = new EventEmitter<any>()
 @Output() pageChange = new EventEmitter<number>();
+
+private searchSubject = new Subject<string>()
+private searchSubscription: Subscription | undefined;
+
+constructor(){
+  this.searchSubject.pipe(
+    debounceTime(300)
+  ).subscribe(searchTerm =>{
+    this.searchChanged.emit(searchTerm)
+  })
+}
+
+trackByHeader(index: number, header: any): any {
+  return header.header;
+}
+
+trackByData(index: number, data: any): any {
+  return data._id;
+}
 
 editRecord(item: any) {
   this.onEdit.emit({ item, id: item._id });
@@ -60,6 +80,13 @@ get totalPages(): number {
 }
 
 onSearchChange(value: string) {
-  this.searchChanged.emit(value); 
+  this.searchSubject.next(value); 
 }
+
+ngOnDestroy() {
+  if (this.searchSubscription) {
+    this.searchSubscription.unsubscribe();
+  }
+}
+
 }

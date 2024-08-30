@@ -36,14 +36,14 @@
     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
       <tr>
         <th class="px-6 py-3">No.</th>
-        <th *ngFor="let head of HeadArray" scope="col" class="px-6 py-3">
+        <th *ngFor="let head of HeadArray trackBy: trackByHeader" scope="col" class="px-6 py-3">
           {{ head.header }}
         </th>
         <th class="flex px-6 py-3 justify-center">Actions</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let user of GridArray; let no = index" class="bg-white border-b hover:bg-gray-50">
+      <tr *ngFor="let user of GridArray; let no = index; trackBy: trackByData" class="bg-white border-b hover:bg-gray-50">
         <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ (currentPage - 1) * pageSize + no + 1 }}</td>
         <td *ngFor="let head of HeadArray" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
           <ng-container *ngIf="head.fieldName === 'image' || head.fieldName === 'image1' || head.fieldName === 'image2' || head.fieldName === 'image3'; else textContent">

@@ -12,6 +12,7 @@ import { ButtonComponent } from '../../../shared/reusable/button/button.componen
 import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
 import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
 import { ReusableTableComponent } from '../../../shared/reusable/reusable-table/reusable-table.component';
+import { noWhitespaceValidator } from '../../../shared/validators/form.validator';
 
 @Component({
   selector: 'app-packages',
@@ -22,6 +23,7 @@ import { ReusableTableComponent } from '../../../shared/reusable/reusable-table/
 })
 export class PackagesComponent implements OnInit {
   packageForm!: FormGroup
+  editpackageForm!: FormGroup
   isModalOpen: Boolean = false
   eventNames: string[] = []
   packages: Ipackages[] = []
@@ -46,7 +48,13 @@ export class PackagesComponent implements OnInit {
 
   ngOnInit(): void {
     this.packageForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(100)]],
+      name: ['', [Validators.required, Validators.maxLength(100)],noWhitespaceValidator()],
+      type_of_event: ['', [Validators.required, Validators.maxLength(100)]],
+      startingAmount: ['', [Validators.required, Validators.min(0)]],
+      image: [null]
+    })
+    this.editpackageForm = this.fb.group({
+      name: ['', [Validators.required, Validators.maxLength(100)],noWhitespaceValidator()],
       type_of_event: ['', [Validators.required, Validators.maxLength(100)]],
       startingAmount: ['', [Validators.required, Validators.min(0)]],
       image: [null]
@@ -75,6 +83,7 @@ export class PackagesComponent implements OnInit {
     this.isEditModalOpen = false
     this.selectedImage = null;
     this.packageForm.reset();
+    this.editpackageForm.reset();
   }
 
   getPackages(page: number = this.currentPage): void {
@@ -142,23 +151,21 @@ export class PackagesComponent implements OnInit {
   }
 
 
-
   editPackages({ item, id }: { item: Ipackages; id: string }) {
-    console.log(item);
-    console.log(id);
-    this.packageId = id
-
+    this.packageId = id;
     this.isEditModalOpen = true;
-    this.packageForm.patchValue({
+    
+    this.editpackageForm.patchValue({
       name: item.name,
       type_of_event: item.type_of_event,
       startingAmount: item.startingAt,
       image: item.image
     });
+  
     this.selectedImage = item.image ? item.image : null;
   }
-
-
+  
+  
 
   onSearchTermChanged(value: string) {
     const searchTerm = value.toLowerCase()
@@ -182,14 +189,14 @@ export class PackagesComponent implements OnInit {
   }
 
   onEditSubmit() {
-    if (this.packageForm.valid) {
-      let packageData = this.packageForm.value;
+    if (this.editpackageForm.valid) {
+      let packageData = this.editpackageForm.value;
       packageData = { ...packageData, image: this.selectedImage };
-
+  
       this.packageService.editPackage(packageData, this.packageId).subscribe(
         response => {
           console.log('Package updated successfully', response);
-          this.getPackages(this.currentPage);;
+          this.getPackages(this.currentPage);
           this.toastr.success('Package updated successfully!', 'Success');
           this.closeModal();
         },
@@ -202,6 +209,7 @@ export class PackagesComponent implements OnInit {
       this.toastr.warning('Please fill out the form correctly.', 'Warning');
     }
   }
+  
 
   deletePackage(item: string) {
     this.packageService.deletePackage(item).subscribe(

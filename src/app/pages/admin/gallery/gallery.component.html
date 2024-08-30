@@ -50,15 +50,15 @@
 <!--Edit Modal -->
  
 <app-modal [isOpen]="isEditModalOpen" [title]="'Edit Gallery Image'" (closeModal)="closeEditModal()">
-  <form [formGroup]="galleryImageForm" (ngSubmit)="onSubmitEditGalleryImage()">
-    <app-inputbox [label]="'Name'" [type]="'text'" [formControl]="$any(galleryImageForm.controls['name'])"></app-inputbox>
-    <app-inputbox [label]="'Image'" [type]="'file'" [formControl]="$any(galleryImageForm.controls['image'])" (change)="onImageSelected($event)"></app-inputbox>
+  <form [formGroup]="editGalleryImageForm" (ngSubmit)="onSubmitEditGalleryImage()">
+    <app-inputbox [label]="'Name'" [type]="'text'" [formControl]="$any(editGalleryImageForm.controls['name'])"></app-inputbox>
+    <app-inputbox [label]="'Image'" [type]="'file'" [formControl]="$any(editGalleryImageForm.controls['image'])" (change)="onImageSelected($event)"></app-inputbox>
 
     <div *ngIf="imagePreview" class="mt-2">
       <img [src]="imagePreview" alt="Image preview" class="max-w-full h-auto border border-gray-300 rounded-md">
     </div>
 
-    <app-inputbox label="Category" [options]="categories" [formControl]="$any(galleryImageForm.controls['category'])"></app-inputbox>
+    <app-inputbox label="Category" [options]="categories" [formControl]="$any(editGalleryImageForm.controls['category'])"></app-inputbox>
 
     <div class="flex justify-end">
       <app-button label="Cancel" buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2" (click)="closeEditModal()"></app-button>
@@ -72,10 +72,15 @@
 
 
 <!-- Add Category Modal -->
- 
 <app-modal [isOpen]="isCategoryModalOpen" [title]="'Add Image Category'" (closeModal)="closeCategoryModal()">
   <form [formGroup]="categoryForm" (ngSubmit)="onSubmitCategory()">
-    <app-inputbox [label]="'CategoryName'" [type]="'text'" [formControl]="$any(categoryForm.controls['categoryName'])"></app-inputbox>
+    <app-inputbox [label]="'Category Name'" [type]="'text'" [formControl]="$any(categoryForm.controls['categoryName'])"></app-inputbox>
+    
+    <input type="file" (change)="onCategoryImageSelected($event)" accept="image/*" />
+
+    <div *ngIf="imagePreview" class="mt-2">
+      <img [src]="imagePreview" alt="Image preview" class="max-w-full h-auto border border-gray-300 rounded-md">
+    </div>
     
     <div class="flex justify-end mt-4">
       <app-button label="Cancel" buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2" (click)="closeCategoryModal()"></app-button>
@@ -83,4 +88,5 @@
     </div>
   </form>
 </app-modal>
+
 

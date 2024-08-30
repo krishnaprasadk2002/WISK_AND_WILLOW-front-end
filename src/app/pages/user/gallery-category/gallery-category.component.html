@@ -9,12 +9,12 @@
     </div>
   </div>
 
-  <!-- <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-    <div class="relative" *ngFor="let image of galleryImages" (click)="navigateToCategory(image.category)">
-      <img class="h-auto max-w-full rounded-lg" [src]="image.src" [alt]="image.alt">
+  <div class="grid grid-cols-2 md:grid-cols-3 p-6 gap-4">
+    <div class="relative " *ngFor="let image of categories" (click)="onCategoryClick(image.name)">
+      <img class="h-auto max-w-full rounded-lg" [src]="image.image" [alt]="image">
       <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg">
-        <span class="text-white text-lg font-semibold">{{ }}</span>
+        <span class="text-white text-lg font-semibold uppercase">{{image.name}}</span>
       </div>
     </div>
-  </div> -->
+  </div>
   

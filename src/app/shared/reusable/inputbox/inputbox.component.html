@@ -23,7 +23,13 @@
 
     <div class="text-red-600 text-sm" *ngIf="control.touched && control.invalid && control?.errors?.['required']">
       Please enter {{ label }}
-    </div>      
+    </div>  
+    <div class="text-red-600 text-sm mt-1" *ngIf="control.touched && control.invalid">
+      <div *ngIf="control.errors?.['maxlength']">Maximum length exceeded.</div>
+      <div *ngIf="control.errors?.['min']">Value must be greater than zero.</div>
+      <div *ngIf="control.errors?.['whitespace']">Whitespace is not allowed.</div>
+      <!-- Add more error messages as needed -->
+    </div>    
 </div>
 
 
