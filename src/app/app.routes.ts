@@ -35,6 +35,8 @@ import { GalleryCategoryComponent } from './pages/user/gallery-category/gallery-
 import { UserGalleryComponent } from './pages/user/user-gallery/user-gallery.component';
 import { SpecificPackageComponent } from './pages/user/specific-package/specific-package.component';
 import { BookingComponent } from './pages/user/booking/booking.component';
+import { PaymentSuccessComponent } from './pages/user/payment-success/payment-success.component';
+import { PaymentFailureComponent } from './pages/user/payment-failure/payment-failure.component';
 
 export const routes: Routes = [
 
@@ -42,6 +44,14 @@ export const routes: Routes = [
      {
       path:'error/:errorCode',
       component:ErrorComponent
+     },
+     {
+        path:'payment-success',
+        component:PaymentSuccessComponent
+     },
+     {
+       path:'payment-failure',
+       component:PaymentFailureComponent
      },
 
     //userSide

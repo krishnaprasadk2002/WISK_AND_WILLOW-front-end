@@ -23,6 +23,23 @@ export interface IBooking {
   foodPrice: number;
   advancePayment: number;
   balanceAmount: number;
+  nowPayableAmount: number;
   paymentId?: string; 
   created_at?: Date;
+}
+
+
+export interface IRazorpayOrder {
+  amount: number;         
+  amount_due: number;     
+  amount_paid: number;    
+  attempts: number;       
+  created_at: number;     
+  currency: string;       
+  entity: string;         
+  id: string;             
+  notes: string[];        
+  offer_id: string | null; 
+  receipt: string;        
+  status: string;        
 }

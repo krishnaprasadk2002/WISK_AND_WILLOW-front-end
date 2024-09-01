@@ -110,6 +110,7 @@ export class SpecificPackageComponent implements OnInit {
       totalAmount: totalAmount
     }));
     this.router.navigate(['/booking']);
-  }
+}
+
   
 }
