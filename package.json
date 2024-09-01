@@ -27,6 +27,7 @@
     "@ngrx/store-devtools": "^18.0.2",
     "@riapacheco/yutes": "^4.2.4",
     "ngx-toastr": "^19.0.0",
+    "razorpay": "^2.9.4",
     "rxjs": "~7.8.0",
     "toastr": "^2.1.4",
     "tslib": "^2.3.0",

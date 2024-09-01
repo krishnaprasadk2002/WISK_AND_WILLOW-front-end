@@ -9,6 +9,9 @@ import { IEvent } from '../../../core/models/event.model';
 import { UserservicesService } from '../../../core/services/users/userservices.service';
 import { User } from '../../../core/models/user.model';
 import { noWhitespaceValidator } from '../../../shared/validators/form.validator';
+import { BookingService } from '../../../core/services/users/booking.service';
+
+declare var Razorpay:any;
 
 @Component({
   selector: 'app-booking',
@@ -21,6 +24,7 @@ export class BookingComponent implements OnInit {
   bookingForm!: FormGroup;
   paymentOption:string[]=['Advance','Full']
   eventNames: string[] = [];
+  isLoading = false;
   userData:User ={
     name: '',
     email: '',
@@ -33,7 +37,7 @@ export class BookingComponent implements OnInit {
   balanceAmount: number = 0;
   nowPayableAmount: number = 0;
 
-  constructor(private fb:FormBuilder,private router:Router,private eventService:EventService,private userService:UserservicesService){}
+  constructor(private fb:FormBuilder,private router:Router,private eventService:EventService,private userService:UserservicesService,private bookingServices:BookingService){}
 
    ngOnInit(): void {
     this.bookingForm = this.fb.group({
@@ -72,18 +76,17 @@ export class BookingComponent implements OnInit {
       this.eventWithoutFoodPrice = parsedData.packageDetails.startingAt || 0;
       this.totalAmount = parsedData.totalAmount;
       this.foodPrice = this.totalAmount - this.eventWithoutFoodPrice;
-      
+
       this.bookingForm.patchValue({
         packageName: parsedData.packageDetails.name,
         type_of_event: parsedData.packageDetails.type_of_event,
-        cart: parsedData.cart,
+        cart: parsedData.cart || [],
         packageDetails: parsedData.packageDetails,
       });
 
       this.calculatePayments();
     }
   }
-
 
   loadUserData() {
     this.userService.getUserProfile().subscribe(
@@ -96,7 +99,7 @@ export class BookingComponent implements OnInit {
           mobile: userData.mobile,
         });
       },
-      error => {
+      (error) => {
         console.error('Error fetching User Data', error);
       }
     );
@@ -107,26 +110,87 @@ export class BookingComponent implements OnInit {
     if (paymentOption === 'Advance') {
       this.advancePayment = this.totalAmount * 0.1;
       this.balanceAmount = this.totalAmount - this.advancePayment;
+      this.nowPayableAmount = this.advancePayment; 
     } else {
       this.advancePayment = this.totalAmount;
       this.balanceAmount = 0;
+      this.nowPayableAmount = this.totalAmount; 
     }
   }
 
   onSubmitBooking() {
     if (this.bookingForm.valid) {
+      this.isLoading = true;
       const bookingData = {
         ...this.bookingForm.value,
         totalAmount: this.totalAmount,
         eventWithoutFoodPrice: this.eventWithoutFoodPrice,
         foodPrice: this.foodPrice,
         advancePayment: this.advancePayment,
-        balanceAmount: this.balanceAmount
+        balanceAmount: this.balanceAmount,
       };
+
       console.log('Booking submitted:', bookingData);
+     this.bookingServices.bookPackage(bookingData).subscribe(data=>{
+        console.log(data,"Booking Backend");
+        this.payNow(data.id);
+        
+     })
     } else {
       console.log('Form is not valid');
     }
   }
-  
+
+  payNow(orderid: string) {
+    const nowPayableAmount = this.nowPayableAmount 
+    const options = {
+      key: 'rzp_test_dUJLoJPD7rBTvA',
+      amount: nowPayableAmount, 
+      currency: 'INR',
+      name: 'WISK AND WILLOW',
+      description: 'Booking Payment',
+      order_id: orderid,
+      handler: (response: any) => {
+        console.log(response,"Before");
+        
+        this.verifyPayment(response);
+      },
+      prefill: {
+        name: this.bookingForm.get('name')?.value,
+        email: this.bookingForm.get('email')?.value,
+        contact: this.bookingForm.get('mobile')?.value,
+      },
+      theme: {
+        color: '#3a4ade',
+      },
+      modal: {
+        ondismiss: () => {
+          console.log('Payment popup closed');
+        }
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+  }
+
+  verifyPayment(response: any) {
+    console.log(response,"ress");
+    
+    this.bookingServices.verifyPayment({
+      razorpay_payment_id: response.razorpay_payment_id,
+      razorpay_order_id: response.razorpay_order_id,
+      razorpay_signature: response.razorpay_signature
+    }).subscribe(
+      (res) => {
+        console.log('Payment verified successfully', res);
+        this.router.navigate([''])
+        this.isLoading = false;
+      },
+      (error) => {
+        console.error('Error verifying payment', error);
+        this.isLoading = false;
+      }
+    );
+  }
 }
