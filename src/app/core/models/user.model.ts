@@ -1,3 +1,5 @@
+import { IBooking } from "./booking.model";
+
 export interface User {
   userId?: string;
   _id?: string;
@@ -7,4 +9,5 @@ export interface User {
   status?: boolean;
   password?: string
   imageUrl?: string;
+  bookings?: IBooking[];
 }

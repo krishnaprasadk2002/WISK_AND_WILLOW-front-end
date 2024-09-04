@@ -50,7 +50,13 @@
             <img [src]="user[head.fieldName]" alt="{{ user.name }}" class="w-16 h-16 object-cover" />
           </ng-container>
           <ng-template #textContent>
-            {{ user[head.fieldName] }}
+            <!-- Check if the field is 'requested_date' to format it as a date -->
+            <span *ngIf="head.fieldName === 'requested_date'; else normalText">
+              {{ user[head.fieldName] | date: 'MMM d, y' }}
+            </span>
+            <ng-template #normalText>
+              {{ user[head.fieldName] }}
+            </ng-template>
           </ng-template>
         </td>
         <td class="flex justify-center px-6 py-4">

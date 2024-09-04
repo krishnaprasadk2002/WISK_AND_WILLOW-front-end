@@ -10,6 +10,7 @@ import { ButtonComponent } from '../../../shared/reusable/button/button.componen
 import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
 import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
 import { ReusableTableComponent } from '../../../shared/reusable/reusable-table/reusable-table.component';
+import { noWhitespaceValidator } from '../../../shared/validators/form.validator';
 
 @Component({
   selector: 'app-gallery',
@@ -42,18 +43,18 @@ export class GalleryComponent implements OnInit {
 
   constructor(private navService: AdminNavService, private fb: FormBuilder, private galleryService: GalleryService, private toastr: ToastrService) {
     this.galleryImageForm = this.fb.group({
-      name: ['', Validators.required],
+      name: ['', Validators.required, noWhitespaceValidator()],
       image: ['', Validators.required],
       category: ['', Validators.required]
     });
     this.editGalleryImageForm = this.fb.group({
-      name: ['', Validators.required],
+      name: ['', Validators.required, noWhitespaceValidator()],
       image: ['', Validators.required],
       category: ['', Validators.required]
     });
 
     this.categoryForm = this.fb.group({
-      categoryName: ['', Validators.required],
+      categoryName: ['', Validators.required, noWhitespaceValidator()],
       categoryImage:['',Validators.required]
     });
   }
@@ -185,13 +186,19 @@ export class GalleryComponent implements OnInit {
   onSubmitGalleryImage(): void {
     if (this.galleryImageForm.valid) {
       const galleryData = this.galleryImageForm.value;
-      console.log('Submitting gallery data', galleryData);
       this.galleryService.addGallery(galleryData).subscribe(
         response => {
           this.toastr.success('Gallery image added successfully!', 'Success');
           this.imagePreview = null;
           this.closeGalleryImageModal();
-          this.loadGalleryImage()
+  
+          if (this.galleryItems.length > 4) {
+            this.loadGalleryImage(); 
+          } else {
+            this.galleryItems.push(response); 
+            this.filteredGallery = [...this.galleryItems]; 
+          }
+  
         },
         error => {
           console.error('Error adding gallery image', error);
@@ -254,8 +261,17 @@ export class GalleryComponent implements OnInit {
       this.galleryService.updateGallery(this.selectedImage._id, updatedData).subscribe(
         response => {
           this.toastr.success('Gallery image updated successfully!', 'Success');
-          this.loadGalleryImage(); 
           this.closeEditModal();
+  
+          if (this.galleryItems.length > 4) {
+            this.loadGalleryImage(); 
+          } else {
+            const index = this.galleryItems.findIndex(item => item._id === this.selectedImage._id);
+            if (index > -1) {
+              this.galleryItems[index] = response; 
+              this.filteredGallery = [...this.galleryItems]; 
+            }
+          }
         },
         error => {
           console.error('Error updating gallery image', error);
@@ -265,8 +281,6 @@ export class GalleryComponent implements OnInit {
     } else {
       this.toastr.error('Please fill all required fields.', 'Error');
     }
+  
   }
-  
-  
-  
 }

@@ -42,4 +42,28 @@ export class BookingService {
     this.bookingDataSubject.next(null);
   }
 
+  searchBookingData(searchTerm:string):Observable<IBooking[]>{
+    return this.http.get<IBooking[]>(`${this.baseUrl}booking/search`,{
+      params:{searchTerm}
+    })
+  }
+
+  getBookings(page:number,itemsPerPage:number):Observable<{booking:IBooking[],totalItems:number}>{
+    return this.http.get<{booking:IBooking[],totalItems:number}>(`${this.baseUrl}booking/getbooking`,{
+      params:{
+        page:page.toString(),
+        itemsPerPage:itemsPerPage.toString()
+      }
+    })
+  }
+
+  
+  userprofileBookingPayment(bookingdata: IBooking): Observable<IRazorpayOrder> {
+    return this.http.post<IRazorpayOrder>(`${this.baseUrl}booking/creatingorder`, bookingdata)
+  }
+
+  verifyBalancePayment(paymentData: any): Observable<PaymentVerificationResponse> {
+    return this.http.post<PaymentVerificationResponse>(`${this.baseUrl}booking/verifybalancepayment`, paymentData);
+  }
+
 }

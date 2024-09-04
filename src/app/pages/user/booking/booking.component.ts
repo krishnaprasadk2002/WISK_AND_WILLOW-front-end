@@ -264,4 +264,5 @@ export class BookingComponent implements OnInit {
     );
 
   }
+
 }

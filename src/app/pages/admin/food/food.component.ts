@@ -10,6 +10,7 @@ import { InputboxComponent } from '../../../shared/reusable/inputbox/inputbox.co
 import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
 import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
 import { ReusableTableComponent } from '../../../shared/reusable/reusable-table/reusable-table.component';
+import { noWhitespaceValidator } from '../../../shared/validators/form.validator';
 
 @Component({
   selector: 'app-food',
@@ -26,7 +27,7 @@ export class FoodComponent implements OnInit {
   foods: IFood[] = []
   foodID!:string
   foodCategoryEnum:string[]=['Vegetarian','Non-vegetarian']
-  foodSection:string[]=['Welcome Drink','Main Food','Dessert','Other']
+  foodSection:string[]=['Welcome Drink','Main Food','Dessert']
   statusEnum:string[]=['Available','Not Available']
   currentPage = 1;
   itemsPerPage = 4;
@@ -44,19 +45,19 @@ export class FoodComponent implements OnInit {
 
   constructor( private fb: FormBuilder, private toastr: ToastrService, private foodService: FoodService) {
     this.foodForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(100)]],
+      name: ['', [Validators.required, Validators.maxLength(100), noWhitespaceValidator()]],
       category: ['', Validators.required],
       pricePerPlate: ['', [Validators.required, Validators.min(1)]],
       section: ['', Validators.required],
-      status: ['', Validators.required],
+      status: ['', Validators.required]
     });
 
     this.editFoodForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(100)]],
+      name: ['', [Validators.required, Validators.maxLength(100), noWhitespaceValidator()]],
       category: ['', Validators.required],
       pricePerPlate: ['', [Validators.required, Validators.min(1)]],
       section: ['', Validators.required],
-      status: ['', Validators.required],
+      status: ['', Validators.required]
     });
   }
 
@@ -71,30 +72,33 @@ export class FoodComponent implements OnInit {
   
 
   openModal(target: string) {
-    if (target == 'add') {
-      this.isFoodModalOpen = true
+    if (target === 'add') {
+      this.isFoodModalOpen = true;
+      this.foodForm.reset();
     }
   }
 
   closeFoodModal() {
     this.isFoodModalOpen = false;
+    this.foodForm.reset(); 
   }
-
   onSubmitFood() {
     if (this.foodForm.valid) {
       const foodData = this.foodForm.value;
-      console.log(foodData);
-
+  
       this.foodService.addFoods(foodData).subscribe(
-        (response) => {
-          console.log('Food item added successfully!', response);
-
+        response => {
           this.toastr.success('Food item added successfully!', 'Success');
           this.closeFoodModal();
-          this.foodForm.reset();
-          this.loadFoods()
+  
+          if (this.totalItems < this.itemsPerPage * this.currentPage) {
+            this.foods.push(response);
+            this.filteredFood = [...this.foods];
+          } else {
+            this.loadFoods(this.currentPage);
+          }
         },
-        (error) => {
+        error => {
           this.toastr.error('Failed to add food item. Please try again.', 'Error');
           console.error('Error adding food item:', error);
         }
@@ -126,14 +130,21 @@ export class FoodComponent implements OnInit {
   onSubmitEditFood() {
     if (this.editFoodForm.valid) {
       const foodData = this.editFoodForm.value;
-  
-      
-      this.foodService.editFoods(foodData,this.foodID).subscribe(
+
+      this.foodService.editFoods(foodData, this.foodID).subscribe(
         response => {
-          console.log("Edit food data success", response);
           this.toastr.success('Food data updated successfully!', 'Success');
           this.closeEditFoodModal();
-          this.loadFoods()
+
+          if (this.foods.length > 4) {
+            this.loadFoods();
+          } else {
+            const index = this.foods.findIndex(item => item._id === this.foodID);
+            if (index > -1) {
+              this.foods[index] = response; 
+              this.filteredFood = [...this.foods]; 
+            }
+          }
         },
         error => {
           console.error('Error updating food data', error);

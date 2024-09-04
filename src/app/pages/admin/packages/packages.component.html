@@ -46,13 +46,16 @@
       <app-inputbox [label]="'Package Name'" [type]="'text'" [formControl]="$any(editpackageForm.controls['name'])"></app-inputbox>
       <app-inputbox label="Type of Event" [options]="eventNames" [formControl]="$any(editpackageForm.controls['type_of_event'])"></app-inputbox>
       <app-inputbox [label]="'Starting Amount'" [type]="'number'" [formControl]="$any(editpackageForm.controls['startingAmount'])"></app-inputbox>
-      <app-inputbox [label]="'Upload Image'" [type]="'file'" [formControl]="$any(editpackageForm.controls['image'])" accept="image/*" (change)="onImageSelected($event)"></app-inputbox>
-      <div  class="mt-2">
-        <img *ngIf="selectedImage" [src]="selectedImage" alt="Selected Image">
+      <app-inputbox  [label]="'Upload Image'"  [type]="'file'" [formControl]="$any(editpackageForm.controls['image'])"  accept="image/*"  (change)="onImageSelected($event)"> </app-inputbox>
+  
+      <div *ngIf="selectedImage" class="mt-2">
+        <img [src]="selectedImage" alt="Image preview" class="max-w-full h-auto border border-gray-300 rounded-md">
       </div>
+  
       <div class="flex justify-end">
-        <app-button label="Cancel" buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2" (click)="closeModal()"></app-button>
-        <app-button label="Submit" type="submit" buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"></app-button>
+        <app-button 
+          label="Cancel"  buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2"  (click)="closeModal()"> </app-button>
+        <app-button  label="Submit"   type="submit"  buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"> </app-button>
       </div>
     </form>
   </app-modal>

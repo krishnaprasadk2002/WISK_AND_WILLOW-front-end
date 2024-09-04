@@ -32,43 +32,43 @@
   
     <!-- Food Options Section -->
     <div class="bg-white shadow-md rounded-lg overflow-hidden mb-2 p-6 flex justify-between items-center">
-      <button type="button" (click)="addFood()" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-black dark:hover:text-white dark:hover:bg-black dark:focus:ring-gray-800">
-        Add Food
-      </button>
-      <button type="button" (click)="withoutFood()" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-black dark:hover:text-white dark:hover:bg-black dark:focus:ring-gray-800">
-        Without Food
+      <button type="button" (click)="toggleFoodOptions()" class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-black dark:hover:text-white dark:hover:bg-black dark:focus:ring-gray-800">
+        {{ showFoodOptions ? 'Without Food' : 'Add Food' }}
       </button>
     </div>
   
     <!-- Food Options and Cart Section -->
     <div *ngIf="showFoodOptions" class="bg-white shadow-md rounded-lg overflow-hidden mb-6 p-6">
       <h2 class="text-2xl font-semibold mb-4">Select Your Food Options</h2>
-      <ul class="list-disc pl-5 space-y-2">
-        <li *ngFor="let food of packageFood" class="text-gray-700 flex justify-between items-center">
-          <span>
-            {{ food.name }} - ₹{{ food.pricePerPlate }}
-          </span>
+      <div *ngFor="let section of foodSections" class="mb-4">
+        <h3 class="text-xl font-semibold mb-2">{{ section.name }}</h3>
+        <ul class="list-disc pl-5 space-y-2">
+          <li *ngFor="let food of section.foods" class="text-gray-700 flex justify-between items-center">
+            <span>
+              {{ food.name }} - ₹{{ food.pricePerPlate }}
+            </span>
   
-          <!-- Flexbox for alignment -->
-          <div class="flex items-center justify-center">
-            <input
-              type="number"
-              min="1"
-              [(ngModel)]="food.quantity"
-              placeholder="Qty"
-              class="border border-gray-300 rounded-md text-center w-16 me-2"
-            />
-            <!-- Add to Cart Button -->
-            <button
-              type="button"
-              (click)="addToCart(food)"
-              class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-black dark:hover:text-white dark:hover:bg-black dark:focus:ring-gray-800"
-            >
-              Add To Cart
-            </button>
-          </div>
-        </li>
-      </ul>
+            <!-- Flexbox for alignment -->
+            <div class="flex items-center justify-center">
+              <input
+                type="number"
+                min="1"
+                [(ngModel)]="food.quantity"
+                placeholder="Qty"
+                class="border border-gray-300 rounded-md text-center w-16 me-2"
+              />
+              <!-- Add to Cart Button -->
+              <button
+                type="button"
+                (click)="addToCart(food)"
+                class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-black dark:hover:text-white dark:hover:bg-black dark:focus:ring-gray-800"
+              >
+                Add To Cart
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
   
     <!-- Cart Section -->

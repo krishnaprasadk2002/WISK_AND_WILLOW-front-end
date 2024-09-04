@@ -25,11 +25,14 @@ export interface IBooking {
   balanceAmount: number;
   nowPayableAmount: number;
   paymentId?: string; 
+  paymentOrderId?: string;
   created_at?: Date;
+  status?:string;
 }
 
 
 export interface IRazorpayOrder {
+  _id:string
   amount: number;         
   amount_due: number;     
   amount_paid: number;    

@@ -1,0 +1,10 @@
+<app-admin-nav [PageName]="'Booking Management'" ></app-admin-nav>
+
+<app-reusable-table 
+  [HeadArray]="headArray" 
+  [GridArray]="filteredBooking" 
+  [currentPage]="currentPage"
+  [pageSize]="itemsPerPage"
+  [totalItems]="totalItems"  
+  (searchChanged)="onSearchTermChanged($event)">
+</app-reusable-table>

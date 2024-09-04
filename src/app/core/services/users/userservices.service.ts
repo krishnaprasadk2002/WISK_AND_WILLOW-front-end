@@ -3,6 +3,7 @@ import { environment } from '../../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user.model';
+import { IBooking } from '../../models/booking.model';
 
 
 @Injectable({
@@ -44,5 +45,11 @@ export class UserservicesService {
 
   updateProfile(profileData: User): Observable<User> {
     return this.http.put<User>(`${this.baseUrl}user/updateprofile`, profileData)
+  }
+
+  getBooking(email: string): Observable<IBooking[]> {
+    return this.http.get<IBooking[]>(`${this.baseUrl}booking/getbookinginprofile`,{
+      params:{email}
+    });
   }
 }

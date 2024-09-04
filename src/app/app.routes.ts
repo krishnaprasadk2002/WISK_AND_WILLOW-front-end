@@ -37,6 +37,8 @@ import { SpecificPackageComponent } from './pages/user/specific-package/specific
 import { BookingComponent } from './pages/user/booking/booking.component';
 import { PaymentSuccessComponent } from './pages/user/payment-success/payment-success.component';
 import { PaymentFailureComponent } from './pages/user/payment-failure/payment-failure.component';
+import { BookingManagementComponent } from './pages/admin/booking-management/booking-management.component';
+import { BannerManagementComponent } from './pages/admin/banner-management/banner-management.component';
 
 export const routes: Routes = [
 
@@ -167,6 +169,14 @@ export const routes: Routes = [
             {
                 path: 'gallery-management',
                 component: GalleryComponent
+            },
+            {
+                path:'booking-managemnt',
+                component:BookingManagementComponent
+            },
+            {
+                path:'banner-mangement',
+                component:BannerManagementComponent
             }
         ]
 

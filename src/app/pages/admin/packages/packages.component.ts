@@ -48,15 +48,15 @@ export class PackagesComponent implements OnInit {
 
   ngOnInit(): void {
     this.packageForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(100)],noWhitespaceValidator()],
-      type_of_event: ['', [Validators.required, Validators.maxLength(100)]],
-      startingAmount: ['', [Validators.required, Validators.min(0)]],
+      name: ['', [Validators.required, Validators.maxLength(100),noWhitespaceValidator()]],
+      type_of_event: ['', [Validators.required]],
+      startingAmount: ['', [Validators.required]],
       image: [null]
     })
     this.editpackageForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(100)],noWhitespaceValidator()],
+      name: ['', [Validators.required, Validators.maxLength(100),noWhitespaceValidator()]],
       type_of_event: ['', [Validators.required, Validators.maxLength(100)]],
-      startingAmount: ['', [Validators.required, Validators.min(0)]],
+      startingAmount: ['', [Validators.required]],
       image: [null]
     })
 
@@ -79,12 +79,13 @@ export class PackagesComponent implements OnInit {
   }
 
   closeModal() {
-    this.isModalOpen = false
-    this.isEditModalOpen = false
+    this.isModalOpen = false;
+    this.isEditModalOpen = false;
     this.selectedImage = null;
     this.packageForm.reset();
     this.editpackageForm.reset();
   }
+  
 
   getPackages(page: number = this.currentPage): void {
     this.packageService.getPackages(page, this.itemsPerPage).subscribe(
@@ -106,17 +107,12 @@ export class PackagesComponent implements OnInit {
       const file = input.files[0];
       const reader = new FileReader();
       reader.onload = (e) => {
-        const result = e.target?.result;
-        if (result) {
-          this.selectedImage = result;
-          // this.packageForm.patchValue({
-          //   image: this.selectedImage 
-          // });
-        }
+        this.selectedImage = e.target?.result as string | ArrayBuffer | null;
       };
       reader.readAsDataURL(file);
     }
   }
+  
 
 
 
@@ -126,11 +122,12 @@ export class PackagesComponent implements OnInit {
     if (this.packageForm.valid) {
       let packageData = this.packageForm.value;
       packageData = { ...packageData, image: this.selectedImage };
-
+  
       this.packageService.addPackages(packageData).subscribe(
         response => {
           console.log('Package added successfully', response);
-          this.getPackages(this.currentPage);;
+          this.packages.push(response);
+          this.filteredPackage = [...this.packages];
           this.toastr.success('Package added successfully!', 'Success');
           this.closeModal();
         },
@@ -143,6 +140,7 @@ export class PackagesComponent implements OnInit {
       this.toastr.warning('Please fill out the form correctly.', 'Warning');
     }
   }
+  
 
 
   openPackageDetails(item: any) {
@@ -154,34 +152,36 @@ export class PackagesComponent implements OnInit {
   editPackages({ item, id }: { item: Ipackages; id: string }) {
     this.packageId = id;
     this.isEditModalOpen = true;
-    
+  
     this.editpackageForm.patchValue({
       name: item.name,
       type_of_event: item.type_of_event,
       startingAmount: item.startingAt,
-      image: item.image
     });
   
     this.selectedImage = item.image ? item.image : null;
   }
   
   
+  
+  
 
   onSearchTermChanged(value: string) {
-    const searchTerm = value.toLowerCase()
+    const searchTerm = value.toLowerCase();
     if (searchTerm) {
       this.packageService.searchPackages(searchTerm).subscribe(
-        item => {
-          this.filteredPackage = item
-        }, error => {
+        items => {
+          this.filteredPackage = items;
+        }, 
+        error => {
           console.error(error);
-
         }
-      )
+      );
     } else {
       this.getPackages(this.currentPage);
     }
   }
+  
 
   onPageChange(page: number): void {
     this.currentPage = page;
@@ -191,12 +191,19 @@ export class PackagesComponent implements OnInit {
   onEditSubmit() {
     if (this.editpackageForm.valid) {
       let packageData = this.editpackageForm.value;
-      packageData = { ...packageData, image: this.selectedImage };
+  
+      if (this.selectedImage) {
+        packageData = { ...packageData, image: this.selectedImage };
+      }
   
       this.packageService.editPackage(packageData, this.packageId).subscribe(
         response => {
           console.log('Package updated successfully', response);
-          this.getPackages(this.currentPage);
+          const index = this.packages.findIndex(pkg => pkg._id === this.packageId);
+          if (index !== -1) {
+            this.packages[index] = { ...this.packages[index], ...response };
+            this.filteredPackage = [...this.packages];
+          }
           this.toastr.success('Package updated successfully!', 'Success');
           this.closeModal();
         },
@@ -209,6 +216,8 @@ export class PackagesComponent implements OnInit {
       this.toastr.warning('Please fill out the form correctly.', 'Warning');
     }
   }
+  
+  
   
 
   deletePackage(item: string) {
