@@ -2,6 +2,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { User } from '../../models/user.model';
+import { AuthResponse } from '../../models/authResponse';
+import { OtpResponse } from '../../models/otp.model';
+import { LoginResponse } from '../../models/authResponse';
+import { GoogleLoginResponse } from '../../models/authResponse';
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -12,21 +19,20 @@ export class AuthServicesService {
 
   constructor(private http: HttpClient) { }
 
-  userRegister(userData: any): Observable<any> {
-
-    return this.http.post(`${this.baseUrl}user/register`, userData);
+  userRegister(userData: User): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.baseUrl}user/register`, userData);
   }
 
-  verifyOtp(userId: string, otp: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}user/verify-otp`, { userId, otp })
+  verifyOtp(userId: string, otp: string): Observable<OtpResponse> {
+    return this.http.post<OtpResponse> (`${this.baseUrl}user/verify-otp`, { userId, otp })
   }
 
-  resendOtP(email: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}user/resend-otp`, { email })
+  resendOtP(email: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.baseUrl}user/resend-otp`, { email })
   }
 
-  userLogin(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}user/login`, { email, password })
+  userLogin(email: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.baseUrl}user/login`, { email, password })
     .pipe(
       catchError(error => {
         return throwError(error);
@@ -34,20 +40,20 @@ export class AuthServicesService {
     );
   }
 
-  authGoogleLogin(token: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}user/googlelogin`, { token });
+  authGoogleLogin(token: string): Observable<GoogleLoginResponse> {
+    return this.http.post<GoogleLoginResponse> (`${this.baseUrl}user/googlelogin`, { token });
   }
 
-  forgotpassword(email:string):Observable<any>{
-    return this.http.post(`${this.baseUrl}user/forgot-password`,{email})
+  forgotpassword(email:string):Observable<{ message: string }>{
+    return this.http.post<{ message: string }>(`${this.baseUrl}user/forgot-password`,{email})
   }
   
-  resetPassword(newPassword: string, token: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}user/reset-password`, { password: newPassword, token });
+  resetPassword(newPassword: string, token: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.baseUrl}user/reset-password`, { password: newPassword, token });
 }
 
-tokenVerify():Observable<any>{
-  return this.http.get(`${this.baseUrl}user/tokenverify`).pipe(
+tokenVerify():Observable<boolean>{
+  return this.http.get<boolean>(`${this.baseUrl}user/tokenverify`).pipe(
     catchError((err)=> of(false))
   )
 }

@@ -1,37 +1,37 @@
-<!-- banner image -->
-<div class="relative mt-16 sm:mt-15 md:mt-15 lg:mt-15 w-full">
-    <img src="assets/Banner.jpg" alt="Banner" class="w-full h-auto object-cover md:h-screen md:max-h-96 md:min-h-64">
-    <div class="absolute inset-0 flex items-center justify-center">
-      <h1 class="text-white text-xl sm:text-2xl md:text-4xl lg:text-6xl font-bold text-center px-4">
+  <!-- Banner Section -->
+  <div class="relative mt-16 sm:mt-15 md:mt-15 lg:mt-15 w-full">
+    <img src="assets/Banner.jpg" alt="Banner" class="w-full h-auto object-cover md:h-[40vh] lg:h-[50vh]">
+    <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <h1 class="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center px-4">
         WISK AND WILLOW
-        <span class="block font-light">SERVICES</span>
+        <span class="block font-light mt-2">SERVICES</span>
       </h1>
     </div>
   </div>
 
-  <!-- events showing -->
-   @if(isLoading == true){
-    <div class="min-h-60 flex flex-col bg-white border shadow-sm rounded-xl">
-      <div class="flex flex-auto flex-col justify-center items-center p-4 md:p-5">
-        <div class="flex justify-center">
-          <div class="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500" role="status" aria-label="loading">
-            <span class="sr-only">Loading...</span>
+  <!-- Events Section -->
+  <div class="container mx-auto px-4 py-12">
+    <h2 class="text-3xl font-bold text-center mb-6">Our Services</h2>
+    
+    <ng-container *ngIf="isLoading; else eventsContent">
+      <div class="flex justify-center items-center h-60">
+        <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    </ng-container>
+
+    <ng-template #eventsContent>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div *ngFor="let event of events" 
+             [routerLink]="['/events', event.name]" 
+             class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+          <img [src]="event.image1 || 'https://via.placeholder.com/300'" 
+               [alt]="event.name" 
+               class="w-full h-48 object-cover">
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-2">{{ event.name }}</h3>
+            <p class="text-gray-600">{{ event.description }}</p>
           </div>
         </div>
       </div>
-    </div>
-   }@else {
-     <div class="bg-white flex justify-center items-center mt-10">
-       <div class="container mx-auto px-4">
-         <div class="flex flex-col md:flex-row justify-around items-center space-y-8 md:space-y-0 md:space-x-8">
-           <div *ngFor="let event of events" class="text-center max-w-sm" [routerLink]="['/events', event.name]">
-             <div class="w-48 h-48 mx-auto mb-4">
-               <img [src]="event.image1 || 'https://via.placeholder.com/150'" alt="{{event.name}}" class="w-full h-full object-cover rounded-full">
-             </div>
-             <h2 class="text-xl font-bold mb-2">{{ event.name }}</h2>
-             <p class="text-gray-600">{{ event.description }}</p>
-           </div>
-         </div>
-       </div>
-     </div>
-   }
+    </ng-template>
+  </div>

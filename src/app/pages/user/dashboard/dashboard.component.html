@@ -1,48 +1,42 @@
-<!-- banner image -->
-<div class="relative mt-16 sm:mt-15 md:mt-15 lg:mt-15 w-full">
-    <img src="assets/Banner.jpg" alt="Banner" class="w-full h-auto object-cover md:h-screen md:max-h-96 md:min-h-64">
-    <div class="absolute inset-0 flex items-center justify-center">
-      <p class="text-white text-xl sm:text-2xl md:text-4xl lg:text-6xl font-bold text-center px-4">
-        WISK AND WILLOW
-        <span class="block text-4xl font-light">EVENTS</span>
-      </p>
+<div class="bg-gray-100 min-h-screen pt-5">
+  <!-- Banner -->
+  <div class="relative h-96">
+    <img src="assets/Banner.jpg" alt="Banner" class="w-full h-full object-cover">
+    <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div class="text-center">
+        <h1 class="text-white text-5xl font-bold mb-2">WISK AND WILLOW</h1>
+        <p class="text-white text-2xl font-light">EVENTS</p>
+      </div>
     </div>
   </div>
 
-  <!-- center text -->
-<div class="w-full mt-1 p-4 text-center bg-white border rounded-xl border-gray-300 shadow sm:p-8 dark:bg-gray-50">
-    <h5 class="mb-2 text-3xl font-extrabold text-gray-900 dark:text-gray-950">UNPARALLELED, STRESS-FREE EVENT PLANNING & DESIGN</h5>
-    <p class="mb-5 text-base text-gray-950 sm:text-base dark:text-gray-950">The Wisk and Willow experience is unlike any other. Our full-service event planning and design team will guide you every step of the way, ensuring a stress-free experience from start to finish.</p>
-    <p class="mb-5 text-base text-gray-950 sm:text-base dark:text-gray-950">With us, customization is guaranteed. You'll be paired with a Wisk and Willow Event Team who will collaborate with you to bring your vision to life. We will team up with some of the best vendors in Nashville and take care of all the details like meeting scheduling, delivery dates, payments, day-of setup, and more.</p>
-    <p class="mb-5 text-base text-gray-950 sm:text-lg dark:text-gray-950 font-bold">When it’s showtime, our staff will work tirelessly to guarantee your event is effortless and unforgettable.</p>
-<button type="button" [routerLink]="['/gallery-category']" routerLinkActive="router-link-active"  class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-black dark:hover:text-white dark:hover:bg-black dark:focus:ring-gray-800">Find More</button>
+  <!-- Main Content -->
+  <div class="container mx-auto px-4 py-8">
+    <!-- About Section -->
+    <div class="bg-white rounded-xl shadow-md p-8 mb-8">
+      <h2 class="text-3xl font-bold text-center mb-4">Unparalleled, Stress-Free Event Planning & Design</h2>
+      <p class="mb-4">The Wisk and Willow experience is unlike any other. Our full-service event planning and design team will guide you every step of the way, ensuring a stress-free experience from start to finish.</p>
+      <p class="mb-4">With us, customization is guaranteed. You'll be paired with a Wisk and Willow Event Team who will collaborate with you to bring your vision to life. We will team up with some of the best vendors in Nashville and take care of all the details like meeting scheduling, delivery dates, payments, day-of setup, and more.</p>
+      <p class="font-bold mb-4">When it's showtime, our staff will work tirelessly to guarantee your event is effortless and unforgettable.</p>
+      <div class="text-center">
+        <button [routerLink]="['/gallery-category']" routerLinkActive="router-link-active" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+          Find More
+        </button>
+      </div>
+    </div>
+
+<!-- Events Section -->
+<h2 class="text-3xl font-bold text-center mb-6">Our Services</h2>
+<div *ngIf="isLoding" class="flex justify-center items-center h-60">
+  <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+</div>
+<div *ngIf="!isLoding" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+  <div *ngFor="let event of events" [routerLink]="['/events', event.name]" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+    <img [src]="event.image1 || 'https://via.placeholder.com/300'" [alt]="event.name" class="w-full h-48 object-cover">
+    <div class="p-6">
+      <h3 class="text-xl font-bold mb-2">{{ event.name }}</h3>
+      <p class="text-gray-600">{{ event.description }}</p>
+    </div>
+  </div>
 </div>
 
-<!-- events showing -->
- @if (isLoding) {
-  <div class="min-h-60 flex flex-col bg-white border shadow-sm rounded-xl">
-    <div class="flex flex-auto flex-col justify-center items-center p-4 md:p-5">
-      <div class="flex justify-center">
-        <div class="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500" role="status" aria-label="loading">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
-    </div>
-  </div>
- }@else{
-  <div class="bg-white flex justify-center items-center mt-10">
-    <div class="container mx-auto px-4">
-      <div class="flex flex-col md:flex-row justify-around items-center space-y-8 md:space-y-0 md:space-x-8">
-        <div *ngFor="let event of events" class="text-center max-w-sm" [routerLink]="['/events', event.name]">
-          <div class="w-48 h-48 mx-auto mb-4">
-            <img [src]="event.image1 || 'https://via.placeholder.com/150'" alt="{{event.name}}" class="w-full h-full object-cover rounded-full">
-          </div>
-          <h2 class="text-xl font-bold mb-2">{{ event.name }}</h2>
-          <p class="text-gray-600">{{ event.description }}</p>
-        </div>
-      </div>
-    </div>
-  </div>
- }
-
-  

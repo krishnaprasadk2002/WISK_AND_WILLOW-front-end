@@ -39,6 +39,8 @@ import { PaymentSuccessComponent } from './pages/user/payment-success/payment-su
 import { PaymentFailureComponent } from './pages/user/payment-failure/payment-failure.component';
 import { BookingManagementComponent } from './pages/admin/booking-management/booking-management.component';
 import { BannerManagementComponent } from './pages/admin/banner-management/banner-management.component';
+import { ChatComponent } from './pages/user/chat/chat.component';
+import { ChatManagementComponent } from './pages/admin/chat-management/chat-management.component';
 
 export const routes: Routes = [
 
@@ -95,6 +97,11 @@ export const routes: Routes = [
             {
                 path:'booking',
                 component:BookingComponent,
+                canActivate:[userGuard]
+            },
+            {
+                path:'chat',
+                component:ChatComponent,
                 canActivate:[userGuard]
             }
         ]
@@ -177,6 +184,10 @@ export const routes: Routes = [
             {
                 path:'banner-mangement',
                 component:BannerManagementComponent
+            },
+            {
+                path:'chat-management',
+                component:ChatManagementComponent
             }
         ]
 

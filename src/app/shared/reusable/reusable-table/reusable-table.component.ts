@@ -19,6 +19,7 @@ export class ReusableTableComponent implements OnDestroy {
 @Input() is_info:boolean = false
 @Input() is_status:boolean = false
 @Input() is_delete:boolean = false
+@Input() is_assign: boolean = false; 
 searchTerm: string = '';
 @Input() currentPage: number = 1;
 @Input() pageSize: number = 4;
@@ -30,6 +31,7 @@ searchTerm: string = '';
 @Output() onMoreInfo = new EventEmitter<any>();
 @Output() searchChanged = new EventEmitter<any>()
 @Output() pageChange = new EventEmitter<number>();
+@Output() onAssign = new EventEmitter<any>();
 
 private searchSubject = new Subject<string>()
 private searchSubscription: Subscription | undefined;
@@ -88,5 +90,13 @@ ngOnDestroy() {
     this.searchSubscription.unsubscribe();
   }
 }
+getPages(): number[] {
+  return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+}
+
+assignRecord(item: any) {
+  this.onAssign.emit(item);
+}
+
 
 }

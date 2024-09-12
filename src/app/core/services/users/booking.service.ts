@@ -3,12 +3,20 @@ import { environment } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { IBooking, IRazorpayOrder } from '../../models/booking.model';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { Employee } from '../../models/employee.model';
 
 
 
 
 export interface PaymentVerificationResponse {
   status: string;
+}
+
+export interface PaymentData {
+  id?:string
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
 }
 
 @Injectable({
@@ -19,14 +27,14 @@ export class BookingService {
   private baseUrl = environment.baseUrl
   constructor(private http: HttpClient) { }
 
-  private bookingDataSubject = new BehaviorSubject<any>(null);
+  private bookingDataSubject = new BehaviorSubject<IBooking | null>(null);
   bookingData$ = this.bookingDataSubject.asObservable();
 
   bookPackage(bookingdata: IBooking): Observable<IRazorpayOrder> {
     return this.http.post<IRazorpayOrder>(`${this.baseUrl}booking/createbooking`, bookingdata)
   }
 
-  verifyPayment(paymentData: any): Observable<PaymentVerificationResponse> {
+  verifyPayment(paymentData: PaymentData): Observable<PaymentVerificationResponse> {
     return this.http.post<PaymentVerificationResponse>(`${this.baseUrl}booking/verifypayment`, paymentData);
   }
 
@@ -62,8 +70,16 @@ export class BookingService {
     return this.http.post<IRazorpayOrder>(`${this.baseUrl}booking/creatingorder`, bookingdata)
   }
 
-  verifyBalancePayment(paymentData: any): Observable<PaymentVerificationResponse> {
+  verifyBalancePayment(paymentData: PaymentData): Observable<PaymentVerificationResponse> {
     return this.http.post<PaymentVerificationResponse>(`${this.baseUrl}booking/verifybalancepayment`, paymentData);
+  }
+
+  getEmployeeDetails():Observable<Employee[]>{
+   return this.http.get<Employee[]>(`${this.baseUrl}employee/getemployee`)
+  }
+
+  assignEmployeeToBooking(bookingId: string, employeeId: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}booking/${bookingId}/assign-employee`, { employeeId });
   }
 
 }

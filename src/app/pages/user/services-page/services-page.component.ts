@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { EventService } from '../../../core/services/users/event.service';
 import { IEvent } from '../../../core/models/event.model';
 
@@ -15,7 +15,7 @@ import { IEvent } from '../../../core/models/event.model';
 export class ServicesPageComponent implements OnInit {
   events:IEvent[] = []
   isLoading:boolean=true
-constructor(private eventSevice:EventService){}
+constructor(private eventSevice:EventService,private  router:Router){}
 
   ngOnInit(): void {
     this.loadEvents()
@@ -31,4 +31,9 @@ this.eventSevice.getEvent().subscribe(
   }
 )
 }
+
+navigateToEvent(eventName: string) {
+  this.router.navigate(['/events', eventName]);
+}
+
 }

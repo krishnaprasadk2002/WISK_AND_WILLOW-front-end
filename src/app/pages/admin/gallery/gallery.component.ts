@@ -43,12 +43,13 @@ export class GalleryComponent implements OnInit {
 
   constructor(private navService: AdminNavService, private fb: FormBuilder, private galleryService: GalleryService, private toastr: ToastrService) {
     this.galleryImageForm = this.fb.group({
-      name: ['', Validators.required, noWhitespaceValidator()],
+      name: ['', [Validators.required, noWhitespaceValidator()]],
       image: ['', Validators.required],
       category: ['', Validators.required]
     });
+    
     this.editGalleryImageForm = this.fb.group({
-      name: ['', Validators.required, noWhitespaceValidator()],
+      name: ['', [Validators.required, noWhitespaceValidator()]],
       image: ['', Validators.required],
       category: ['', Validators.required]
     });

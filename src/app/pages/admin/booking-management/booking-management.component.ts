@@ -3,15 +3,20 @@ import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.
 import { ReusableTableComponent } from '../../../shared/reusable/reusable-table/reusable-table.component';
 import { IBooking } from '../../../core/models/booking.model';
 import { BookingService } from '../../../core/services/users/booking.service';
+import { Employee } from '../../../core/models/employee.model';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-booking-management',
   standalone: true,
-  imports: [AdminNavComponent,ReusableTableComponent],
+  imports: [AdminNavComponent,ReusableTableComponent,CommonModule,FormsModule],
   templateUrl: './booking-management.component.html',
   styleUrl: './booking-management.component.css'
 })
 export class BookingManagementComponent implements OnInit {
+
 
   bookingData: IBooking[] = [];
   filteredBooking: IBooking[] = [];
@@ -19,7 +24,9 @@ export class BookingManagementComponent implements OnInit {
   itemsPerPage = 4;
   totalItems: number = 0;
   searchTerm: string = '';
-  
+  employees: Employee[] = [];
+  selectedBooking: IBooking | null = null;
+  isModalOpen = false;
 
   headArray: any[] = [
     { header: "Name", fieldName: "name", datatype: "string" },
@@ -36,10 +43,76 @@ export class BookingManagementComponent implements OnInit {
     { header: "Payment Status", fieldName: "status", datatype: "string" },
   ];
 
-  constructor(private bookingServices: BookingService) { }
+  constructor(private bookingServices: BookingService, private toastr: ToastrService ) {}
 
   ngOnInit(): void {
-    this.loadBooking(this.currentPage); 
+    this.loadBooking(this.currentPage);
+    this.getEmployeeDetails();
+  }
+
+  // Load booking data
+  loadBooking(page: number = this.currentPage) {
+    this.bookingServices.getBookings(page, this.itemsPerPage).subscribe(
+      (data) => {
+        this.bookingData = data.booking;
+        this.filteredBooking = data.booking;
+        this.totalItems = data.totalItems;
+      },
+      (error) => {
+        console.error('Error fetching bookings:', error);
+      }
+    );
+  }
+
+
+  openEmployeeModal(booking: IBooking) {
+    this.selectedBooking = booking;
+    this.isModalOpen = true;
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+  }
+
+  assignEmployee(employee: any) {
+    if (this.selectedBooking && this.selectedBooking._id) {
+      const bookingId = this.selectedBooking._id;
+      const employeeId = employee._id; 
+
+      this.bookingServices.assignEmployeeToBooking(bookingId, employeeId)
+        .subscribe(
+          response => {
+            this.toastr.success('Employee assigned successfully'); 
+            this.closeModal(); 
+          },
+          error => {
+            console.error('Error assigning employee', error);
+            this.toastr.error('Error assigning employee'); 
+          }
+        );
+    } else {
+      this.toastr.warning('No booking selected or booking ID is missing'); 
+      console.error('No booking selected or booking ID is missing');
+    }
+  }
+  
+  
+  getEmployeeDetails() {
+    this.bookingServices.getEmployeeDetails().subscribe(
+      (data) => {
+        this.employees = data;
+      },
+      (error) => {
+        console.error('Error fetching employees:', error);
+        this.toastr.error('Error fetching employees'); 
+      }
+    );
+  }
+  
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadBooking(this.currentPage);
   }
 
   onSearchTermChanged(value: string) {
@@ -56,24 +129,5 @@ export class BookingManagementComponent implements OnInit {
     } else {
       this.filteredBooking = this.bookingData;
     }
-  }
-
-
-  loadBooking(page: number = this.currentPage) {
-    this.bookingServices.getBookings(page, this.itemsPerPage).subscribe(
-      (data) => {
-        this.bookingData = data.booking;
-        this.filteredBooking = data.booking;
-        this.totalItems = data.totalItems;
-      },
-      (error) => {
-        console.error('Error fetching bookings:', error);
-      }
-    );
-  }
-
-  onPageChange(page: number): void {
-    this.currentPage = page; 
-    this.loadBooking(this.currentPage); 
   }
 }

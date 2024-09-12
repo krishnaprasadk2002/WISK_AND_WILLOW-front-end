@@ -14,12 +14,12 @@ export class EventService {
   private baseUrl = environment.baseUrl
 
 
-  addEvent(eventData: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}event/addevent`,eventData )
+  addEvent(eventData: IEvent): Observable<IEvent> {
+    return this.http.post<IEvent>(`${this.baseUrl}event/addevent`,eventData )
   }
 
-  updateEvent(eventData:any):Observable<any>{
-    return this.http.put<IEvent>(`${this.baseUrl}event/editevent`,eventData)
+  updateEvent(eventData: IEvent): Observable<IEvent> {
+    return this.http.put<IEvent>(`${this.baseUrl}event/editevent`, eventData);
   }
 
   getEvent():Observable<IEvent[]>{

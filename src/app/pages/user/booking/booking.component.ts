@@ -10,6 +10,7 @@ import { UserservicesService } from '../../../core/services/users/userservices.s
 import { User } from '../../../core/models/user.model';
 import { noWhitespaceValidator } from '../../../shared/validators/form.validator';
 import { BookingService } from '../../../core/services/users/booking.service';
+import { Observable, switchMap } from 'rxjs';
 
 declare var Razorpay: any;
 
@@ -137,6 +138,69 @@ export class BookingComponent implements OnInit {
     }
   }
 
+  // onSubmitBooking() {
+  //   if (this.bookingForm.valid) {
+  //     this.isLoading = true;
+  //     const bookingData = {
+  //       ...this.bookingForm.value,
+  //       totalAmount: this.totalAmount,
+  //       eventWithoutFoodPrice: this.eventWithoutFoodPrice,
+  //       foodPrice: this.foodPrice,
+  //       advancePayment: this.advancePayment,
+  //       balanceAmount: this.balanceAmount,
+  //       nowPayableAmount: this.nowPayableAmount,
+  //     };
+
+  //     this.bookingServices.bookPackage(bookingData).subscribe(data => {
+  //       this.payNow(data.id);
+
+  //     })
+  //   } else {
+  //     console.log('Form is not valid');
+  //   }
+  // }
+
+  // payNow(orderid: string) {
+  //   const nowPayableAmount = this.nowPayableAmount
+  //   const options = {
+  //     key: 'rzp_test_dUJLoJPD7rBTvA',
+  //     amount: nowPayableAmount,
+  //     currency: 'INR',
+  //     name: 'WISK AND WILLOW',
+  //     description: 'Booking Payment',
+  //     order_id: orderid,
+  //     handler: (response: any) => {
+  //       console.log(response, "Before");
+
+  //       this.verifyPayment(response);
+  //     },
+  //     prefill: {
+  //       name: this.bookingForm.get('name')?.value,
+  //       email: this.bookingForm.get('email')?.value,
+  //       contact: this.bookingForm.get('mobile')?.value,
+  //     },
+  //     theme: {
+  //       color: '#3a4ade',
+  //     },
+  //     modal: {
+  //       ondismiss: () => {
+  //         console.log('Payment popup closed');
+  //         this.updateBookingStatus(orderid, 'failed');
+  //         this.handlePaymentFailure(orderid, 'Payment cancelled by user');
+  //       }
+  //     }
+  //   };
+
+  //   const rzp = new Razorpay(options);
+  //   rzp.open();
+
+  //   rzp.on('payment.failed', (response: any) => {
+  //     console.error('Payment failed:', response.error);
+  //     this.updateBookingStatus(orderid, 'failed');
+  //     this.handlePaymentFailure(orderid, response.error.description);
+  //   });
+  // }
+
   onSubmitBooking() {
     if (this.bookingForm.valid) {
       this.isLoading = true;
@@ -149,18 +213,25 @@ export class BookingComponent implements OnInit {
         balanceAmount: this.balanceAmount,
         nowPayableAmount: this.nowPayableAmount,
       };
-
-      this.bookingServices.bookPackage(bookingData).subscribe(data => {
-        this.payNow(data.id);
-
-      })
+  
+      this.bookingServices.bookPackage(bookingData).pipe(
+        switchMap((data) => this.payNow(data.id))
+      ).subscribe({
+        next: () => {
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error during booking or payment:', error);
+          this.isLoading = false;
+        }
+      });
     } else {
       console.log('Form is not valid');
     }
   }
-
-  payNow(orderid: string) {
-    const nowPayableAmount = this.nowPayableAmount
+  
+  payNow(orderid: string): Observable<any> {
+    const nowPayableAmount = this.nowPayableAmount;
     const options = {
       key: 'rzp_test_dUJLoJPD7rBTvA',
       amount: nowPayableAmount,
@@ -168,11 +239,7 @@ export class BookingComponent implements OnInit {
       name: 'WISK AND WILLOW',
       description: 'Booking Payment',
       order_id: orderid,
-      handler: (response: any) => {
-        console.log(response, "Before");
-
-        this.verifyPayment(response);
-      },
+      handler: (response: any) => this.verifyPayment(response),
       prefill: {
         name: this.bookingForm.get('name')?.value,
         email: this.bookingForm.get('email')?.value,
@@ -180,26 +247,20 @@ export class BookingComponent implements OnInit {
       },
       theme: {
         color: '#3a4ade',
-      },
-      modal: {
-        ondismiss: () => {
-          console.log('Payment popup closed');
-          this.updateBookingStatus(orderid, 'failed');
-          this.handlePaymentFailure(orderid, 'Payment cancelled by user');
-        }
       }
     };
-
+  
     const rzp = new Razorpay(options);
     rzp.open();
-
-    rzp.on('payment.failed', (response: any) => {
-      console.error('Payment failed:', response.error);
-      this.updateBookingStatus(orderid, 'failed');
-      this.handlePaymentFailure(orderid, response.error.description);
+  
+    return new Observable((observer) => {
+      rzp.on('payment.failed', (response: any) => {
+        observer.error(response);
+      });
+      observer.next();
+      observer.complete();
     });
   }
-
  
   verifyPayment(response: any): void {
     this.bookingServices.verifyPayment({

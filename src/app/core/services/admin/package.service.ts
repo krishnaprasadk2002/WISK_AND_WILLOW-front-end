@@ -77,5 +77,10 @@ export class PackageService {
   updateStartingAmount(packageId: string, startingAmount: number): Observable<Ipackages> {
     return this.http.put<Ipackages>(`${this.baseUrl}package/updatestartingamount`, { packageId, startingAmount });
   }
+
+  submitPackageRating(packageId: string, rating: number): Observable<any> {
+    const params = new HttpParams().set('rating', rating.toString());
+    return this.http.post<any>(`${this.baseUrl}package/${packageId}/rate`, null, { params });
+  }
   
 }

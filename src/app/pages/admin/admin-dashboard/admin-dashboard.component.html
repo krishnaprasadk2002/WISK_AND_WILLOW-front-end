@@ -1,3 +1,35 @@
 <!-- Top Navigation Bar -->
 <app-admin-nav [PageName]="'Dashboard'" ></app-admin-nav>
 
+<div class="flex h-screen pt-7">
+  <!-- Content -->
+  <div class="flex-1 p-4 md:p-8 overflow-auto transition-all duration-300" [ngClass]="{'ml-64': isSidebarOpen}">
+      <!-- Metrics Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div class="bg-white rounded-lg shadow p-6">
+              <h3 class="text-lg font-semibold text-gray-600">Total Bookings</h3>
+              <p class="text-3xl font-bold mt-2">{{ metrics.totalBookings }}</p>
+          </div>
+          <div class="bg-white rounded-lg shadow p-6">
+              <h3 class="text-lg font-semibold text-gray-600">Receivable Amount</h3>
+              <p class="text-3xl font-bold mt-2">{{ metrics.receivableAmount | currency:'INR' }}</p>
+          </div>
+          <div class="bg-white rounded-lg shadow p-6">
+              <h3 class="text-lg font-semibold text-gray-600">Total Users</h3>
+              <p class="text-3xl font-bold mt-2">{{ metrics.totalUsers }}</p>
+          </div>
+          <div class="bg-white rounded-lg shadow p-6">
+              <h3 class="text-lg font-semibold text-gray-600">Total Events</h3>
+              <p class="text-3xl font-bold mt-2">{{ metrics.totalEvents }}</p> 
+          </div>
+      </div>
+      
+      <!-- Chart -->
+      <div class="bg-white rounded-lg shadow p-6">
+          <h2 class="text-xl font-semibold mb-4">Monthly Bookings </h2>
+          <div class="w-full max-w-3xl mx-auto h-64"> 
+              <canvas id="bookingsChart" class="w-full h-full"></canvas>
+          </div>
+      </div>
+  </div>
+</div>

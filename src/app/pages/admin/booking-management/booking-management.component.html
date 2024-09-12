@@ -1,10 +1,29 @@
-<app-admin-nav [PageName]="'Booking Management'" ></app-admin-nav>
+<!-- Booking Management Page Header -->
+<app-admin-nav [PageName]="'Booking Management'"></app-admin-nav>
 
 <app-reusable-table 
   [HeadArray]="headArray" 
   [GridArray]="filteredBooking" 
   [currentPage]="currentPage"
   [pageSize]="itemsPerPage"
-  [totalItems]="totalItems"  
+  [totalItems]="totalItems" 
+  (onAssign)="openEmployeeModal($event)" 
+  [is_assign]="true"
   (searchChanged)="onSearchTermChanged($event)">
 </app-reusable-table>
+
+
+<div *ngIf="isModalOpen" class="fixed inset-0 flex items-center justify-center z-50">
+  <div class="fixed inset-0 bg-black opacity-50" (click)="closeModal()"></div>
+  <div class="bg-white p-6 rounded-lg shadow-lg z-10 w-full max-w-md">
+    <h3 class="text-lg font-semibold mb-4">Assign Employee</h3>
+    <ul class="list-group mb-4">
+      <li *ngFor="let employee of employees" class="flex justify-between items-center mb-2">
+        <span>{{ employee.name }} - {{ employee.email }}</span>
+        <button (click)="assignEmployee(employee)" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Assign</button>
+      </li>
+    </ul>
+    <button (click)="closeModal()" class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">Close</button>
+  </div>
+</div>
+

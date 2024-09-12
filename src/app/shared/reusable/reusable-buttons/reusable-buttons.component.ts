@@ -15,11 +15,13 @@ export class ReusableButtonsComponent {
   @Input() showDelete: boolean = false;
   @Input() showStatus: boolean = false;
   @Input() showInfo: boolean = false;
+  @Input() showAssign: boolean = false;
   
   @Output() onEdit = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   @Output() onStatus = new EventEmitter<any>();
   @Output() onMoreInfo = new EventEmitter<any>();
+  @Output() onAssign = new EventEmitter<any>();
 
   editEvent() {
     this.onEdit.emit(this.item);
@@ -35,6 +37,10 @@ export class ReusableButtonsComponent {
 
   showMoreInfo() {
     this.onMoreInfo.emit(this.item);
+  }
+
+  assignEvent() {
+    this.onAssign.emit(this.item); // Emit the assign event
   }
 
 }
