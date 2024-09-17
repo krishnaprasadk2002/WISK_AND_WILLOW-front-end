@@ -2,13 +2,8 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@ang
 import { ChatService } from '../../../services/chat.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IChatMessage } from '../../../core/models/caht.model';
-import { v4 as uuidv4 } from 'uuid';
+import { IChatMessage, IConversation } from '../../../core/models/caht.model';
 
-interface ChatMessage {
-  user: string;
-  message: string;
-}
 
 @Component({
   selector: 'app-chat',
@@ -22,27 +17,39 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   message: string = '';
   messages: IChatMessage[] = [];
+  chat:IChatMessage[]= []
   currentUser: { id: string, email: string } = { id: '', email: '' };
+  conversationId!:string
 
   constructor(private chatService: ChatService) {}
 
   ngOnInit() {
     this.chatService.connect();
-    
     this.chatService.getMessages().subscribe((data: IChatMessage) => {
-      this.messages.push(data);
-      this.scrollToBottom();
-    });
+      console.log("REALMTILETET");
+      this.messages.push(data); 
+      this.scrollToBottom();   
+  });
 
     this.getUserDetails();
+    this.getChats()
+    this.getConversationId()
+  }
+
+  getChats(){
+    this.chatService.getChats().subscribe(chat=>{
+      
+     this.chat = chat
+    })
   }
 
   getUserDetails() {
     this.chatService.getUserDetails().subscribe(user => {
-      this.currentUser.email = user.email || '';
-      this.currentUser.id = uuidv4();
+      this.currentUser.id = user.id || ''; 
+      this.currentUser.email = user.email || ''; 
     });
   }
+  
 
   ngAfterViewChecked() {
     this.scrollToBottom();
@@ -56,13 +63,23 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   sendMessage() {
     if (this.message.trim()) {
-      this.chatService.sendMessage(this.currentUser.id, {
+      let message = {
         user: this.currentUser.email,
         message: this.message,
         timestamp: new Date()
-      }).subscribe();
-      
-      this.message = '';
     }
-  }
+        this.chatService.sendMessage(this.conversationId, message).subscribe();
+        this.messages.push(message)
+        this.message = '';
+    }
+}
+
+getConversationId() {
+  this.chatService.getConversationId().subscribe((conversationId: IConversation) => {
+    this.messages.push(...conversationId.messages)
+    this.conversationId = conversationId.conversationid ;
+
+    this.chatService.joinConversation(this.conversationId).subscribe()
+  });
+}
 }

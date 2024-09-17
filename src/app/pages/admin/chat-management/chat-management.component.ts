@@ -1,16 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ChatService } from '../../../services/chat.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../../core/models/user.model';
-import { IChatMessage } from '../../../core/models/caht.model';
-
-interface ChatUser extends User {
-  _id: string;
-  lastMessage?: string;
-  unreadCount?: number;
-  lastMessageTime?: Date;
-}
+import { IChatMessage, IConversation, IConversationwithUser } from '../../../core/models/caht.model';
 
 @Component({
   selector: 'app-chat-management',
@@ -21,49 +14,85 @@ interface ChatUser extends User {
 })
 
   export class ChatManagementComponent implements OnInit {
-    users: ChatUser[] = [];
-  selectedUser: ChatUser | null = null;
-  newMessage: string = '';
-  selectedConversationId: string = '';
-  currentUser: string = 'admin'; 
+    @ViewChild('chatContainer') private chatContainer!: ElementRef;
 
-  constructor(private chatService: ChatService) {}
+    conversations: IConversationwithUser[] = [];
+    selectedConversation: IConversationwithUser | null = null;
+    newMessage: string = '';
+    currentUser: string = 'admin'; 
+    defaultImageUrl!: string;
+  
+    constructor(private chatService: ChatService) {}
+  
+    ngOnInit(): void {
+      this.getConversations();
+      this.chatService.connect()
+      this.getAdminChatMessage();
 
-  ngOnInit(): void {
-    
-    this.chatService.getUserDetails().subscribe((userData: ChatUser[]) => {
-      this.users = userData.map(user => ({
-        ...user,
-        lastMessage: 'No messages yet', 
-        unreadCount: 0,
-        lastMessageTime: new Date() 
-      }));
-      console.log('Users fetched:', this.users);
-    });
-  }
-
-  selectUser(user: ChatUser): void {
-    this.selectedUser = user;
-
-    this.chatService.getChatHistory(user._id).subscribe((history) => {
-      console.log('Chat history received:', history);
-    });
-
-    this.chatService.createConversation([this.selectedUser._id, this.currentUser]).subscribe(conversation => {
-      this.selectedConversationId = conversation._id;
-      console.log('Conversation created or fetched:', this.selectedConversationId);
-    });
-  }
-
-  sendMessage() {
-    if (this.selectedConversationId && this.newMessage.trim()) {
-      const message: IChatMessage = {
-        user: this.currentUser,
-        message: this.newMessage,
-        timestamp: new Date()
-      };
-      this.chatService.sendMessage(this.selectedConversationId, message).subscribe();
-      this.newMessage = '';
     }
-  }
+  
+    getConversations() {
+      this.chatService.getConversationData().subscribe(conversations => {
+        this.conversations = conversations;
+        console.log('Conversations loaded:', conversations);
+      });
+    }
+
+    getAdminChatMessage() {
+      this.chatService.getAdminMessages().subscribe((data: any) => {
+          const newmess  = this.conversations.map((res)=>{
+            if(res.conversationid==data.conversationId){
+              res.messages.push(data)
+            }
+            return res
+          })
+          this.conversations = [...newmess]
+  
+      });
+    }
+    
+  
+    selectConversation(convo: IConversationwithUser): void {
+      this.selectedConversation = convo;
+      setTimeout(() => this.scrollToBottom(), 0);
+    }
+  
+    sendMessage() {
+      if (this.selectedConversation && this.newMessage.trim()) {
+        const message: IChatMessage = {
+          user: this.currentUser,
+          message: this.newMessage,
+          timestamp: new Date()
+        };
+        this.selectedConversation.messages.push(message);
+
+        this.chatService.sendMessageAdmin(this.selectedConversation.conversationid, message).subscribe(
+          response => {
+            if (this.selectedConversation) {
+              
+              this.selectedConversation.messages.push(message);
+              console.log('fdjwksaljl');
+              
+            }
+         
+          },
+          error => console.error('Error sending message:', error)
+        );
+
+        this.newMessage = '';
+        this.scrollToBottom()
+      }
+    }
+  
+    scrollToBottom(): void {
+      try {
+        this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
+      } catch(err) { }
+    }
+  
+    getImageUrl(user: User): string {
+      return user.imageUrl && user.imageUrl.trim() !== '' 
+        ? user.imageUrl 
+        : this.defaultImageUrl;
+    }
   }

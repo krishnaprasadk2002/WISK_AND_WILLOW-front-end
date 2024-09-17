@@ -1,60 +1,67 @@
-<div class="flex h-screen bg-gray-100">
-  <!-- User list -->
-  <div class="w-1/3 bg-white border-r border-gray-200 overflow-y-auto">
-    <div class="p-4 border-b border-gray-200">
-      <h2 class="text-xl font-semibold">Chats</h2>
-    </div>
-    <div class="divide-y divide-gray-200">
-      <div *ngFor="let user of users" 
-           (click)="selectUser(user)"
-           class="p-4 hover:bg-gray-50 cursor-pointer"
-           [class.bg-green-50]="selectedUser?._id === user._id">
-        <div class="flex items-center">
-          <img [src]="user.imageUrl || 'assets/default-avatar.png'" alt="{{ user.name }}" class="w-10 h-10 rounded-full mr-3">
-          <div class="flex-1">
-            <div class="flex justify-between items-center">
-              <h3 class="font-medium">{{ user.name }}</h3>
-              <span class="text-sm text-gray-500">{{ user.lastMessageTime | date:'short' }}</span>
+ <div class="flex h-screen bg-gray-100">
+      <!-- User list -->
+      <div class="w-1/3 bg-white border-r border-gray-200 overflow-y-auto">
+        <div class="divide-y divide-gray-200">
+          <div *ngFor="let convo of conversations" 
+               (click)="selectConversation(convo)"
+               class="p-4 hover:bg-gray-50 cursor-pointer transition duration-150 ease-in-out"
+               [class.bg-blue-50]="selectedConversation?._id === convo._id">
+            <div class="flex items-center">
+              <img [src]="getImageUrl(convo.participants[0])" 
+                   [alt]="convo.participants[0].name" 
+                   class="w-12 h-12 rounded-full mr-4 object-cover">
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-baseline">
+                  <h3 class="text-sm font-medium text-gray-900 truncate">{{ convo.participants[0].name }}</h3>
+                  <span class="text-xs text-gray-500">{{ convo.messages[convo.messages.length - 1].timestamp | date:'short' }}</span>
+                </div>
+                <p class="text-sm text-gray-500 truncate">{{ convo.messages[convo.messages.length - 1].message }}</p>
+              </div>
             </div>
-            <p class="text-sm text-gray-600 truncate">{{ user.lastMessage || 'No messages yet' }}</p>
           </div>
         </div>
-        <div *ngIf="user.unreadCount && user.unreadCount > 0" 
-             class="mt-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-          {{ user.unreadCount }} new
+      </div>
+
+      <!-- Chat area -->
+      <div class="flex-1 flex flex-col">
+        <div *ngIf="selectedConversation" class="bg-white border-b border-gray-200">
+          <div class="flex items-center p-4">
+            <img [src]="getImageUrl(selectedConversation.participants[0])" 
+                 [alt]="selectedConversation.participants[0].name" 
+                 class="w-10 h-10 rounded-full mr-3 object-cover">
+            <div>
+              <h2 class="text-lg font-semibold">{{ selectedConversation.participants[0].name }}</h2>
+              <p class="text-sm text-gray-600">{{ selectedConversation.participants[0].email }}</p>
+            </div>
+          </div>
+        </div>
+        <div #chatContainer class="flex-1 overflow-y-auto p-4 space-y-4">
+          <div *ngFor="let message of selectedConversation?.messages" 
+               [ngClass]="{'flex justify-end': message.user === currentUser, 'flex justify-start': message.user !== currentUser}">
+            <div [ngClass]="{'bg-blue-500 text-white': message.user === currentUser, 
+                             'bg-gray-200 text-gray-800': message.user !== currentUser}"
+                 class="max-w-xs lg:max-w-md xl:max-w-lg px-4 py-2 rounded-lg shadow">
+              <p class="text-sm">{{ message.message }}</p>
+              <p class="text-xs mt-1 opacity-75">{{ message.timestamp | date:'short' }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white border-t border-gray-200 p-4">
+          <div class="flex space-x-2">
+            <input 
+              [(ngModel)]="newMessage" 
+              (keydown.enter)="sendMessage()" 
+              type="text" 
+              placeholder="Type a message..."
+              class="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+            <button 
+              (click)="sendMessage()"
+              class="bg-blue-500 text-white rounded-full px-6 py-2 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out"
+            >
+              Send
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Chat area -->
-  <div class="flex-1 flex flex-col">
-    <div *ngIf="selectedUser" class="p-4 border-b border-gray-200 flex items-center">
-      <img [src]="selectedUser.imageUrl || 'assets/default-avatar.png'" alt="{{ selectedUser.name }}" class="w-10 h-10 rounded-full mr-3">
-      <div>
-        <h2 class="text-xl font-semibold">{{ selectedUser.name }}</h2>
-        <p class="text-sm text-gray-600">{{ selectedUser.email }}</p>
-      </div>
-    </div>
-    <div class="flex-1 overflow-y-auto p-4">
-      <!-- Messages would go here -->
-    </div>
-    <div class="border-t border-gray-200 p-4">
-      <div class="flex space-x-2">
-        <input 
-          [(ngModel)]="newMessage" 
-          (keydown.enter)="sendMessage()" 
-          type="text" 
-          placeholder="Type a message..."
-          class="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-        >
-        <button 
-          (click)="sendMessage()"
-          class="bg-green-500 text-white rounded-full px-4 py-2 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-        >
-          Send
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
