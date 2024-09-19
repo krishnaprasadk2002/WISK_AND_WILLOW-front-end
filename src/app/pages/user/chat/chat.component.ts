@@ -17,7 +17,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   message: string = '';
   messages: IChatMessage[] = [];
-  chat:IChatMessage[]= []
+  chat:IChatMessage[]= [] 
   currentUser: { id: string, email: string } = { id: '', email: '' };
   conversationId!:string
 
@@ -26,12 +26,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   ngOnInit() {
     this.chatService.connect();
     this.chatService.getMessages().subscribe((data: IChatMessage) => {
-      console.log("REALMTILETET");
       this.messages.push(data); 
       this.scrollToBottom();   
   });
 
-    this.getUserDetails();
     this.getChats()
     this.getConversationId()
   }
@@ -43,12 +41,6 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     })
   }
 
-  getUserDetails() {
-    this.chatService.getUserDetails().subscribe(user => {
-      this.currentUser.id = user.id || ''; 
-      this.currentUser.email = user.email || ''; 
-    });
-  }
   
 
   ngAfterViewChecked() {
@@ -64,7 +56,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   sendMessage() {
     if (this.message.trim()) {
       let message = {
-        user: this.currentUser.email,
+        user: 'user',
         message: this.message,
         timestamp: new Date()
     }
@@ -77,9 +69,16 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 getConversationId() {
   this.chatService.getConversationId().subscribe((conversationId: IConversation) => {
     this.messages.push(...conversationId.messages)
+    console.log('messages of data',this.messages);
+    
     this.conversationId = conversationId.conversationid ;
 
     this.chatService.joinConversation(this.conversationId).subscribe()
   });
 }
+
+isUserMessage(message: IChatMessage): boolean {
+  return message.user === 'user';
+}
+
 }

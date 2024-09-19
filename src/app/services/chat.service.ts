@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Conversation, IChatMessage, IConversation, IConversationwithUser } from '../core/models/caht.model';
+import { IChatMessage, IConversation, IConversationwithUser } from '../core/models/caht.model';
 
 
 
@@ -32,7 +32,6 @@ export class ChatService {
 
   // Send a new message
   sendMessage(conversationId: string, message: IChatMessage): Observable<any> {
-    console.log("sendni");
     
     return new Observable((observer) => {
       this.socket.emit('new-message', { conversationId, ...message }, (response: any) => {
@@ -57,11 +56,6 @@ export class ChatService {
         observer.next(message);
       });
     });
-  }
-
-
-  getUserDetails(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}user/user-details`);
   }
 
   getChats(): Observable<IChatMessage[]> {

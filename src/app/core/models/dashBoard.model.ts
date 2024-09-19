@@ -6,6 +6,7 @@ export interface IDashboard {
 }
 
 export interface MonthlyBooking {
+    label: any;
     month: string;
     bookings: number;
   }
