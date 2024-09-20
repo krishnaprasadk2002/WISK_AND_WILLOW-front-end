@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
 import { ReusableTableComponent } from '../../../shared/reusable/reusable-table/reusable-table.component';
 import { IBanner } from '../../../core/models/banner.model';
@@ -28,10 +28,9 @@ export class BannerManagementComponent implements OnInit {
   bannerForm!: FormGroup;
   selectedImage: string | ArrayBuffer | null = null;
 
-  private toastService: ToastService; 
+  private toastService: ToastService = inject(ToastService); 
 
   constructor(private fb: FormBuilder, private bannerService: BannerService) {
-    this.toastService = new ToastService(); 
   }
 
   ngOnInit(): void {
