@@ -134,7 +134,7 @@ export class BannerManagementComponent implements OnInit {
             this.loadBanners(this.currentPage);
           } else {
             this.bannerData.push(banner);
-          }
+          } 
 
           // Show custom success toast
           this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Banner added successfully' });
