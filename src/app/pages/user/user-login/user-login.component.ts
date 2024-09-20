@@ -78,14 +78,13 @@ export class UserLoginComponent implements OnInit {
   googleLogin(token:string){
    this.authService.authGoogleLogin(token).subscribe(
     (response)=>{
-      console.log("Google login Successful",response);
       const toastOption: IToastOption = {
         severity: 'success', 
         summary: 'Success', 
         detail: 'Google login successful'
       }
 
-      // this.toastService.showToast(toastOption); 
+      this.toastService.showToast(toastOption); 
 
       this.authService.setLoggedIn('true')
       this.router.navigate(['']);

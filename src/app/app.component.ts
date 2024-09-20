@@ -36,6 +36,8 @@ export class AppComponent implements OnInit, OnDestroy {
     
     this.toastOptionSubscription = this.toastService.toastOption$.subscribe(
       (toastOption: IToastOption) => {
+        console.log(toastOption);
+        
         this.messageService.add(toastOption);
       },
       (err: any) => {
