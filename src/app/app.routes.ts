@@ -20,7 +20,6 @@ import { OtpPageComponent } from './pages/user/otp-page/otp-page.component';
 import { EditProfileComponent } from './pages/user/edit-profile/edit-profile.component';
 import { UserManagementComponent } from './pages/admin/user-management/user-management.component';
 import { EventManagementComponent } from './pages/admin/event-management/event-management.component';
-import { EmployeeManagmentComponent } from './pages/admin/employee-managment/employee-managment.component';
 import { PackagesComponent } from './pages/admin/packages/packages.component';
 import { PackageDetailsComponent } from './pages/admin/package-details/package-details.component';
 import { UserPackagesComponent } from './pages/user/user-packages/user-packages.component';
@@ -41,6 +40,7 @@ import { BookingManagementComponent } from './pages/admin/booking-management/boo
 import { BannerManagementComponent } from './pages/admin/banner-management/banner-management.component';
 import { ChatComponent } from './pages/user/chat/chat.component';
 import { ChatManagementComponent } from './pages/admin/chat-management/chat-management.component';
+import { EmployeeManagmentComponent } from './pages/admin/employee-managment/employee-managment.component';
 
 export const routes: Routes = [
 

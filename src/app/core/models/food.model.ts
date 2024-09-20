@@ -1,5 +1,5 @@
 export interface IFood{
-    quantity: number | string;
+    quantity: any;
     _id: string;
     name: string;
     category: 'Vegetarian' | 'Non-vegetarian';

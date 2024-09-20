@@ -54,13 +54,12 @@ export class UserservicesService {
     return this.http.get<User>(`${this.baseUrl}user/userprofiledata`);
   }
 
-  // Upload profile picture with proper typing
-  profilePicture(image: File): Observable<ProfilePictureResponse> {
-    const formData = new FormData();
-    formData.append('image', image);
-    return this.http.post<ProfilePictureResponse>(`${this.baseUrl}user/profilePicture`, formData);
+
+  profilePicture(image: any): Observable<string> {
+    return this.http.post<string>(`${this.baseUrl}user/profilePicture`, image)
   }
 
+ 
   // Update user profile
   updateProfile(profileData: User): Observable<User> {
     return this.http.put<User>(`${this.baseUrl}user/updateprofile`, profileData);
