@@ -1,5 +1,5 @@
 declare var google:any;
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthServicesService } from '../../../core/services/users/auth-services.service';
@@ -10,6 +10,8 @@ import { selectUser } from '../../../shared/store/userLogin/login.selector';
 import { Store } from '@ngrx/store';
 import * as LoginAction from '../../../shared/store/userLogin/login.actions'
 import { AppState } from '../../../shared/store/app.state';
+import { ToastService } from '../../../services/toast.service';
+import IToastOption from '../../../core/models/IToastOptions';
 
 @Component({
   selector: 'app-user-login',
@@ -21,6 +23,7 @@ import { AppState } from '../../../shared/store/app.state';
 export class UserLoginComponent implements OnInit {
   loginForm!: FormGroup
   user$: any
+  private toastService: ToastService = inject(ToastService);
 
   constructor(private authService: AuthServicesService,
     private fb: FormBuilder, private router: Router, private toastService: ToastrService,private store:Store<AppState>
@@ -76,7 +79,14 @@ export class UserLoginComponent implements OnInit {
    this.authService.authGoogleLogin(token).subscribe(
     (response)=>{
       console.log("Google login Successful",response);
-      this.toastService.show('Google login successful', 'success'); 
+      const toastOption: IToastOption = {
+        severity: 'success', 
+        summary: 'Success', 
+        detail: 'Google login successful'
+      }
+
+      this.toastService.showToast(toastOption); 
+      
       this.authService.setLoggedIn('true')
       this.router.navigate(['']);
     },error =>{

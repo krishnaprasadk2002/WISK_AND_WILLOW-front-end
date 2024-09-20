@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import IToastOption from '../core/models/IToastOptions';
 
 
 export const TOAST_STATE = {  
@@ -12,5 +14,11 @@ export const TOAST_STATE = {
 })
 
 export class ToastService {  
-  constructor() { }
+  private toastOptionSubject: Subject<IToastOption> = new Subject<IToastOption>;
+  
+  toastOption$: Observable<IToastOption> = this.toastOptionSubject.asObservable();
+
+  showToast(toastOption: IToastOption) {
+    this.toastOptionSubject.next(toastOption);
+  }
 }
