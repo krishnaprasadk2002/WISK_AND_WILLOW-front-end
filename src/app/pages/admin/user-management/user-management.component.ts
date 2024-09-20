@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AdminNavService } from '../../../core/services/adminNav/admin-nav.service';
 import { CommonModule } from '@angular/common';
 import { User } from '../../../core/models/user.model';
 import { UserservicesService } from '../../../core/services/users/userservices.service';
 import { FormsModule } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
 import { ReusableTableComponent } from '../../../shared/reusable/reusable-table/reusable-table.component';
 import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-user-management',
@@ -30,9 +30,9 @@ export class UserManagementComponent implements OnInit {
   itemsPerPage = 4;
   totalItems: number = 0;
 
+  private toastService: ToastService = inject(ToastService);
 
-
-  constructor( private userService: UserservicesService, private toastr: ToastrService) {
+  constructor( private userService: UserservicesService) {
 
   }
 
@@ -47,12 +47,12 @@ export class UserManagementComponent implements OnInit {
     this.userService.UpdateUser(user).subscribe(
       () => {
         const message = user.status ? 'User blocked successfully' : 'User unblocked successfully';
-        this.toastr.success(message);
+        this.toastService.showToast({ severity: 'success', summary: 'Success', detail: message});
         this.loadUsers(this.currentPage);
       },
       error => {
         console.error('Error updating user status:', error);
-        this.toastr.error('Failed to update user status');
+        this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Failed to update user status' })
         user.status = !user.status;
       }
     );

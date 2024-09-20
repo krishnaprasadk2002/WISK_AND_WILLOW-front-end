@@ -1,16 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-
-import { AdminNavService } from '../../../core/services/adminNav/admin-nav.service';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PackageService } from '../../../core/services/admin/package.service';
-import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
 import { Ipackages } from '../../../core/models/packages.model';
 import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
 import { InputboxComponent } from '../../../shared/reusable/inputbox/inputbox.component';
 import { ButtonComponent } from '../../../shared/reusable/button/button.component';
 import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-package-details',
@@ -31,8 +29,10 @@ export class PackageDetailsComponent implements OnInit {
   isModalEditOpen:boolean = false
   packageFeatureEditForm!:FormGroup
   statusEnum:string[]=['Available','Not Available']
+  
+  private toastService: ToastService = inject(ToastService); 
 
-  constructor( private fb: FormBuilder, private packageService: PackageService, private toastr: ToastrService, private route: ActivatedRoute) { }
+  constructor( private fb: FormBuilder, private packageService: PackageService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.route.params.subscribe((params: any) => {
@@ -102,7 +102,7 @@ this.packageFeatureEditForm = this.fb.group({
 
       this.packageService.addPackageFeatures(packageId, packageItems).subscribe(
         response => {
-          this.toastr.success('Features added successfully');
+          this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Features added successfully' });
           console.log('Package features added successfully:', response);
           this.closeModal();
           this.packageFeatureForm.reset({ status: 'Available' });
@@ -110,7 +110,7 @@ this.packageFeatureEditForm = this.fb.group({
         },
         error => {
           console.error('Error adding package features:', error);
-          this.toastr.error('Error adding feature');
+          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Error adding package features' })
         }
       );
     }
@@ -130,16 +130,16 @@ this.packageFeatureEditForm = this.fb.group({
         response => {
           console.log('Feature updated successfully:', response);
           this.closeModal();
-          this.toastr.success('Feature updated successfully');
+          this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Feature updated successfully' });
           this.getPackageById();
         },
         error => {
           console.error('Error updating feature:', error);
-          this.toastr.error('Error updating feature');
+          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Error updating feature' })
         }
       );
     } else {
-      this.toastr.error('Form is invalid or feature ID is missing');
+      this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Form is invalid or feature ID is missing' })
     }
   }
   

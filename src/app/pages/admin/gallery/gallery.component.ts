@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AdminNavService } from '../../../core/services/adminNav/admin-nav.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -11,6 +11,7 @@ import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
 import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
 import { ReusableTableComponent } from '../../../shared/reusable/reusable-table/reusable-table.component';
 import { noWhitespaceValidator } from '../../../shared/validators/form.validator';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-gallery',
@@ -41,7 +42,9 @@ export class GalleryComponent implements OnInit {
   filteredGallery:IGallery[] = []
   isEditModalOpen:boolean = false
 
-  constructor(private navService: AdminNavService, private fb: FormBuilder, private galleryService: GalleryService, private toastr: ToastrService) {
+  private toastService: ToastService = inject(ToastService); 
+
+  constructor( private fb: FormBuilder, private galleryService: GalleryService) {
     this.galleryImageForm = this.fb.group({
       name: ['', [Validators.required, noWhitespaceValidator()]],
       image: ['', Validators.required],
@@ -55,7 +58,7 @@ export class GalleryComponent implements OnInit {
     });
 
     this.categoryForm = this.fb.group({
-      categoryName: ['', Validators.required, noWhitespaceValidator()],
+      categoryName: ['', [Validators.required, noWhitespaceValidator()]],
       categoryImage:['',Validators.required]
     });
   }
@@ -74,12 +77,14 @@ export class GalleryComponent implements OnInit {
   deleteGalleryItem(imageId: string) {
     this.galleryService.DeleteGalleryData(imageId).subscribe(
       () => {
-        this.toastr.success('Gallery image deleted successfully!', 'Success');
+           // Show custom success toast
+           this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Gallery image deleted successfully!' });
         this.loadGalleryImage();
       },
-      (error: any) => {
+      (error) => {
         console.error('Error deleting gallery image:', error);
-        this.toastr.error('Failed to delete gallery image.', 'Error');
+          // Show custom error toast
+          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Failed to delete gallery image.' })
       }
     );
   }
@@ -189,7 +194,8 @@ export class GalleryComponent implements OnInit {
       const galleryData = this.galleryImageForm.value;
       this.galleryService.addGallery(galleryData).subscribe(
         response => {
-          this.toastr.success('Gallery image added successfully!', 'Success');
+            // Show custom success toast
+            this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Gallery image added successfully!' });
           this.imagePreview = null;
           this.closeGalleryImageModal();
   
@@ -203,11 +209,12 @@ export class GalleryComponent implements OnInit {
         },
         error => {
           console.error('Error adding gallery image', error);
-          this.toastr.error('Failed to add gallery image.', 'Error');
+          // Show custom error toast
+          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Failed to add gallery image.' })
         }
       );
     } else {
-      this.toastr.error('Please fill all required fields.', 'Error');
+      this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Please fill all required fields.' })
     }
   }
 
@@ -216,17 +223,17 @@ export class GalleryComponent implements OnInit {
       const categoryData = this.categoryForm.value;
       this.galleryService.addGalleryCategory(categoryData).subscribe(
         response => {
-          this.toastr.success('Category added successfully!', 'Success');
+          this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Category added successfully!' });
           this.closeCategoryModal();
           this.loadGalleryCategory();
         },
         error => {
           console.error('Error adding category:', error);
-          this.toastr.error('Failed to add category.', 'Error');
+          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Failed to add category.' })
         }
       );
     } else {
-      this.toastr.error('Please fill in all the required fields.', 'Error');
+      this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Please fill in all the required fields.' })
     }
   }
   
@@ -261,7 +268,7 @@ export class GalleryComponent implements OnInit {
   
       this.galleryService.updateGallery(this.selectedImage._id, updatedData).subscribe(
         response => {
-          this.toastr.success('Gallery image updated successfully!', 'Success');
+          this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Gallery image updated successfully!' });
           this.closeEditModal();
   
           if (this.galleryItems.length > 4) {
@@ -276,11 +283,11 @@ export class GalleryComponent implements OnInit {
         },
         error => {
           console.error('Error updating gallery image', error);
-          this.toastr.error('Failed to update gallery image.', 'Error');
+          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Failed to update gallery image.' })
         }
       );
     } else {
-      this.toastr.error('Please fill all required fields.', 'Error');
+      this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Please fill all required fields.' })
     }
   
   }
