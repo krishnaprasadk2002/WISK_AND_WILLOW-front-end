@@ -14,7 +14,12 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule,AdminSideBarComponent,AdminNavComponent,FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    AdminSideBarComponent,
+    AdminNavComponent
+  ],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
 })
