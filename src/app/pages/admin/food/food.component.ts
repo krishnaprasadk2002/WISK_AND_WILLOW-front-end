@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AdminNavService } from '../../../core/services/adminNav/admin-nav.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
+import { ToastService } from '../../../services/toast.service';
 import { FoodService } from '../../../core/services/admin/food.service';
 import { IFood } from '../../../core/models/food.model';
 import { ButtonComponent } from '../../../shared/reusable/button/button.component';
@@ -20,30 +20,30 @@ import { noWhitespaceValidator } from '../../../shared/validators/form.validator
   styleUrl: './food.component.css'
 })
 export class FoodComponent implements OnInit {
-  isFoodModalOpen = false
-  isEditFoodModalOpen= false
-  foodForm!: FormGroup
-  editFoodForm!:FormGroup
-  foods: IFood[] = []
-  foodID!:string
-  foodCategoryEnum:string[]=['Vegetarian','Non-vegetarian']
-  foodSection:string[]=['Welcome Drink','Main Food','Dessert']
-  statusEnum:string[]=['Available','Not Available']
+  isFoodModalOpen = false;
+  isEditFoodModalOpen = false;
+  foodForm!: FormGroup;
+  editFoodForm!: FormGroup;
+  foods: IFood[] = [];
+  foodID!: string;
+  foodCategoryEnum: string[] = ['Vegetarian', 'Non-vegetarian'];
+  foodSection: string[] = ['Welcome Drink', 'Main Food', 'Dessert'];
+  statusEnum: string[] = ['Available', 'Not Available'];
   currentPage = 1;
   itemsPerPage = 4;
   totalItems: number = 0;
-  filteredFood:IFood[] = []
+  filteredFood: IFood[] = [];
   headArray: any[] = [
     { header: "Name", fieldName: "name", datatype: "string" },
     { header: "Food Category", fieldName: "category", datatype: "string" },
     { header: "Price", fieldName: "pricePerPlate", datatype: "string" },
     { header: "Section", fieldName: "section", datatype: "string" },
     { header: "Status", fieldName: "status", datatype: "string" }
+  ];
 
-  ]
+  private toastService: ToastService = inject(ToastService); 
 
-
-  constructor( private fb: FormBuilder, private toastr: ToastrService, private foodService: FoodService) {
+  constructor(private fb: FormBuilder, private foodService: FoodService) {
     this.foodForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(100), noWhitespaceValidator()]],
       category: ['', Validators.required],
@@ -62,14 +62,14 @@ export class FoodComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadFoods()
+    this.loadFoods();
   }
+
   editFood(foodData: IFood, foodId: string) {
-    this.foodID = foodData._id
+    this.foodID = foodData._id;
     this.isEditFoodModalOpen = true;
     this.editFoodForm.patchValue(foodData);
   }
-  
 
   openModal(target: string) {
     if (target === 'add') {
@@ -82,13 +82,18 @@ export class FoodComponent implements OnInit {
     this.isFoodModalOpen = false;
     this.foodForm.reset(); 
   }
+
   onSubmitFood() {
     if (this.foodForm.valid) {
       const foodData = this.foodForm.value;
   
       this.foodService.addFoods(foodData).subscribe(
         response => {
-          this.toastr.success('Food item added successfully!', 'Success');
+          this.toastService.showToast({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Food item added successfully!',
+          });
           this.closeFoodModal();
   
           if (this.totalItems < this.itemsPerPage * this.currentPage) {
@@ -99,15 +104,22 @@ export class FoodComponent implements OnInit {
           }
         },
         error => {
-          this.toastr.error('Failed to add food item. Please try again.', 'Error');
+          this.toastService.showToast({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to add food item. Please try again.',
+          });
           console.error('Error adding food item:', error);
         }
       );
     } else {
-      this.toastr.warning('Please fill out the form correctly.', 'Warning');
+      this.toastService.showToast({
+        severity: 'warning',
+        summary: 'Warning',
+        detail: 'Please fill out the form correctly.',
+      });
     }
   }
-
 
   loadFoods(page: number = this.currentPage): void {
     this.foodService.getFood(page, this.itemsPerPage).subscribe(
@@ -122,9 +134,8 @@ export class FoodComponent implements OnInit {
     );
   }
   
-
-  closeEditFoodModal(){
-   this.isEditFoodModalOpen = false
+  closeEditFoodModal() {
+    this.isEditFoodModalOpen = false;
   }
 
   onSubmitEditFood() {
@@ -133,7 +144,11 @@ export class FoodComponent implements OnInit {
 
       this.foodService.editFoods(foodData, this.foodID).subscribe(
         response => {
-          this.toastr.success('Food data updated successfully!', 'Success');
+          this.toastService.showToast({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Food data updated successfully!',
+          });
           this.closeEditFoodModal();
 
           if (this.foods.length > 4) {
@@ -148,34 +163,40 @@ export class FoodComponent implements OnInit {
         },
         error => {
           console.error('Error updating food data', error);
-          this.toastr.error('Failed to update food data. Please try again.', 'Error');
+          this.toastService.showToast({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to update food data. Please try again.',
+          });
         }
       );
     } else {
-      this.toastr.warning('Please fill out the form correctly.', 'Warning');
+      this.toastService.showToast({
+        severity: 'warning',
+        summary: 'Warning',
+        detail: 'Please fill out the form correctly.',
+      });
     }
   }
 
-  onSearchTermChanged(value:string){
-    const searchTerm = value.toLowerCase()
-    if(searchTerm){
+  onSearchTermChanged(value: string) {
+    const searchTerm = value.toLowerCase();
+    if (searchTerm) {
       this.foodService.searchUsers(searchTerm).subscribe(
         item => {
-          this.filteredFood = item
-        }, error => {
+          this.filteredFood = item;
+        }, 
+        error => {
           console.error(error);
         }
-      )
-    }else{
-      this.filteredFood = this.foods
-     
+      );
+    } else {
+      this.filteredFood = this.foods;
     }
   }
 
   onPageChange(page: number): void {
     this.currentPage = page;
-    this.loadFoods(this.currentPage)
+    this.loadFoods(this.currentPage);
   }
-
-
 }

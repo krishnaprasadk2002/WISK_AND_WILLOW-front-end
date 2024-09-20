@@ -47,3 +47,4 @@ export interface IRazorpayOrder {
   receipt: string;        
   status: string;        
 }
+

@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '../../../shared/reusable/button/button.component';
 import { BannerService } from '../../../core/services/admin/banner.service';
 import { InputboxComponent } from '../../../shared/reusable/inputbox/inputbox.component';
-import { ToastrService } from 'ngx-toastr';
+import { ToastService } from '../../../services/toast.service'; 
 
 @Component({
   selector: 'app-banner-management',
@@ -18,8 +18,8 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './banner-management.component.css'
 })
 export class BannerManagementComponent implements OnInit {
-  bannerData: IBanner[] = []
-  filteredBanners: IBanner[] = []
+  bannerData: IBanner[] = [];
+  filteredBanners: IBanner[] = [];
   currentPage = 1;
   itemsPerPage = 4;
   totalItems: number = 0;
@@ -28,12 +28,15 @@ export class BannerManagementComponent implements OnInit {
   bannerForm!: FormGroup;
   selectedImage: string | ArrayBuffer | null = null;
 
-  constructor(private fb: FormBuilder, private bannerService: BannerService, private toastr: ToastrService) { }
+  private toastService: ToastService; 
 
+  constructor(private fb: FormBuilder, private bannerService: BannerService) {
+    this.toastService = new ToastService(); 
+  }
 
   ngOnInit(): void {
     this.initializeForm();
-    this.loadBanners(this.currentPage)
+    this.loadBanners(this.currentPage);
   }
 
   initializeForm() {
@@ -91,9 +94,6 @@ export class BannerManagementComponent implements OnInit {
     }
   }
 
-
-
-
   openModal(target: string) {
     if (target === 'add') {
       this.isModalOpen = true;
@@ -126,22 +126,27 @@ export class BannerManagementComponent implements OnInit {
         console.error('Image data is not a valid string');
         return;
       }
+
       this.bannerService.addBanner(newBanner).subscribe(
         (banner) => {
           if(this.bannerData.length > 4){
             this.bannerData.push(banner);
-            this.loadBanners(this.currentPage)
-          }else{
+            this.loadBanners(this.currentPage);
+          } else {
             this.bannerData.push(banner);
           }
-          this.toastr.success('Banner added successfully');
+
+          // Show custom success toast
+          this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Banner added successfully' });
+
           this.closeModal();
           this.filteredBanners = this.bannerData;
           this.totalItems = this.bannerData.length;
         },
         (error) => {
           console.error('Error adding banner', error);
-          this.toastr.error('Failed to add banner');
+          // Show custom error toast
+          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Failed to add banner' });
         }
       );
     }
@@ -149,20 +154,20 @@ export class BannerManagementComponent implements OnInit {
 
   toggleStatus(banner: IBanner) {
     banner = { ...banner, status: !banner.status };
-
     const bannerId = banner._id;
 
     this.bannerService.updateStatus(banner, bannerId).subscribe(
       () => {
-        this.toastr.success('Banner status updated successfully');
+        // Show custom success toast
+        this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Banner status updated successfully' });
         this.loadBanners(this.currentPage);
       },
       error => {
         console.error('Error updating banner status:', error);
-        this.toastr.error('Failed to update banner status');
+        // Show custom error toast
+        this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Failed to update banner status' });
         banner.status = !banner.status;
       }
     );
   }
-
 }

@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AdminAuthService } from '../../../core/services/admin/admin-auth.service';
-import { ToastrService } from 'ngx-toastr';
+import { ToastService } from '../../../services/toast.service';
+import IToastOption from '../../../core/models/IToastOptions';
 
 
 @Component({
@@ -14,33 +15,56 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './admin-login.component.css'
 })
 export class AdminLoginComponent implements OnInit {
-  adminLogin!: FormGroup
+  adminLogin!: FormGroup;
+  private toastService: ToastService = inject(ToastService);
 
-  constructor(private fb: FormBuilder, private adminAuth: AdminAuthService, private router: Router, private toastService: ToastrService) { }
+  constructor(
+    private fb: FormBuilder,
+    private adminAuth: AdminAuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.adminLogin = this.fb.group({
       email: ['', Validators.required],
-      password: ['', Validators.required]
-    })
+      password: ['', Validators.required],
+    });
   }
+
   onSubmit() {
     if (this.adminLogin.valid) {
-      const { email, password } = this.adminLogin.value
+      const { email, password } = this.adminLogin.value;
       this.adminAuth.adminLogin(email, password).subscribe(
-        Response => {
-          console.log("admin response",Response);
-          // this.toastService.show('Admin login successful', 'success')
-          this.router.navigate(['/admin'])
-        }, error => {
-          // this.toastService.show(error.error.message || 'Error during Adminlogin', 'error')
-          console.error('Error during Adminlogin', error);
-        })
+        (response) => {
+          console.log('Admin response', response);
+
+          const toastOption: IToastOption = {
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Admin login successful',
+          };
+          this.toastService.showToast(toastOption);
+
+          this.router.navigate(['/admin']);
+        },
+        (error) => {
+          const toastOption: IToastOption = {
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message || 'Error during Admin login',
+          };
+          this.toastService.showToast(toastOption);
+          console.error('Error during Admin login', error);
+        }
+      );
     } else {
-      // this.toastService.show('Form is invalid', 'error');
+      const toastOption: IToastOption = {
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Form is invalid',
+      };
+      this.toastService.showToast(toastOption);
       console.log('Form is invalid');
     }
-
   }
 }
-

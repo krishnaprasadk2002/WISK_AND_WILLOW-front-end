@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@ang
 import { ChatService } from '../../../services/chat.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IChatMessage, IConversation } from '../../../core/models/caht.model';
+import { IChatMessage, IConversation } from '../../../core/models/chat.model';
 
 
 @Component({

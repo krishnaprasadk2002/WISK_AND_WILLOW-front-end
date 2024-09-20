@@ -35,8 +35,8 @@ export class PackageService {
 
 
 
-  addPackageFeatures(packageId: string, packageItems: { itemName: string; price: number; status: boolean }[]): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}package/addpackagefeatures/${packageId}`, { packageItems });
+  addPackageFeatures(packageId: string, packageItems: { itemName: string; price: number; status: boolean }[]): Observable<Ipackages> {
+    return this.http.post<Ipackages>(`${this.baseUrl}package/addpackagefeatures/${packageId}`, { packageItems });
   }
 
   getPackageFeaturesById(packageId: string): Observable<Ipackages> {

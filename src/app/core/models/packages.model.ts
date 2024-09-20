@@ -1,5 +1,5 @@
 export interface Ipackages{
-    showFullDetails: any;
+    showFullDetails: boolean;
     _id:string
     name:string
     type_of_event:string

@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { Employee } from '../../models/employee.model';
+import { Employee, LogoutResponse } from '../../models/employee.model';
 import { Observable } from 'rxjs';
+import { LoginResponse } from '../../models/authResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -11,24 +12,29 @@ export class EmployeeService {
   private baseUrl = environment.baseUrl
   constructor(private http:HttpClient) { }
 
-  employeeRegister(employeeData: Employee): Observable<Employee> {
+   // Register employee
+   employeeRegister(employeeData: Employee): Observable<Employee> {
     return this.http.post<Employee>(`${this.baseUrl}employee/register`, employeeData);
   }
 
-  employeeLogin(loginData: { email: string, password: string }): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}employee/login`, loginData);
+  // Login employee
+  employeeLogin(loginData: { email: string; password: string }): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.baseUrl}employee/login`, loginData);
   }
 
-  employeeLogout():Observable<any>{
-    return this.http.post<any>(`${this.baseUrl}employee/logout`, {})
+  // Logout employee
+  employeeLogout(): Observable<LogoutResponse> {
+    return this.http.post<LogoutResponse>(`${this.baseUrl}employee/logout`, {});
   }
 
-   getEmployee():Observable<Employee[]>{
-    return this.http.get<Employee[]>(`${this.baseUrl}employee/getemployees`)
+  // Get list of employees
+  getEmployee(): Observable<Employee[]> {
+    return this.http.get<Employee[]>(`${this.baseUrl}employee/getemployees`);
   }
+
+  // Update employee status
   updateStatus(employee: Employee): Observable<Employee> {
     return this.http.put<Employee>(`${this.baseUrl}employee/empstatus/${employee._id}`, { is_employee: employee.is_employee });
-}
-
+  }
 
 }

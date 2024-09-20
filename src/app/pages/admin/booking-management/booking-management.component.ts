@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
 import { ReusableTableComponent } from '../../../shared/reusable/reusable-table/reusable-table.component';
 import { IBooking } from '../../../core/models/booking.model';
@@ -6,17 +6,17 @@ import { BookingService } from '../../../core/services/users/booking.service';
 import { Employee } from '../../../core/models/employee.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
+import { ToastService } from '../../../services/toast.service';
+
 
 @Component({
   selector: 'app-booking-management',
   standalone: true,
-  imports: [AdminNavComponent,ReusableTableComponent,CommonModule,FormsModule],
+  imports: [AdminNavComponent, ReusableTableComponent, CommonModule, FormsModule],
   templateUrl: './booking-management.component.html',
   styleUrl: './booking-management.component.css'
 })
 export class BookingManagementComponent implements OnInit {
-
 
   bookingData: IBooking[] = [];
   filteredBooking: IBooking[] = [];
@@ -43,7 +43,9 @@ export class BookingManagementComponent implements OnInit {
     { header: "Payment Status", fieldName: "status", datatype: "string" },
   ];
 
-  constructor(private bookingServices: BookingService, private toastr: ToastrService ) {}
+  private toastService: ToastService = inject(ToastService);
+
+  constructor(private bookingServices: BookingService) {}
 
   ngOnInit(): void {
     this.loadBooking(this.currentPage);
@@ -60,10 +62,14 @@ export class BookingManagementComponent implements OnInit {
       },
       (error) => {
         console.error('Error fetching bookings:', error);
+        this.toastService.showToast({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error fetching bookings',
+        });
       }
     );
   }
-
 
   openEmployeeModal(booking: IBooking) {
     this.selectedBooking = booking;
@@ -82,21 +88,32 @@ export class BookingManagementComponent implements OnInit {
       this.bookingServices.assignEmployeeToBooking(bookingId, employeeId)
         .subscribe(
           response => {
-            this.toastr.success('Employee assigned successfully'); 
+            this.toastService.showToast({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Employee assigned successfully',
+            });
             this.closeModal(); 
           },
           error => {
             console.error('Error assigning employee', error);
-            this.toastr.error('Error assigning employee'); 
+            this.toastService.showToast({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error assigning employee',
+            });
           }
         );
     } else {
-      this.toastr.warning('No booking selected or booking ID is missing'); 
+      this.toastService.showToast({
+        severity: 'warning',
+        summary: 'Warning',
+        detail: 'No booking selected or booking ID is missing',
+      });
       console.error('No booking selected or booking ID is missing');
     }
   }
-  
-  
+
   getEmployeeDetails() {
     this.bookingServices.getEmployeeDetails().subscribe(
       (data) => {
@@ -104,11 +121,14 @@ export class BookingManagementComponent implements OnInit {
       },
       (error) => {
         console.error('Error fetching employees:', error);
-        this.toastr.error('Error fetching employees'); 
+        this.toastService.showToast({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error fetching employees',
+        });
       }
     );
   }
-  
 
   onPageChange(page: number): void {
     this.currentPage = page;

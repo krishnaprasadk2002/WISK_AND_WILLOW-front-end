@@ -3,7 +3,7 @@ import { ChatService } from '../../../services/chat.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../../core/models/user.model';
-import { IChatMessage, IConversationwithUser } from '../../../core/models/caht.model';
+import { IChatMessage, IConversationwithUser } from '../../../core/models/chat.model';
 
 @Component({
   selector: 'app-chat-management',
