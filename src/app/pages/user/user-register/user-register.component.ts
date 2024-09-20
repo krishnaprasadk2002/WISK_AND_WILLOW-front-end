@@ -36,21 +36,21 @@ export class UserRegisterComponent {
       const userData = { name: username, email, mobile, password };
       this.authService.userRegister(userData).subscribe(
         response => {
-          this.toastService.show('Registration successful', 'success');
+          // this.toastService.show('Registration successful', 'success');
         console.log(response);
         localStorage.setItem('userId',response._id)
         localStorage.setItem('email',response.email)
           this.router.navigate(['/otp']);
         },
         error => {
-          this.toastService.show(error.error.message || 'Error during registration', 'error');
+          // this.toastService.show(error.error.message || 'Error during registration', 'error');
           console.error('Error during registration', error);
         }
       );
     } else {console.log('hai');
     
       this.registerForm.markAllAsTouched()
-      this.toastService.show('Form is invalid', 'error');
+      // this.toastService.show('Form is invalid', 'error');
       console.log('Form is invalid');
     }
   }

@@ -26,7 +26,7 @@ export class UserLoginComponent implements OnInit {
   private toastService: ToastService = inject(ToastService);
 
   constructor(private authService: AuthServicesService,
-    private fb: FormBuilder, private router: Router, private toastService: ToastrService,private store:Store<AppState>
+    private fb: FormBuilder, private router: Router, private store:Store<AppState>
   ) { 
     // this.user$ = this.store.select(selectUser);
     // this.user$.subscribe((res:any)=>{
@@ -85,8 +85,8 @@ export class UserLoginComponent implements OnInit {
         detail: 'Google login successful'
       }
 
-      this.toastService.showToast(toastOption); 
-      
+      // this.toastService.showToast(toastOption); 
+
       this.authService.setLoggedIn('true')
       this.router.navigate(['']);
     },error =>{
@@ -116,7 +116,7 @@ export class UserLoginComponent implements OnInit {
 
       this.authService.userLogin(email, password).subscribe(
         response => {
-           this.toastService.show('Login successful', 'success'); 
+          //  this.toastService.show('Login successful', 'success'); 
            this.authService.setLoggedIn('true')
           this.router.navigate(['']);
         },
@@ -126,13 +126,13 @@ export class UserLoginComponent implements OnInit {
             localStorage.setItem('userId', error.error.userId);
             this.router.navigate(['/otp']);
           } else {
-            this.toastService.show(error.error.message || "Error during login", 'error');
+            // this.toastService.show(error.error.message || "Error during login", 'error');
           }
           console.error("Error during login", error);
         }
       );
     } else {
-      this.toastService.show('Form is invalid', 'error');
+      // this.toastService.show('Form is invalid', 'error');
       console.log('Form is invalid');
     }
   }

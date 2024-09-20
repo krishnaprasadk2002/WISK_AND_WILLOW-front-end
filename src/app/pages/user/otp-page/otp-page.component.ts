@@ -52,18 +52,18 @@ export class OtpPageComponent implements OnInit {
       this.authService.verifyOtp(userId as string, otp).subscribe(
         response => {
           clearInterval(this.timerInterval);
-          this.toastService.show('OTP verified successfully', 'success');
+          // this.toastService.show('OTP verified successfully', 'success');
           localStorage.removeItem('userId');
           localStorage.removeItem('email');
           this.router.navigate(['/login']);
         },
         error => {
-          this.toastService.show(error.error.message || 'Invalid OTP', 'error');
+          // this.toastService.show(error.error.message || 'Invalid OTP', 'error');
           console.error('Error during OTP verification', error);
         }
       );
     } else {
-      this.toastService.show('Please enter a valid OTP', 'error');
+      // this.toastService.show('Please enter a valid OTP', 'error');
       console.log('Form is invalid');
     }
   }
@@ -73,12 +73,12 @@ export class OtpPageComponent implements OnInit {
     const email =localStorage.getItem('email')
     this.authService.resendOtP(email as string).subscribe(
       response => {
-        this.toastService.show('OTP resent successfully', 'success');
+        // this.toastService.show('OTP resent successfully', 'success');
         this.timer = 60;
         this.startTimer();
       },
       error => {
-        this.toastService.show('Error during OTP resend', 'error');
+        // this.toastService.show('Error during OTP resend', 'error');
         console.error('Error during OTP resend', error);
       }
     );

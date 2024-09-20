@@ -30,14 +30,14 @@ export class AdminLoginComponent implements OnInit {
       this.adminAuth.adminLogin(email, password).subscribe(
         Response => {
           console.log("admin response",Response);
-          this.toastService.show('Admin login successful', 'success')
+          // this.toastService.show('Admin login successful', 'success')
           this.router.navigate(['/admin'])
         }, error => {
-          this.toastService.show(error.error.message || 'Error during Adminlogin', 'error')
+          // this.toastService.show(error.error.message || 'Error during Adminlogin', 'error')
           console.error('Error during Adminlogin', error);
         })
     } else {
-      this.toastService.show('Form is invalid', 'error');
+      // this.toastService.show('Form is invalid', 'error');
       console.log('Form is invalid');
     }
 
