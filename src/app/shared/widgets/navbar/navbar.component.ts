@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, NgZone, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { ToastrService } from 'ngx-toastr';
@@ -21,7 +21,7 @@ export class NavbarComponent implements OnInit {
   isMenuOpen = false;
   isDropdownVisible = false;
 
-  constructor(private http:HttpClient,private route:Router,private toastrService:ToastrService,private store:Store,private authService:AuthServicesService){
+  constructor(private http:HttpClient,private route:Router,private toastrService:ToastrService,private store:Store,private authService:AuthServicesService, private ngZone: NgZone){
   }
   ngOnInit(): void {
     // this.user$ = this.store.select(selectUser);
@@ -54,7 +54,10 @@ private baseUrl = environment.baseUrl
 
   toggleDropdown(event: Event) {
     console.log("toggled",this.isDropdownVisible);
-    this.isDropdownVisible = !this.isDropdownVisible;
+    
+    this.ngZone.run(() => {
+      this.isDropdownVisible = !this.isDropdownVisible;
+    })
     event.stopPropagation();
   }
 
