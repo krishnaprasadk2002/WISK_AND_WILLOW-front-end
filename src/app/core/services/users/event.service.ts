@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { IEvent } from '../../models/event.model';
+import { IBanner } from '../../models/banner.model';
 
 @Injectable({
   providedIn: 'root'
@@ -38,5 +39,9 @@ export class EventService {
     return this.http.get<IEvent[]>(`${this.baseUrl}event/search`,{
       params: { searchTerm }
     })
+  }
+
+  getBanners():Observable<IBanner[]>{
+    return this.http.get<IBanner[]>(`${this.baseUrl}event/getbanners`)
   }
 }

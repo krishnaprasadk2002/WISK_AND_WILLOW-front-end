@@ -1,16 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AdminNavService } from '../../../core/services/adminNav/admin-nav.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EventService } from '../../../core/services/users/event.service';
 import { IEvent } from '../../../core/models/event.model';
-import { ToastrService } from 'ngx-toastr';
 import { AdminAuthService } from '../../../core/services/admin/admin-auth.service';
 import { ButtonComponent } from '../../../shared/reusable/button/button.component';
 import { InputboxComponent } from '../../../shared/reusable/inputbox/inputbox.component';
 import { ModalComponent } from '../../../shared/reusable/modal/modal.component';
 import { AdminNavComponent } from '../../../shared/reusable/admin-nav/admin-nav.component';
 import { ReusableTableComponent } from '../../../shared/reusable/reusable-table/reusable-table.component';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-event-management',
@@ -46,8 +46,10 @@ export class EventManagementComponent {
   ]
 
 
+  private toastService: ToastService = inject(ToastService); 
 
-  constructor(private navservices: AdminNavService, private adminServices: AdminAuthService, private fb: FormBuilder, private eventService: EventService, private toastr: ToastrService) {
+
+  constructor(private navservices: AdminNavService, private adminServices: AdminAuthService, private fb: FormBuilder, private eventService: EventService) {
     this.navservices.sidebarOpen$.subscribe(isOpen => {
       this.isSidebarOpen = isOpen
     })
@@ -81,10 +83,10 @@ export class EventManagementComponent {
         console.log('Response:', response); // Log the response
   
         // Ensure response.event is an array
-        if (Array.isArray(response.event)) {  // Adjusted to response.event
+        if (Array.isArray(response.event)) { 
           this.events = response.event;
-          this.filteredEvent = [...this.events]; // Make a copy of the array
-          this.totalItems = response.totalItems;  // Adjusted to response.totalItems
+          this.filteredEvent = [...this.events]; 
+          this.totalItems = response.totalItems; 
         } else {
           console.error('Expected response.event to be an array');
           this.events = [];
@@ -111,12 +113,12 @@ export class EventManagementComponent {
     this.eventService.updateEventStatus(event).subscribe(
       () => {
         const message = event.status ? 'Event blocked successfully' : 'Event unblocked successfully';
-        this.toastr.success(message);
+        this.toastService.showToast({ severity: 'success', summary: 'Success', detail: message });
         this.loadEvents();
       },
       error => {
         console.error('Error updating event status:', error);
-        this.toastr.error('Failed to update event status');
+        this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Failed to update event status' })
         event.status = !event.status;
       }
     );
@@ -196,6 +198,7 @@ export class EventManagementComponent {
             this.eventForm.get('image3')?.addValidators(Validators.required);
 
             console.log('Event updated successfully', response);
+            this.toastService.showToast({ severity: 'success', summary: 'Success', detail:'Event updated successfully' });
             this.closeModal();
             this.loadEvents();
           },
@@ -204,6 +207,7 @@ export class EventManagementComponent {
             this.eventForm.get('image1')?.addValidators(Validators.required);
             this.eventForm.get('image2')?.addValidators(Validators.required);
             this.eventForm.get('image3')?.addValidators(Validators.required);
+            this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Error updating event' })
             console.error('Error updating event', error);
           }
         );
@@ -211,14 +215,14 @@ export class EventManagementComponent {
         //add new Event
         this.eventService.addEvent({ ...this.eventForm.value, ...this.images }).subscribe(
           (response) => {
-            console.log('Event added successfully', response);
+            this.toastService.showToast({ severity: 'success', summary: 'Success', detail:'Event added successfully' });
             this.closeModal();
             this.eventForm.reset();
             this.resetPreviews();
             this.loadEvents()
           },
           (error) => {
-            console.error('Error adding event', error);
+            this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Error adding event' })
           }
         )
       }
