@@ -28,8 +28,21 @@ export class EmployeeService {
   }
 
   // Get list of employees
-  getEmployee(): Observable<Employee[]> {
-    return this.http.get<Employee[]>(`${this.baseUrl}employee/getemployees`);
+  getEmployee(page: number, itemsPerPage: number): Observable<{Employee:Employee[],totalItems:number}> {
+    return this.http.get<{Employee:Employee[],totalItems:number}>(`${this.baseUrl}employee/getemployees`,{
+      params:{
+        page: page.toString(),
+        itemsPerPage: itemsPerPage.toString()
+      }});
+  }
+
+  searchEmployee(searchTerm:string):Observable<Employee[]>{
+    return this.http.get<Employee[]>(`${this.baseUrl}employee/search`,{
+      params:{
+        searchTerm
+      }
+
+    })
   }
 
   // Update employee status

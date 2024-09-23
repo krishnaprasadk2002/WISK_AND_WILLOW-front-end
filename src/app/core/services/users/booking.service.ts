@@ -5,9 +5,6 @@ import { IBooking, IRazorpayOrder } from '../../models/booking.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Employee } from '../../models/employee.model';
 
-
-
-
 export interface PaymentVerificationResponse {
   status: string;
 }

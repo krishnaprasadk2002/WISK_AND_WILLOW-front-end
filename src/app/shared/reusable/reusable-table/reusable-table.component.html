@@ -55,11 +55,14 @@
               [showStatus]="is_status"
               [showInfo]="is_info"
               [showAssign]="is_assign"
+              [showApproveReject]="is_ApproveReject"
               (onEdit)="editRecord($event)"
               (onDelete)="deleteRecord($event)"
               (onStatus)="onStatusRecord($event)"
               (onMoreInfo)="showMoreInfo($event)"
-              (onAssign)="assignRecord($event)">
+              (onAssign)="assignRecord($event)"
+              (onApprove)="updateEmplyeeStatus($event)">
+              
             </app-reusable-buttons>
           </td>
         </tr>

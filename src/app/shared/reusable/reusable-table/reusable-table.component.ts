@@ -24,6 +24,8 @@ searchTerm: string = '';
 @Input() currentPage: number = 1;
 @Input() pageSize: number = 4;
 @Input() totalItems: number = 0;
+@Input() is_ApproveReject: boolean = false;
+
 
 @Output() onEdit = new EventEmitter<any>();
 @Output() onDelete = new EventEmitter<any>();
@@ -32,6 +34,7 @@ searchTerm: string = '';
 @Output() searchChanged = new EventEmitter<any>()
 @Output() pageChange = new EventEmitter<number>();
 @Output() onAssign = new EventEmitter<any>();
+@Output() onApproveReject = new EventEmitter<any>()
 
 private searchSubject = new Subject<string>()
 private searchSubscription: Subscription | undefined;
@@ -96,6 +99,10 @@ getPages(): number[] {
 
 assignRecord(item: any) {
   this.onAssign.emit(item);
+}
+
+updateEmplyeeStatus(item:any){
+  this.onApproveReject.emit(item)
 }
 
 
