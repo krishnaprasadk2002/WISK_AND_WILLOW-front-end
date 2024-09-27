@@ -7,9 +7,9 @@
            class="p-4 hover:bg-gray-50 cursor-pointer transition duration-150 ease-in-out"
            [class.bg-blue-50]="selectedConversation?._id === convo._id">
         <div class="flex items-center">
-          <img [src]="getImageUrl(convo.participants[0])" 
+          <!-- <img [src]="getImageUrl(convo.participants[0])" 
                [alt]="convo.participants[0].name" 
-               class="w-12 h-12 rounded-full mr-4 object-cover">
+               class="w-12 h-12 rounded-full mr-4 object-cover"> -->
           <div class="flex-1 min-w-0">
             <div class="flex justify-between items-baseline">
               <h3 class="text-sm font-medium text-gray-900 truncate">{{ convo.participants[0].name }}</h3>
@@ -27,9 +27,9 @@
     <!-- Chat header -->
     <div *ngIf="selectedConversation" class="bg-white border-b border-gray-200">
       <div class="flex items-center p-4">
-        <img [src]="getImageUrl(selectedConversation.participants[0])" 
+        <!-- <img [src]="getImageUrl(selectedConversation.participants[0])" 
              [alt]="selectedConversation.participants[0].name" 
-             class="w-10 h-10 rounded-full mr-3 object-cover">
+             class="w-10 h-10 rounded-full mr-3 object-cover"> -->
         <div>
           <h2 class="text-lg font-semibold">{{ selectedConversation.participants[0].name }}</h2>
           <p class="text-sm text-gray-600">{{ selectedConversation.participants[0].email }}</p>
