@@ -38,6 +38,8 @@ export class ChatManagementComponent implements OnInit, AfterViewChecked {
   getConversations() {
     this.chatService.getConversationData().subscribe(conversations => {
       this.conversations = conversations;
+      console.log(conversations, 'conversation');
+      
     });
   }
 
