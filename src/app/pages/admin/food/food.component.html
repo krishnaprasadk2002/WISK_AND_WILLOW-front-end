@@ -1,57 +1,132 @@
-<app-admin-nav [PageName]="'Food Management'" ></app-admin-nav>
+<app-admin-nav [PageName]="'Food Management'"></app-admin-nav>
 
-<app-reusable-table 
-  [HeadArray]="headArray" 
-  [GridArray]="filteredFood" 
+<app-reusable-table
+  [HeadArray]="headArray"
+  [GridArray]="filteredFood"
   [is_edit]="true"
   [is_status]="false"
   [currentPage]="currentPage"
   [pageSize]="itemsPerPage"
-  [totalItems]="totalItems" 
-  (onEdit)="editFood($event.item, $event.item.id)" 
-  (searchChanged)="onSearchTermChanged($event)" 
-  (pageChange)="onPageChange($event)">
+  [totalItems]="totalItems"
+  (onEdit)="editFood($event.item, $event.item.id)"
+  (searchChanged)="onSearchTermChanged($event)"
+  (pageChange)="onPageChange($event)"
+>
 </app-reusable-table>
 
-<div class="flex justify-start mt-4 ">
-    <button (click)="openModal('add')"
-      class="bg-transparent hover:bg-[#1a2035] text-[#1a2035] font-semibold hover:text-white py-2 px-4 border border-[#1a2035] hover:border-transparent rounded">
-      Add Food
-    </button>
-  </div>
+<div class="flex justify-start mt-4">
+  <button
+    (click)="openModal('add')"
+    class="bg-transparent hover:bg-[#1a2035] text-[#1a2035] font-semibold hover:text-white py-2 px-4 border border-[#1a2035] hover:border-transparent rounded">
+    Add Food
+  </button>
+</div>
 
+<app-modal
+  [isOpen]="isFoodModalOpen"
+  [title]="'Add Food'"
+  (closeModal)="closeFoodModal()"
+>
+  <form [formGroup]="foodForm" (ngSubmit)="onSubmitFood()">
+    <app-inputbox
+      [label]="'Food Name'"
+      [type]="'text'"
+      [formControl]="$any(foodForm.controls['name'])"
+    ></app-inputbox>
+    <app-inputbox
+      label="Category"
+      [options]="foodCategoryEnum"
+      [formControl]="$any(foodForm.controls['category'])"
+    ></app-inputbox>
+    <app-inputbox
+      [label]="'Price Per Plate'"
+      [type]="'number'"
+      [formControl]="$any(foodForm.controls['pricePerPlate'])"
+    ></app-inputbox>
+    <app-inputbox
+      label="Food Sections"
+      [options]="foodSection"
+      [formControl]="$any(foodForm.controls['section'])"
+    ></app-inputbox>
+    <app-inputbox
+      label="Status"
+      [options]="statusEnum"
+      [formControl]="$any(foodForm.controls['status'])"
+    ></app-inputbox>
 
-  <app-modal [isOpen]="isFoodModalOpen" [title]="'Add Food'" (closeModal)="closeFoodModal()">
-    <form [formGroup]="foodForm" (ngSubmit)="onSubmitFood()">
-      <app-inputbox [label]="'Food Name'" [type]="'text'" [formControl]="$any(foodForm.controls['name'])"></app-inputbox>
-      <app-inputbox label="Category" [options]="foodCategoryEnum" [formControl]="$any(foodForm.controls['category'])"></app-inputbox>
-      <app-inputbox [label]="'Price Per Plate'" [type]="'number'" [formControl]="$any(foodForm.controls['pricePerPlate'])"></app-inputbox>
-      <app-inputbox label="Food Sections" [options]="foodSection" [formControl]="$any(foodForm.controls['section'])"></app-inputbox>
-      <app-inputbox label="Status" [options]="statusEnum" [formControl]="$any(foodForm.controls['status'])"></app-inputbox>
-     
-      <div class="flex justify-end">
-        <app-button label="Cancel" buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2" (click)="closeFoodModal()"></app-button>
-        <app-button label="Submit" type="submit" buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"></app-button>
+    <div class="flex justify-end">
+      <app-button
+        label="Cancel"
+        buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2"
+        (click)="closeFoodModal()"
+      ></app-button>
+      <app-button
+        *ngIf="!isLoading"
+        label="Submit"
+        type="submit"
+        buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"
+      ></app-button>
+      <div *ngIf="isLoading" class="flex justify-center items-center h-12 w-12">
+        <div
+          class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"
+        ></div>
       </div>
-    </form>
-  </app-modal>
+    </div>
+  </form>
+</app-modal>
 
+<!-- edit food modal -->
 
-  <!-- edit food modal -->
+<app-modal
+  [isOpen]="isEditFoodModalOpen"
+  [title]="'Edit Food'"
+  (closeModal)="closeEditFoodModal()"
+>
+  <form [formGroup]="editFoodForm" (ngSubmit)="onSubmitEditFood()">
+    <app-inputbox
+      [label]="'Food Name'"
+      [type]="'text'"
+      [formControl]="$any(editFoodForm.controls['name'])"
+    ></app-inputbox>
+    <app-inputbox
+      label="Category"
+      [options]="foodCategoryEnum"
+      [formControl]="$any(editFoodForm.controls['category'])"
+    ></app-inputbox>
+    <app-inputbox
+      [label]="'Price Per Plate'"
+      [type]="'number'"
+      [formControl]="$any(editFoodForm.controls['pricePerPlate'])"
+    ></app-inputbox>
+    <app-inputbox
+      label="Food Sections"
+      [options]="foodSection"
+      [formControl]="$any(editFoodForm.controls['section'])"
+    ></app-inputbox>
+    <app-inputbox
+      label="Status"
+      [options]="statusEnum"
+      [formControl]="$any(editFoodForm.controls['status'])"
+    ></app-inputbox>
 
-  <app-modal [isOpen]="isEditFoodModalOpen" [title]="'Edit Food'" (closeModal)="closeEditFoodModal()">
-    <form [formGroup]="editFoodForm" (ngSubmit)="onSubmitEditFood()">
-      <app-inputbox [label]="'Food Name'" [type]="'text'" [formControl]="$any(editFoodForm.controls['name'])"></app-inputbox>
-      <app-inputbox label="Category" [options]="foodCategoryEnum" [formControl]="$any(editFoodForm.controls['category'])"></app-inputbox>
-      <app-inputbox [label]="'Price Per Plate'" [type]="'number'" [formControl]="$any(editFoodForm.controls['pricePerPlate'])"></app-inputbox>
-      <app-inputbox label="Food Sections" [options]="foodSection" [formControl]="$any(editFoodForm.controls['section'])"></app-inputbox>
-      <app-inputbox label="Status" [options]="statusEnum" [formControl]="$any(editFoodForm.controls['status'])"></app-inputbox>
-     
-      <div class="flex justify-end">
-        <app-button label="Cancel" buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2" (click)="closeEditFoodModal()"></app-button>
-        <app-button label="Submit" type="submit" buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"></app-button>
+    <div class="flex justify-end">
+      <app-button
+        label="Cancel"
+        buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2"
+        (click)="closeEditFoodModal()"
+      ></app-button>
+
+      <app-button
+        *ngIf="!isLoading"
+        label="Submit"
+        type="submit"
+        buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"
+      ></app-button>
+
+      <div *ngIf="isLoading" class="flex justify-center items-center h-12 w-12">
+        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
       </div>
-    </form>
-  </app-modal>
-
+    </div>
+  </form>
+</app-modal>
 

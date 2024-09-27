@@ -1,16 +1,26 @@
 <!-- banner image -->
-<div class="relative mt-16 sm:mt-15 md:mt-15 lg:mt-15 w-full">
-    <img src="assets/Banner.jpg" alt="Banner" class="w-full h-auto object-cover md:h-screen md:max-h-96 md:min-h-64">
-    <div class="absolute inset-0 flex items-center justify-center">
-      <p class="text-white text-xl sm:text-2xl md:text-4xl lg:text-6xl font-semibold text-center px-4">
-        WISK AND WILLOW
-        <span class="block text-4xl font-light uppercase ">{{category}} Gallery</span>
-      </p>
-    </div>
+<div class="relative mt-16 w-full">
+  <img src="assets/Banner.jpg" alt="Banner" class="w-full h-auto object-cover md:h-screen md:max-h-96 md:min-h-64">
+  <div class="absolute inset-0 flex items-center justify-center">
+    <p class="text-white text-xl sm:text-2xl md:text-4xl lg:text-6xl font-semibold text-center px-4">
+      WISK AND WILLOW
+      <span class="block text-4xl font-light uppercase ">{{category}} Gallery</span>
+    </p>
   </div>
+</div>
 
-  <div class="grid grid-cols-2 md:grid-cols-3 p-6 gap-4">
-    <div class="relative " *ngFor="let image of galleryImages">
-      <img class="h-auto max-w-full rounded-lg" [src]="image.image" [alt]="image.name">
-    </div>
+<div class=" gallery-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-6">
+  <div class="relative cursor-pointer" *ngFor="let image of galleryImages" (click)="openImageModal(image.image)">
+    <img class="h-auto w-full rounded-lg" [src]="image.image" [alt]="image.name">
   </div>
+</div>
+
+<div *ngIf="isModalOpen" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50 p-4">
+  <div class="relative max-w-3xl w-full">
+    <div (click)="closeModal()" class="modal"><span class="close-button">&times;</span>
+      <img [src]="selectedImage" alt="Selected Image" class="w-full h-auto max-h-[80vh] rounded-lg object-contain">
+    </div>
+    <img [src]="selectedImage" alt="Selected Image" class="w-full h-auto max-h-[80vh] rounded-lg object-contain">
+  </div>
+</div>
+

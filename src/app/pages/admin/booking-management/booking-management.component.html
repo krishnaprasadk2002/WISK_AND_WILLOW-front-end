@@ -1,6 +1,7 @@
 <!-- Booking Management Page Header -->
 <app-admin-nav [PageName]="'Booking Management'"></app-admin-nav>
 
+<!-- Reusable Table with bookings -->
 <app-reusable-table 
   [HeadArray]="headArray" 
   [GridArray]="filteredBooking" 
@@ -9,21 +10,92 @@
   [totalItems]="totalItems" 
   (onAssign)="openEmployeeModal($event)" 
   [is_assign]="true"
-  (searchChanged)="onSearchTermChanged($event)">
+  (searchChanged)="onSearchTermChanged($event)"
+  (pageChange)="onPageChange($event)">
 </app-reusable-table>
 
-
 <div *ngIf="isModalOpen" class="fixed inset-0 flex items-center justify-center z-50">
-  <div class="fixed inset-0 bg-black opacity-50" (click)="closeModal()"></div>
-  <div class="bg-white p-6 rounded-lg shadow-lg z-10 w-full max-w-md">
-    <h3 class="text-lg font-semibold mb-4">Assign Employee</h3>
-    <ul class="list-group mb-4">
-      <li *ngFor="let employee of employees" class="flex justify-between items-center mb-2">
-        <span>{{ employee.name }} - {{ employee.email }}</span>
-        <button (click)="assignEmployee(employee)" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Assign</button>
-      </li>
-    </ul>
-    <button (click)="closeModal()" class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">Close</button>
+  <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out" (click)="closeModal()"></div>
+  <div class="bg-white rounded-lg shadow-xl z-10 w-full max-w-md mx-4 sm:mx-auto transform transition-all duration-300 ease-in-out"
+       [ngClass]="{'translate-y-0 opacity-100': isModalOpen, 'translate-y-4 opacity-0': !isModalOpen}">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold text-gray-900">Assign Employee</h3>
+        <button (click)="closeModal()" class="text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Employee List to Assign -->
+      <ul class="divide-y divide-gray-200 max-h-80 overflow-y-auto">
+        <li *ngFor="let employee of employees" class="py-4">
+          <div class="flex items-center justify-between">
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-medium text-gray-900 truncate">{{ employee.name }}</p>
+              <p class="text-sm text-gray-500 truncate">{{ employee.email }}</p>
+            </div>
+            <button (click)="assignEmployee(employee)" 
+                    class="ml-4 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              Assign
+            </button>
+          </div>
+        </li>
+      </ul>
+
+      <!-- Close Button -->
+      <div class="mt-6">
+        <button (click)="closeModal()" 
+                class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
+          Close
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
+<div class="overflow-x-auto flex bg-white shadow-md rounded-lg justify-center pt-5">
+  <table class="min-w-6 divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking ID</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer Name</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event Type</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assigned Employee</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      <tr *ngFor="let booking of filteredBooking" class="hover:bg-gray-50 transition-colors duration-200">
+        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ booking._id }}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ booking.name }}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+            {{ booking.type_of_event }}
+          </span>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          <span *ngIf="booking.assignedEmployee; else noEmployee" class="flex items-center">
+            <span class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center mr-2">
+              {{ booking.assignedEmployee.name.charAt(0) }}
+            </span>
+            <span>
+              {{ booking.assignedEmployee.name }}
+              <span class="text-xs text-gray-400 block">{{ booking.assignedEmployee.email }}</span>
+            </span>
+          </span>
+          <ng-template #noEmployee>
+            <span class="text-yellow-500">No Employee Assigned</span>
+          </ng-template>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+          <button (click)="openEmployeeModal(booking)" 
+                  class="text-indigo-600 hover:text-indigo-900 bg-indigo-100 hover:bg-indigo-200 px-3 py-1 rounded-full transition-colors duration-200">
+            Assign Employee
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

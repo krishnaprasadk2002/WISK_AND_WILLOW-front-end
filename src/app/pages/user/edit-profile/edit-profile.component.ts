@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { User } from '../../../core/models/user.model';
 import { UserservicesService } from '../../../core/services/users/userservices.service';
 import { FormsModule } from '@angular/forms';
 import { Route, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { ToastService } from '../../../services/toast.service';
+import IToastOption from '../../../core/models/IToastOptions';
+
 
 @Component({
   selector: 'app-edit-profile',
@@ -25,7 +27,8 @@ export class EditProfileComponent implements OnInit {
   newPassword: string = '';
   selectedImage: File | null = null;
 
-  constructor(private userService: UserservicesService, private route: Router, private toastr: ToastrService) { }
+  private toastService:ToastService = inject(ToastService)
+  constructor(private userService: UserservicesService, private route: Router, ) { }
 
   ngOnInit(): void {
     this.loadUserProfile();
@@ -77,12 +80,28 @@ export class EditProfileComponent implements OnInit {
         this.userService.profilePicture({image:base64String}).subscribe(
           (response: any) => {
             console.log(response);
+            const toastOption: IToastOption = {
+              severity: 'success', 
+              summary: 'Success', 
+              detail: 'Profile Photo updated successfully'
+            }
+      
+            this.toastService.showToast(toastOption); 
             
             this.userProfile.imageUrl = response.url
             this.closeModal();
             this.loadUserProfile();
           },
-          (error) => console.error('Error uploading image', error)
+          
+          (error) =>{
+            const toastOption: IToastOption = {
+              severity: 'error', 
+              summary: 'Error', 
+              detail: error.error.message || "Error uploading image"
+            }
+            this.toastService.showToast(toastOption); 
+            console.error('Error uploading image', error)
+          }
         );
       };
 
@@ -104,12 +123,23 @@ export class EditProfileComponent implements OnInit {
     console.log(updatePayload);
     this.userService.updateProfile(updatePayload).subscribe(
       () => {
-        this.toastr.success('Profile updated successfully', 'Success');
+        const toastOption: IToastOption = {
+          severity: 'success', 
+          summary: 'Success', 
+          detail: 'Profile updated successfully'
+        }
+  
+        this.toastService.showToast(toastOption); 
         this.route.navigate(['/user-profile']);
       },
       (error) => {
         console.error('Error updating profile', error);
-        this.toastr.error('Failed to update profile', 'Error');
+        const toastOption: IToastOption = {
+          severity: 'error', 
+          summary: 'Error', 
+          detail: error.error.message || "Failed to update profile"
+        }
+        this.toastService.showToast(toastOption); 
       }
     );
   }

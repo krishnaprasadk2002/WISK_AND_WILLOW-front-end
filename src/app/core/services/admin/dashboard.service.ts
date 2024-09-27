@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
-import { IDashboard, MonthlyBooking } from '../../models/dashBoard.model';
+import { DailyBooking, IDashboard, MonthlyBooking, YearlyBooking } from '../../models/dashBoard.model';
 import { IBooking } from '../../models/booking.model';
 
 @Injectable({
@@ -20,6 +20,15 @@ export class DashboardService {
   getMonthlyBookings(): Observable<MonthlyBooking[]> {
     return this.http.get<MonthlyBooking[]>(`${this.baseUrl}admin/monthly-bookings`);
   }
+
+  getDailyBookings(): Observable<DailyBooking[]> {
+    return this.http.get<DailyBooking[]>(`${this.baseUrl}admin/daily-bookings`);
+  }
+  
+  getYearlyBookings(): Observable<YearlyBooking[]> {
+    return this.http.get<YearlyBooking[]>(`${this.baseUrl}admin/yearly-bookings`);
+  }
+  
 
   getBookings(
     startDate: string, endDate: string): Observable<{ bookings: IBooking[] }> {

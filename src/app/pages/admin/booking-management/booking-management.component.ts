@@ -52,10 +52,12 @@ export class BookingManagementComponent implements OnInit {
     this.getEmployeeDetails();
   }
 
-  // Load booking data
   loadBooking(page: number = this.currentPage) {
+    console.log('Loading bookings for page:', page);
+  
     this.bookingServices.getBookings(page, this.itemsPerPage).subscribe(
       (data) => {
+        console.log('Bookings data:', data);
         this.bookingData = data.booking;
         this.filteredBooking = data.booking;
         this.totalItems = data.totalItems;
@@ -70,7 +72,7 @@ export class BookingManagementComponent implements OnInit {
       }
     );
   }
-
+  
   openEmployeeModal(booking: IBooking) {
     this.selectedBooking = booking;
     this.isModalOpen = true;
@@ -80,18 +82,26 @@ export class BookingManagementComponent implements OnInit {
     this.isModalOpen = false;
   }
 
-  assignEmployee(employee: any) {
+  assignEmployee(employee: Employee) {
     if (this.selectedBooking && this.selectedBooking._id) {
       const bookingId = this.selectedBooking._id;
       const employeeId = employee._id; 
-
-      this.bookingServices.assignEmployeeToBooking(bookingId, employeeId)
+  
+      this.bookingServices.assignEmployeeToBooking(bookingId, employeeId!)
         .subscribe(
           response => {
+            console.log(response, 'assigned response');
+  
+            // Ensure selectedBooking is not null before assignment
+            if (this.selectedBooking) {
+              this.selectedBooking.assignedEmployeeId = employeeId; // Assign employeeId instead of employee object
+              this.updateBookingInUI(bookingId, employee); // Update the UI with the assigned employee details
+            }
+  
             this.toastService.showToast({
               severity: 'success',
               summary: 'Success',
-              detail: 'Employee assigned successfully',
+              detail: `Employee ${employee.name} assigned successfully`,
             });
             this.closeModal(); 
           },
@@ -113,6 +123,16 @@ export class BookingManagementComponent implements OnInit {
       console.error('No booking selected or booking ID is missing');
     }
   }
+  
+  updateBookingInUI(bookingId: string, employee: Employee) {
+    const bookingIndex = this.filteredBooking.findIndex(booking => booking._id === bookingId);
+    if (bookingIndex > -1) {
+      this.filteredBooking[bookingIndex].assignedEmployeeId = employee._id;
+      this.filteredBooking[bookingIndex].assignedEmployee = employee;
+    }
+  }
+  
+  
 
   getEmployeeDetails() {
     this.bookingServices.getEmployeeDetails().subscribe(
@@ -131,10 +151,12 @@ export class BookingManagementComponent implements OnInit {
   }
 
   onPageChange(page: number): void {
+    console.log('Page changed to:', page);
     this.currentPage = page;
     this.loadBooking(this.currentPage);
   }
-
+  
+  
   onSearchTermChanged(value: string) {
     const searchTerm = value.toLowerCase();
     if (searchTerm) {

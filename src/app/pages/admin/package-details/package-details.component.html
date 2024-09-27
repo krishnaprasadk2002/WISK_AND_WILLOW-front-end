@@ -60,30 +60,85 @@
     </div>
   </div>
   
-  <!-- Modal -->
   <app-modal [isOpen]="isModalOpen" [title]="'Add Packages'" (closeModal)="closeModal()">
     <form [formGroup]="packageFeatureForm" (ngSubmit)="onSubmit()">
-      <app-inputbox [label]="'Feature Name'" [type]="'text'" [formControl]="$any(packageFeatureForm.controls['itemName'])"></app-inputbox>
-      <app-inputbox [label]="'Price'" [type]="'number'" [formControl]="$any(packageFeatureForm.controls['price'])"></app-inputbox>
-      <app-inputbox label="Status" [options]="statusEnum" [formControl]="$any(packageFeatureForm.controls['status'])"></app-inputbox>
+      <app-inputbox
+        [label]="'Feature Name'"
+        [type]="'text'"
+        [formControl]="$any(packageFeatureForm.controls['itemName'])"
+      ></app-inputbox>
+      <app-inputbox
+        [label]="'Price'"
+        [type]="'number'"
+        [formControl]="$any(packageFeatureForm.controls['price'])"
+      ></app-inputbox>
+      <app-inputbox
+        label="Status"
+        [options]="statusEnum"
+        [formControl]="$any(packageFeatureForm.controls['status'])"
+      ></app-inputbox>
+  
       <div class="flex justify-end">
-        <app-button label="Cancel" buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2" (click)="closeModal()"></app-button>
-        <app-button label="Submit" type="submit" buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"></app-button>
+        <app-button
+          label="Cancel"
+          buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2"
+          (click)="closeModal()"
+        ></app-button>
+  
+        <app-button
+          *ngIf="!isLoading"
+          label="Submit"
+          type="submit"
+          buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"
+        ></app-button>
+  
+        <div *ngIf="isLoading" class="flex justify-center items-center h-12 w-12">
+          <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
+        </div>
       </div>
     </form>
   </app-modal>
+  
 
 
   <app-modal [isOpen]="isModalEditOpen" [title]="'Edit Feature'" (closeModal)="closeModal()">
     <form [formGroup]="packageFeatureEditForm" (ngSubmit)="onEditSubmit()">
-              <app-inputbox [label]="'Feature Name'" [type]="'text'" [formControl]="$any(packageFeatureEditForm.controls['itemName'])"></app-inputbox>
-              <app-inputbox [label]="'Price'" [type]="'number'" [formControl]="$any(packageFeatureEditForm.controls['price'])"></app-inputbox>
-              <app-inputbox label="Status" [options]="statusEnum" [formControl]="$any(packageFeatureEditForm.controls['status'])"></app-inputbox>
-          <div class="flex justify-end">
-            <app-button label="Cancel" buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2" (click)="closeModal()"></app-button>
-            <app-button label="Submit" type="submit" buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"></app-button>
-          </div>
-        </form>
-      </app-modal>
+      <app-inputbox
+        [label]="'Feature Name'"
+        [type]="'text'"
+        [formControl]="$any(packageFeatureEditForm.controls['itemName'])"
+      ></app-inputbox>
+      <app-inputbox
+        [label]="'Price'"
+        [type]="'number'"
+        [formControl]="$any(packageFeatureEditForm.controls['price'])"
+      ></app-inputbox>
+      <app-inputbox
+        label="Status"
+        [options]="statusEnum"
+        [formControl]="$any(packageFeatureEditForm.controls['status'])"
+      ></app-inputbox>
+  
+      <div class="flex justify-end">
+        <app-button
+          label="Cancel"
+          buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2"
+          (click)="closeModal()"
+        ></app-button>
+  
+        <app-button
+          *ngIf="!isLoading"
+          label="Submit"
+          type="submit"
+          buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"
+        ></app-button>
+  
+        <div *ngIf="isLoading" class="flex justify-center items-center h-12 w-12">
+          <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
+        </div>
+      </div>
+    </form>
+  </app-modal>
+  
 
   

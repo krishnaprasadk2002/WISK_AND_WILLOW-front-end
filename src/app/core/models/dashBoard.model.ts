@@ -14,3 +14,16 @@ export interface MonthlyBooking {
   export interface MonthlyBookingsResponse {
     monthlyBookings: MonthlyBooking[];
   }
+
+  export interface DailyBooking {
+    date: string;
+    bookings: number;
+    totalAmount: number
+  }
+
+  export interface YearlyBooking {
+    year: number;
+    bookings: number;
+  }
+  
+  

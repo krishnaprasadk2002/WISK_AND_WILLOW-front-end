@@ -2,8 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { Employee, LogoutResponse } from '../../models/employee.model';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, of} from 'rxjs';
 import { LoginResponse } from '../../models/authResponse';
+import { IBooking } from '../../models/booking.model';
 
 @Injectable({
   providedIn: 'root'
@@ -50,4 +51,19 @@ export class EmployeeService {
     return this.http.put<Employee>(`${this.baseUrl}employee/empstatus/${employee._id}`, { is_employee: employee.is_employee });
   }
 
+  loadEmployeeData(): Observable<Employee[]> {
+    return this.http.get<Employee[]>(`${this.baseUrl}employee/loadempdata`)
+  }
+
+  GetBookingData(): Observable<IBooking[]> {
+    return this.http.get<IBooking[]>(`${this.baseUrl}employee/bookings`);
+  }
+
+  isAuthenticated(): Observable<boolean> {
+    return this.http.get(`${this.baseUrl}employee/isAuth`).pipe(
+      map(() => true),
+      catchError(() => of(false))
+    );
+  }
+  
 }

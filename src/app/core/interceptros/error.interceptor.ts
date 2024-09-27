@@ -10,9 +10,11 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError(error=>{
-      if(error.status==404 || error.status==500){
-        router.navigate(['error', error.status]);
-      }
+      console.log(error);
+      
+      // if(error.status==404 || error.status==500){
+      //   router.navigate(['error', error.status]);
+      // }
       return throwError(()=>error)
     })
   )

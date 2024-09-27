@@ -29,6 +29,7 @@ export class PackageDetailsComponent implements OnInit {
   isModalEditOpen:boolean = false
   packageFeatureEditForm!:FormGroup
   statusEnum:string[]=['Available','Not Available']
+  isLoading = false; 
   
   private toastService: ToastService = inject(ToastService); 
 
@@ -88,6 +89,7 @@ this.packageFeatureEditForm = this.fb.group({
 
   onSubmit(): void {
     if (this.packageFeatureForm.valid) {
+      this.isLoading = true; 
       const formValue = this.packageFeatureForm.value;
 
       const packageItems = [
@@ -107,10 +109,12 @@ this.packageFeatureEditForm = this.fb.group({
           this.closeModal();
           this.packageFeatureForm.reset({ status: 'Available' });
           this.getPackageById();
+          this.isLoading = false; 
         },
         error => {
           console.error('Error adding package features:', error);
-          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Error adding package features' })
+          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Error adding package features' });
+          this.isLoading = false; 
         }
       );
     }
@@ -119,6 +123,7 @@ this.packageFeatureEditForm = this.fb.group({
 
   onEditSubmit(): void {
     if (this.packageFeatureEditForm.valid && this.editFeatureId) {
+      this.isLoading = true; 
       const formValue = this.packageFeatureEditForm.value;
       const featureData = {
         _id: this.editFeatureId,
@@ -132,14 +137,16 @@ this.packageFeatureEditForm = this.fb.group({
           this.closeModal();
           this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Feature updated successfully' });
           this.getPackageById();
+          this.isLoading = false; 
         },
         error => {
           console.error('Error updating feature:', error);
-          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Error updating feature' })
+          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Error updating feature' });
+          this.isLoading = false; 
         }
       );
     } else {
-      this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Form is invalid or feature ID is missing' })
+      this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Form is invalid or feature ID is missing' });
     }
   }
   

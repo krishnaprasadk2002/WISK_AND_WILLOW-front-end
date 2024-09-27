@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { alphabetsOnlyValidator,noWhitespaceValidator,mobileNumberValidator, passwordMatchValidator, strongPasswordValidator } from '../../../shared/validators/form.validator';
 import { CommonModule } from '@angular/common';
 import { AuthServicesService } from '../../../core/services/users/auth-services.service';
-import { ToastrService } from 'ngx-toastr';
+import { ToastService } from '../../../services/toast.service';
+import IToastOption from '../../../core/models/IToastOptions';
+
 
 @Component({
   selector: 'app-user-register',
@@ -17,10 +19,10 @@ export class UserRegisterComponent {
 
   registerForm!: FormGroup;
 
+  private toastService: ToastService = inject(ToastService);
   constructor( private fb: FormBuilder,
     private authService: AuthServicesService,
-    private router: Router,
-    private toastService:ToastrService) {
+    private router: Router) {
 
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, alphabetsOnlyValidator(), noWhitespaceValidator()]],
@@ -36,21 +38,39 @@ export class UserRegisterComponent {
       const userData = { name: username, email, mobile, password };
       this.authService.userRegister(userData).subscribe(
         response => {
-          // this.toastService.show('Registration successful', 'success');
+
+          const toastOption: IToastOption = {
+            severity: 'success', 
+            summary: 'Success', 
+            detail: 'Registration successful'
+          }
+    
+          this.toastService.showToast(toastOption); 
         console.log(response);
         localStorage.setItem('userId',response._id)
         localStorage.setItem('email',response.email)
           this.router.navigate(['/otp']);
         },
         error => {
-          // this.toastService.show(error.error.message || 'Error during registration', 'error');
+          const toastOption: IToastOption = {
+            severity: 'error', 
+            summary: 'Error', 
+            detail: error.error.message || "Error during registration"
+          }
+    
+          this.toastService.showToast(toastOption); 
           console.error('Error during registration', error);
         }
       );
     } else {console.log('hai');
     
       this.registerForm.markAllAsTouched()
-      // this.toastService.show('Form is invalid', 'error');
+      const toastOption: IToastOption = {
+        severity: 'warn', 
+        summary: 'Warn', 
+        detail: 'Form is invalid'
+      }
+      this.toastService.showToast(toastOption); 
       console.log('Form is invalid');
     }
   }

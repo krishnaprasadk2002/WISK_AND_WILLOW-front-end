@@ -11,6 +11,8 @@ import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { errorInterceptor } from './core/interceptros/error.interceptor';
+import { refershTokenInterceptor } from './core/interceptros/refersh-token.interceptor';
+
 
 
 
@@ -20,7 +22,7 @@ import { errorInterceptor } from './core/interceptros/error.interceptor';
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }),
      provideRouter(routes, withInMemoryScrolling({scrollPositionRestoration:"top"})),
-     provideHttpClient(withInterceptors([authInterceptor,errorInterceptor])), 
+     provideHttpClient(withInterceptors([authInterceptor, refershTokenInterceptor, errorInterceptor])), 
      provideToastr(),
      provideStoreDevtools(),
      provideStore({auth:authReducer}),

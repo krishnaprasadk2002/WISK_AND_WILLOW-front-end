@@ -41,8 +41,10 @@ export class GalleryComponent implements OnInit {
   totalItems: number = 0;
   filteredGallery:IGallery[] = []
   isEditModalOpen:boolean = false
+  isLoadingGallery = false;
 
   private toastService: ToastService = inject(ToastService); 
+
 
   constructor( private fb: FormBuilder, private galleryService: GalleryService) {
     this.galleryImageForm = this.fb.group({
@@ -191,30 +193,32 @@ export class GalleryComponent implements OnInit {
 
   onSubmitGalleryImage(): void {
     if (this.galleryImageForm.valid) {
+      this.isLoadingGallery = true;
       const galleryData = this.galleryImageForm.value;
+
       this.galleryService.addGallery(galleryData).subscribe(
         response => {
-            // Show custom success toast
-            this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Gallery image added successfully!' });
+          this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Gallery image added successfully!' });
           this.imagePreview = null;
           this.closeGalleryImageModal();
-  
+
           if (this.galleryItems.length > 4) {
             this.loadGalleryImage(); 
           } else {
             this.galleryItems.push(response); 
             this.filteredGallery = [...this.galleryItems]; 
           }
-  
+
+          this.isLoadingGallery = false; 
         },
         error => {
           console.error('Error adding gallery image', error);
-          // Show custom error toast
-          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Failed to add gallery image.' })
+          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Failed to add gallery image.' });
+          this.isLoadingGallery = false; 
         }
       );
     } else {
-      this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Please fill all required fields.' })
+      this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Please fill all required fields.' });
     }
   }
 
@@ -263,14 +267,15 @@ export class GalleryComponent implements OnInit {
 
   onSubmitEditGalleryImage(): void {
     if (this.editGalleryImageForm.valid && this.selectedImage) {
+      this.isLoadingGallery = true; 
       const updatedData = this.editGalleryImageForm.value;
       updatedData.image = this.imagePreview;
-  
+
       this.galleryService.updateGallery(this.selectedImage._id, updatedData).subscribe(
         response => {
           this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Gallery image updated successfully!' });
           this.closeEditModal();
-  
+
           if (this.galleryItems.length > 4) {
             this.loadGalleryImage(); 
           } else {
@@ -280,15 +285,17 @@ export class GalleryComponent implements OnInit {
               this.filteredGallery = [...this.galleryItems]; 
             }
           }
+
+          this.isLoadingGallery = false;
         },
         error => {
           console.error('Error updating gallery image', error);
-          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Failed to update gallery image.' })
+          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Failed to update gallery image.' });
+          this.isLoadingGallery = false;
         }
       );
     } else {
-      this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Please fill all required fields.' })
+      this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Please fill all required fields.' });
     }
-  
   }
 }

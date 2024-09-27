@@ -1,92 +1,198 @@
-<app-admin-nav [PageName]="'Gallery Management'" ></app-admin-nav>
+<app-admin-nav [PageName]="'Gallery Management'"></app-admin-nav>
 
-<app-reusable-table 
-  [HeadArray]="headArray" 
-  [GridArray]="filteredGallery" 
+<app-reusable-table
+  [HeadArray]="headArray"
+  [GridArray]="filteredGallery"
   [is_edit]="true"
   [is_delete]="true"
   [currentPage]="currentPage"
   [pageSize]="itemsPerPage"
-  [totalItems]="totalItems" 
-  (onEdit)="editGalleryItem($event.item, $event.item.id)" 
-  (onDelete)="deleteGalleryItem($event._id)" 
-  (searchChanged)="onSearchTermChanged($event)" 
-  (pageChange)="onPageChange($event)">
+  [totalItems]="totalItems"
+  (onEdit)="editGalleryItem($event.item, $event.item.id)"
+  (onDelete)="deleteGalleryItem($event._id)"
+  (searchChanged)="onSearchTermChanged($event)"
+  (pageChange)="onPageChange($event)"
+>
 </app-reusable-table>
 
 <div class="flex justify-start mt-4">
-    <button (click)="openGalleryImageModal()"
-      class="bg-transparent hover:bg-[#1a2035] text-[#1a2035] font-semibold hover:text-white py-2 px-4 border border-[#1a2035] hover:border-transparent rounded">
-      Add Gallery Image
-    </button>
-    <button (click)="openCategoryModal()"
-      class="bg-transparent hover:bg-[#1a2035] text-[#1a2035] font-semibold hover:text-white py-2 px-4 border border-[#1a2035] hover:border-transparent rounded ml-2">
-      Add Category
-    </button>
+  <button
+    (click)="openGalleryImageModal()"
+    class="bg-transparent hover:bg-[#1a2035] text-[#1a2035] font-semibold hover:text-white py-2 px-4 border border-[#1a2035] hover:border-transparent rounded"
+  >
+    Add Gallery Image
+  </button>
+  <button
+    (click)="openCategoryModal()"
+    class="bg-transparent hover:bg-[#1a2035] text-[#1a2035] font-semibold hover:text-white py-2 px-4 border border-[#1a2035] hover:border-transparent rounded ml-2"
+  >
+    Add Category
+  </button>
 </div>
 
-
 <!-- Add Modal -->
- 
-<app-modal [isOpen]="isGalleryImageModalOpen" [title]="'Add Gallery Image'" (closeModal)="closeGalleryImageModal()">
+
+<app-modal
+  [isOpen]="isGalleryImageModalOpen"
+  [title]="'Add Gallery Image'"
+  (closeModal)="closeGalleryImageModal()"
+>
   <form [formGroup]="galleryImageForm" (ngSubmit)="onSubmitGalleryImage()">
-    <app-inputbox [label]="'Name'" [type]="'text'" [formControl]="$any(galleryImageForm.controls['name'])"></app-inputbox>
-    <app-inputbox [label]="'Image'" [type]="'file'" [formControl]="$any(galleryImageForm.controls['image'])" (change)="onImageSelected($event)"></app-inputbox>
+    <app-inputbox
+      [label]="'Name'"
+      [type]="'text'"
+      [formControl]="$any(galleryImageForm.controls['name'])"
+    ></app-inputbox>
+    <app-inputbox
+      [label]="'Image'"
+      [type]="'file'"
+      [formControl]="$any(galleryImageForm.controls['image'])"
+      (change)="onImageSelected($event)"
+    ></app-inputbox>
 
     <div *ngIf="imagePreview" class="mt-2">
-      <img [src]="imagePreview" alt="Image preview" class="max-w-full h-auto border border-gray-300 rounded-md">
+      <img
+        [src]="imagePreview"
+        alt="Image preview"
+        class="max-w-full h-auto border border-gray-300 rounded-md"
+      />
     </div>
 
-    <app-inputbox label="Category" [options]="categories" [formControl]="$any(galleryImageForm.controls['category'])"></app-inputbox>
+    <app-inputbox
+      label="Category"
+      [options]="categories"
+      [formControl]="$any(galleryImageForm.controls['category'])"
+    ></app-inputbox>
 
     <div class="flex justify-end">
-      <app-button label="Cancel" buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2" (click)="closeGalleryImageModal()"></app-button>
-      <app-button label="Submit" type="submit" buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"></app-button>
+      <app-button
+        label="Cancel"
+        buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2"
+        (click)="closeGalleryImageModal()"
+      ></app-button>
+
+      <!-- Hide Submit button and show spinner while loading -->
+      <app-button
+        *ngIf="!isLoadingGallery"
+        label="Submit"
+        type="submit"
+        buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"
+      ></app-button>
+
+      <!-- Spinner while loading -->
+      <div
+        *ngIf="isLoadingGallery"
+        class="flex justify-center items-center h-12 w-12"
+      >
+        <div
+          class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"
+        ></div>
+      </div>
     </div>
   </form>
 </app-modal>
-
 
 <!--Edit Modal -->
- 
-<app-modal [isOpen]="isEditModalOpen" [title]="'Edit Gallery Image'" (closeModal)="closeEditModal()">
-  <form [formGroup]="editGalleryImageForm" (ngSubmit)="onSubmitEditGalleryImage()">
-    <app-inputbox [label]="'Name'" [type]="'text'" [formControl]="$any(editGalleryImageForm.controls['name'])"></app-inputbox>
-    <app-inputbox [label]="'Image'" [type]="'file'" [formControl]="$any(editGalleryImageForm.controls['image'])" (change)="onImageSelected($event)"></app-inputbox>
+
+<app-modal
+  [isOpen]="isEditModalOpen"
+  [title]="'Edit Gallery Image'"
+  (closeModal)="closeEditModal()"
+>
+  <form
+    [formGroup]="editGalleryImageForm"
+    (ngSubmit)="onSubmitEditGalleryImage()"
+  >
+    <app-inputbox
+      [label]="'Name'"
+      [type]="'text'"
+      [formControl]="$any(editGalleryImageForm.controls['name'])"
+    ></app-inputbox>
+    <app-inputbox
+      [label]="'Image'"
+      [type]="'file'"
+      [formControl]="$any(editGalleryImageForm.controls['image'])"
+      (change)="onImageSelected($event)"
+    ></app-inputbox>
 
     <div *ngIf="imagePreview" class="mt-2">
-      <img [src]="imagePreview" alt="Image preview" class="max-w-full h-auto border border-gray-300 rounded-md">
+      <img
+        [src]="imagePreview"
+        alt="Image preview"
+        class="max-w-full h-auto border border-gray-300 rounded-md"
+      />
     </div>
 
-    <app-inputbox label="Category" [options]="categories" [formControl]="$any(editGalleryImageForm.controls['category'])"></app-inputbox>
+    <app-inputbox
+      label="Category"
+      [options]="categories"
+      [formControl]="$any(editGalleryImageForm.controls['category'])"
+    ></app-inputbox>
 
     <div class="flex justify-end">
-      <app-button label="Cancel" buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2" (click)="closeEditModal()"></app-button>
-      <app-button label="Submit" type="submit" buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"></app-button>
+      <app-button
+        label="Cancel"
+        buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2"
+        (click)="closeEditModal()"
+      ></app-button>
+
+      <app-button
+        *ngIf="!isLoadingGallery"
+        label="Submit"
+        type="submit"
+        buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"
+      ></app-button>
+
+      <div
+        *ngIf="isLoadingGallery"
+        class="flex justify-center items-center h-12 w-12"
+      >
+        <div
+          class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"
+        ></div>
+      </div>
     </div>
   </form>
 </app-modal>
-
-
-
-
 
 <!-- Add Category Modal -->
-<app-modal [isOpen]="isCategoryModalOpen" [title]="'Add Image Category'" (closeModal)="closeCategoryModal()">
+<app-modal
+  [isOpen]="isCategoryModalOpen"
+  [title]="'Add Image Category'"
+  (closeModal)="closeCategoryModal()"
+>
   <form [formGroup]="categoryForm" (ngSubmit)="onSubmitCategory()">
-    <app-inputbox [label]="'Category Name'" [type]="'text'" [formControl]="$any(categoryForm.controls['categoryName'])"></app-inputbox>
-    
-    <input type="file" (change)="onCategoryImageSelected($event)" accept="image/*" />
+    <app-inputbox
+      [label]="'Category Name'"
+      [type]="'text'"
+      [formControl]="$any(categoryForm.controls['categoryName'])"
+    ></app-inputbox>
+
+    <input
+      type="file"
+      (change)="onCategoryImageSelected($event)"
+      accept="image/*"
+    />
 
     <div *ngIf="imagePreview" class="mt-2">
-      <img [src]="imagePreview" alt="Image preview" class="max-w-full h-auto border border-gray-300 rounded-md">
+      <img
+        [src]="imagePreview"
+        alt="Image preview"
+        class="max-w-full h-auto border border-gray-300 rounded-md"
+      />
     </div>
-    
+
     <div class="flex justify-end mt-4">
-      <app-button label="Cancel" buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2" (click)="closeCategoryModal()"></app-button>
-      <app-button label="Submit" type="submit" buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"></app-button>
+      <app-button
+        label="Cancel"
+        buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2"
+        (click)="closeCategoryModal()"
+      ></app-button>
+      <app-button
+        label="Submit"
+        type="submit"
+        buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"
+      ></app-button>
     </div>
   </form>
 </app-modal>
-
-

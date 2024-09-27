@@ -1,11 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-import { environment } from '../../../../environments/environment';
 import { CommonModule } from '@angular/common';
 import { EmployeeService } from '../../../core/services/employee/employee.service';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-employee-register',
@@ -17,12 +15,10 @@ import { EmployeeService } from '../../../core/services/employee/employee.servic
 export class EmployeeRegisterComponent implements OnInit {
 
     registrationForm!: FormGroup;
-    private baseUrl = environment.baseUrl;
-  
+  private toast:ToastService = inject(ToastService)
     constructor(
       private fb: FormBuilder,
       private router: Router,
-      private toastr: ToastrService,
       private employee:EmployeeService
     ) {}
   
@@ -51,16 +47,16 @@ export class EmployeeRegisterComponent implements OnInit {
       if (this.registrationForm.valid) {
           this.employee.employeeRegister(this.registrationForm.value).subscribe(
               response => {
-                  this.toastr.success('Registration successful');
+                this.toast.showToast({ severity: 'success', summary: 'Success', detail: 'Registration successful' });
                   this.router.navigate(['/employee/login']);
               },
               error => {
+                this.toast.showToast({ severity: 'error', summary: 'error', detail: error || 'Registration failed' });
                   console.error('Registration failed', error);
-                  this.toastr.error('Registration failed');
               }
           );
       } else {
-          this.toastr.warning('Please fill all required fields correctly');
+        this.toast.showToast({ severity: 'warn', summary: 'Warn', detail: 'Please fill all required fields correctly' });
       }
   }  
   }

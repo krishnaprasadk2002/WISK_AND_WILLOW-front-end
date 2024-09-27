@@ -6,7 +6,7 @@ import { AdminLoginComponent } from './pages/admin/admin-login/admin-login.compo
 import { AuthenticationComponent } from './pages/user/authentication/authentication.component';
 import { UserLoginComponent } from './pages/user/user-login/user-login.component';
 import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
-import { EmployeeDashboardComponent } from './pages/employee/employee-dashboard/employee-dashboard.component';
+import { EmployeeDashboardComponentm } from './pages/employee/employee-dashboard/employee-dashboard.component';
 import { EmployeeLoginComponent } from './pages/employee/employee-login/employee-login.component';
 import { EmployeeRegisterComponent } from './pages/employee/employee-register/employee-register.component';
 import { AdminAuthComponent } from './pages/admin/admin-auth/admin-auth.component';
@@ -41,6 +41,10 @@ import { BannerManagementComponent } from './pages/admin/banner-management/banne
 import { ChatComponent } from './pages/user/chat/chat.component';
 import { ChatManagementComponent } from './pages/admin/chat-management/chat-management.component';
 import { EmployeeManagmentComponent } from './pages/admin/employee-managment/employee-managment.component';
+import { HomeEmployeeComponent } from './pages/employee/home/home.component';
+import { EmployeeAuthComponent } from './pages/employee/employee-auth/employee-auth.component';
+import { employeeGuard } from './core/guards/employee.guard';
+import { employeeAuthGuard } from './core/guards/employee-auth.guard';
 
 export const routes: Routes = [
 
@@ -209,13 +213,25 @@ export const routes: Routes = [
     //Employee side
     {
         path: 'employee',
-        component: AuthenticationComponent,
+        component: EmployeeAuthComponent,
         children: [
-            { path: '', component: EmployeeDashboardComponent },
-            { path: 'dashboard', component: EmployeeDashboardComponent },
-            { path: 'login', component: EmployeeLoginComponent },
-            { path: 'register', component: EmployeeRegisterComponent }
+            { path: 'login', component: EmployeeLoginComponent,
+                canActivate:[employeeGuard], 
+            },
+            { path: 'register', component: EmployeeRegisterComponent,
+                canActivate:[employeeGuard], 
+            }
         ]
+    },
+    {
+        path:'employee',
+        component:HomeEmployeeComponent,
+        canActivateChild:[employeeAuthGuard],
+        children:[
+            { path: '', component: EmployeeDashboardComponentm },
+            { path: 'dashboard', component: EmployeeDashboardComponentm}
+        ]
+
     }
 
 ];

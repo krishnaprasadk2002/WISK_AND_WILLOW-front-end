@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { AdminNavService } from '../../../core/services/adminNav/admin-nav.service';
 import { EmployeeService } from '../../../core/services/employee/employee.service';
 import { Employee } from '../../../core/models/employee.model';
 import { FormsModule } from '@angular/forms';

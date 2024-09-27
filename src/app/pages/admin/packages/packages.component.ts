@@ -29,6 +29,7 @@ export class PackagesComponent implements OnInit {
   selectedImage: string | ArrayBuffer | null = null;
   isEditModalOpen: boolean = false
   packageId!: string
+  isLoading = false; 
 
   private toastService: ToastService = inject(ToastService);
 
@@ -115,12 +116,9 @@ export class PackagesComponent implements OnInit {
   }
 
 
-
-
-
-
   onSubmit() {
     if (this.packageForm.valid) {
+      this.isLoading = true; 
       let packageData = this.packageForm.value;
       packageData = { ...packageData, image: this.selectedImage };
 
@@ -131,20 +129,22 @@ export class PackagesComponent implements OnInit {
           this.filteredPackage = [...this.packages];
           this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Package added successfully!' });
           this.closeModal();
+          this.isLoading = false; 
         },
         error => {
           console.error('Package adding failed', error);
-          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Failed to add package. Please try again.' })
+          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Failed to add package. Please try again.' });
+          this.isLoading = false; 
         }
       );
     } else {
-      this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Please fill out the form correctly.' })
+      this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Please fill out the form correctly.' });
     }
   }
 
 
 
-  openPackageDetails(item: any) {
+  openPackageDetails(item: Ipackages) {
     const packageId = item._id;
     this.router.navigate(['/admin/package-details', packageId]);
   }
@@ -191,6 +191,7 @@ export class PackagesComponent implements OnInit {
 
   onEditSubmit() {
     if (this.editpackageForm.valid) {
+      this.isLoading = true; 
       let packageData = this.editpackageForm.value;
 
       if (this.selectedImage) {
@@ -207,14 +208,16 @@ export class PackagesComponent implements OnInit {
           }
           this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Package updated successfully!' });
           this.closeModal();
+          this.isLoading = false;
         },
         error => {
           console.error('Package updating failed', error);
-          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Failed to update package. Please try again.' })
+          this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Failed to update package. Please try again.' });
+          this.isLoading = false; 
         }
       );
     } else {
-      this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Please fill out the form correctly.' })
+      this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Please fill out the form correctly.' });
     }
   }
 

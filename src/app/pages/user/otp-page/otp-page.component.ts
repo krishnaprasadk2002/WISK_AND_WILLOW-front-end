@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthServicesService } from '../../../core/services/users/auth-services.service';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import { ToastService } from '../../../services/toast.service';
+import IToastOption from '../../../core/models/IToastOptions';
 
 @Component({
   selector: 'app-otp-page',
@@ -17,12 +19,12 @@ export class OtpPageComponent implements OnInit {
   timer: number = 60
   timerInterval: any;
   isLinkDisabled: boolean = false;
+  private toastService: ToastService = inject(ToastService);
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private authService: AuthServicesService,
-    private toastService: ToastrService
   ) {
     this.otpForm = this.fb.group({
       otp: ['', [Validators.required, Validators.pattern('^[0-9]{6}$')]]
@@ -52,18 +54,37 @@ export class OtpPageComponent implements OnInit {
       this.authService.verifyOtp(userId as string, otp).subscribe(
         response => {
           clearInterval(this.timerInterval);
-          // this.toastService.show('OTP verified successfully', 'success');
+
+          const toastOption: IToastOption = {
+            severity: 'success', 
+            summary: 'Success', 
+            detail: 'OTP verified successfully'
+          }
+    
+          this.toastService.showToast(toastOption); 
           localStorage.removeItem('userId');
           localStorage.removeItem('email');
           this.router.navigate(['/login']);
         },
         error => {
-          // this.toastService.show(error.error.message || 'Invalid OTP', 'error');
+          const toastOption: IToastOption = {
+            severity: 'error', 
+            summary: 'Error', 
+            detail: error.error.message || 'Invalid OTP',
+          }
+    
+          this.toastService.showToast(toastOption); 
           console.error('Error during OTP verification', error);
         }
       );
     } else {
-      // this.toastService.show('Please enter a valid OTP', 'error');
+      const toastOption: IToastOption = {
+        severity: 'error', 
+        summary: 'Error', 
+        detail: 'Please enter a valid OTP',
+      }
+
+      this.toastService.showToast(toastOption); 
       console.log('Form is invalid');
     }
   }
@@ -73,12 +94,24 @@ export class OtpPageComponent implements OnInit {
     const email =localStorage.getItem('email')
     this.authService.resendOtP(email as string).subscribe(
       response => {
-        // this.toastService.show('OTP resent successfully', 'success');
+
+        const toastOption: IToastOption = {
+          severity: 'success', 
+          summary: 'Success', 
+          detail: 'OTP resent successfully'
+        }
+  
+        this.toastService.showToast(toastOption); 
         this.timer = 60;
         this.startTimer();
       },
       error => {
-        // this.toastService.show('Error during OTP resend', 'error');
+        const toastOption: IToastOption = {
+          severity: 'error', 
+          summary: 'Error', 
+          detail: 'Error during OTP resend',
+        }
+        this.toastService.showToast(toastOption); 
         console.error('Error during OTP resend', error);
       }
     );

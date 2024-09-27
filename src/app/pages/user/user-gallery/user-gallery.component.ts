@@ -14,6 +14,8 @@ import { GalleryService } from '../../../core/services/admin/gallery.service';
 export class UserGalleryComponent implements OnInit {
   category:string | null ='';
   galleryImages:IGallery[] = []
+  selectedImage: string | null = null;
+  isModalOpen: boolean = false; 
 
   constructor(private route:ActivatedRoute,private galleryService:GalleryService){}
   
@@ -37,6 +39,16 @@ loadGallery() {
   } else {
     console.warn('Category is null, cannot fetch gallery images.');
   }
+}
+
+ openImageModal(imageUrl: string) {
+  this.selectedImage = imageUrl;
+  this.isModalOpen = true;
+}
+
+closeModal() {
+  this.isModalOpen = false;
+  this.selectedImage = null;
 }
 
 }

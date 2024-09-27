@@ -37,6 +37,7 @@ export class EventManagementComponent {
   currentPage = 1;
   itemsPerPage = 4;
   totalItems: number = 0;
+  isLoading: boolean = false; 
 
   headArray:any[] = [
     { header: "EventName", fieldName: "name", datatype: "string" },
@@ -179,57 +180,54 @@ export class EventManagementComponent {
   }
 
   onSubmit(): void {
-
     if (this.eventForm.valid) {
-      const formData = { ...this.eventForm.value, ...this.images }
-
-      // Only include images that have been changed
+      this.isLoading = true; 
+  
+      const formData = { ...this.eventForm.value, ...this.images };
+  
+      
       if (this.images.image1 !== this.imagePreview1) formData.image1 = this.images.image1;
       if (this.images.image2 !== this.imagePreview2) formData.image2 = this.images.image2;
       if (this.images.image3 !== this.imagePreview3) formData.image3 = this.images.image3;
-
+  
       if (this.isEditMode && this.currentEventId) {
-        console.log(this.isEditMode);
         this.eventService.updateEvent({ _id: this.currentEventId, ...formData }).subscribe(
           (response) => {
             this.isEditMode = false;
-            this.eventForm.get('image1')?.addValidators(Validators.required);
-            this.eventForm.get('image2')?.addValidators(Validators.required);
-            this.eventForm.get('image3')?.addValidators(Validators.required);
-
-            console.log('Event updated successfully', response);
-            this.toastService.showToast({ severity: 'success', summary: 'Success', detail:'Event updated successfully' });
+            this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Event updated successfully' });
             this.closeModal();
             this.loadEvents();
           },
           (error) => {
-            this.isEditMode = false;
-            this.eventForm.get('image1')?.addValidators(Validators.required);
-            this.eventForm.get('image2')?.addValidators(Validators.required);
-            this.eventForm.get('image3')?.addValidators(Validators.required);
-            this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Error updating event' })
+            this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Error updating event' });
             console.error('Error updating event', error);
+          },
+          () => {
+            this.isLoading = false;
           }
         );
       } else {
-        //add new Event
         this.eventService.addEvent({ ...this.eventForm.value, ...this.images }).subscribe(
           (response) => {
-            this.toastService.showToast({ severity: 'success', summary: 'Success', detail:'Event added successfully' });
+            this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Event added successfully' });
             this.closeModal();
             this.eventForm.reset();
             this.resetPreviews();
-            this.loadEvents()
+            this.loadEvents();
           },
           (error) => {
-            this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Error adding event' })
+            this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Error adding event' });
+          },
+          () => {
+            this.isLoading = false; 
           }
-        )
+        );
       }
     } else {
       this.eventForm.markAllAsTouched();
     }
   }
+  
 
   editEvent(event: { item: IEvent; id: string }) {
     const eventData = event.item;

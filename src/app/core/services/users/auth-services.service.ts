@@ -44,6 +44,10 @@ export class AuthServicesService {
     return this.http.post<GoogleLoginResponse> (`${this.baseUrl}user/googlelogin`, { token });
   }
 
+  refreshToken(): Observable<any> {
+    return this.http.post(`${this.baseUrl}user/refresh-token`, {});
+  }
+
   forgotpassword(email:string):Observable<{ message: string }>{
     return this.http.post<{ message: string }>(`${this.baseUrl}user/forgot-password`,{email})
   }

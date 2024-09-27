@@ -96,10 +96,10 @@ ngOnDestroy() {
 getPages(): number[] {
   return Array.from({ length: this.totalPages }, (_, i) => i + 1);
 }
-
 assignRecord(item: any) {
   this.onAssign.emit(item);
 }
+
 
 updateEmplyeeStatus(item:any){
   this.onApproveReject.emit(item)

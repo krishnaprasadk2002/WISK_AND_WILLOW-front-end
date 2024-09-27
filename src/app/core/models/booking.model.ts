@@ -1,3 +1,5 @@
+import { Employee } from "./employee.model";
+
 export interface ICartItem {
   food: {
     _id: string;
@@ -29,6 +31,8 @@ export interface IBooking {
   paymentOrderId?: string;
   created_at?: Date;
   status?:string;
+  assignedEmployeeId?:string;
+  assignedEmployee?: Employee;
 }
 
 

@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { EmployeeService } from '../../../core/services/employee/employee.service';
-import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-employee-login',
@@ -13,12 +13,13 @@ import { CommonModule } from '@angular/common';
   styleUrl: './employee-login.component.css'
 })
 export class EmployeeLoginComponent {
+
+  private toast:ToastService = inject(ToastService)
   loginForm!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private toastr: ToastrService,
     private employee: EmployeeService
   
   ) {}
@@ -34,17 +35,17 @@ export class EmployeeLoginComponent {
     if (this.loginForm.valid) {
       this.employee.employeeLogin(this.loginForm.value).subscribe(
         response => {
-          this.toastr.success('Login successful');
+          this.toast.showToast({ severity: 'success', summary: 'Success', detail: 'Login successful' });
           this.router.navigate(['/employee/dashboard']);
         },
         error => {
           console.error('Login failed', error);
           const errorMessage = error.error?.message || 'Login failed. Please try again.';
-          this.toastr.error(errorMessage);
+          this.toast.showToast({ severity: 'error', summary: 'Error', detail: errorMessage });
         }
       );
     } else {
-      this.toastr.warning('Please fill all required fields correctly');
+      this.toast.showToast({severity: 'warn', summary: 'Warn', detail: 'Please fill all required fields correctly'})
     }
   }
   
@@ -52,12 +53,12 @@ export class EmployeeLoginComponent {
   onLogout():void{
     this.employee.employeeLogout().subscribe(
       response=>{
-        this.toastr.success('Logout successful');
+        this.toast.showToast({ severity: 'success', summary: 'Success', detail: 'Logout successful' });
         this.router.navigate(['/employee/login']);
       },
       error => {
         console.error('Logout failed', error);
-        this.toastr.error('Logout failed');
+        this.toast.showToast({ severity: 'error', summary: 'Error', detail: error || 'Logout failed'});
       }
     )
   }

@@ -27,38 +27,116 @@
 
   <app-modal [isOpen]="isModalOpen" [title]="'Add Package'" (closeModal)="closeModal()">
     <form [formGroup]="packageForm" (ngSubmit)="onSubmit()">
-      <app-inputbox [label]="'Package Name'" [type]="'text'" [formControl]="$any(packageForm.controls['name'])"></app-inputbox>
-      <app-inputbox label="Type of Event" [options]="eventNames" [formControl]="$any(packageForm.controls['type_of_event'])"></app-inputbox>
-      <app-inputbox [label]="'Starting Amount'" [type]="'number'" [formControl]="$any(packageForm.controls['startingAmount'])"></app-inputbox>
-      <app-inputbox [label]="'Upload Image'" [type]="'file'" [formControl]="$any(packageForm.controls['image'])" accept="image/*" (change)="onImageSelected($event)"></app-inputbox>
+      <app-inputbox
+        [label]="'Package Name'"
+        [type]="'text'"
+        [formControl]="$any(packageForm.controls['name'])"
+      ></app-inputbox>
+      <app-inputbox
+        label="Type of Event"
+        [options]="eventNames"
+        [formControl]="$any(packageForm.controls['type_of_event'])"
+      ></app-inputbox>
+      <app-inputbox
+        [label]="'Starting Amount'"
+        [type]="'number'"
+        [formControl]="$any(packageForm.controls['startingAmount'])"
+      ></app-inputbox>
+      <app-inputbox
+        [label]="'Upload Image'"
+        [type]="'file'"
+        [formControl]="$any(packageForm.controls['image'])"
+        accept="image/*"
+        (change)="onImageSelected($event)"
+      ></app-inputbox>
+      
       <div *ngIf="selectedImage" class="mt-2">
-        <img [src]="selectedImage" alt="Image preview" class="max-w-full h-auto border border-gray-300 rounded-md">
+        <img
+          [src]="selectedImage"
+          alt="Image preview"
+          class="max-w-full h-auto border border-gray-300 rounded-md"
+        />
       </div>
+  
       <div class="flex justify-end">
-        <app-button label="Cancel" buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2" (click)="closeModal()"></app-button>
-        <app-button label="Submit" type="submit" buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"></app-button>
+        <app-button
+          label="Cancel"
+          buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2"
+          (click)="closeModal()"
+        ></app-button>
+  
+        <!-- Hide Submit button and show spinner while loading -->
+        <app-button
+          *ngIf="!isLoading"
+          label="Submit"
+          type="submit"
+          buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"
+        ></app-button>
+  
+        <!-- Spinner while loading -->
+        <div *ngIf="isLoading" class="flex justify-center items-center h-12 w-12">
+          <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
+        </div>
       </div>
     </form>
   </app-modal>
 
-  <app-modal [isOpen]="isEditModalOpen" [title]="'Edit Package'" (closeModal)="closeModal()">
+
+  
+  <app-modal [isOpen]="isModalOpen" [title]="'Edit Package'" (closeModal)="closeModal()">
     <form [formGroup]="editpackageForm" (ngSubmit)="onEditSubmit()">
-      <app-inputbox [label]="'Package Name'" [type]="'text'" [formControl]="$any(editpackageForm.controls['name'])"></app-inputbox>
-      <app-inputbox label="Type of Event" [options]="eventNames" [formControl]="$any(editpackageForm.controls['type_of_event'])"></app-inputbox>
-      <app-inputbox [label]="'Starting Amount'" [type]="'number'" [formControl]="$any(editpackageForm.controls['startingAmount'])"></app-inputbox>
-      <app-inputbox  [label]="'Upload Image'"  [type]="'file'" [formControl]="$any(editpackageForm.controls['image'])"  accept="image/*"  (change)="onImageSelected($event)"> </app-inputbox>
+      <app-inputbox
+        [label]="'Package Name'"
+        [type]="'text'"
+        [formControl]="$any(editpackageForm.controls['name'])"
+      ></app-inputbox>
+      <app-inputbox
+        label="Type of Event"
+        [options]="eventNames"
+        [formControl]="$any(editpackageForm.controls['type_of_event'])"
+      ></app-inputbox>
+      <app-inputbox
+        [label]="'Starting Amount'"
+        [type]="'number'"
+        [formControl]="$any(editpackageForm.controls['startingAmount'])"
+      ></app-inputbox>
+      <app-inputbox
+        [label]="'Upload Image'"
+        [type]="'file'"
+        [formControl]="$any(editpackageForm.controls['image'])"
+        accept="image/*"
+        (change)="onImageSelected($event)"
+      ></app-inputbox>
   
       <div *ngIf="selectedImage" class="mt-2">
-        <img [src]="selectedImage" alt="Image preview" class="max-w-full h-auto border border-gray-300 rounded-md">
+        <img
+          [src]="selectedImage"
+          alt="Image preview"
+          class="max-w-full h-auto border border-gray-300 rounded-md"
+        />
       </div>
   
       <div class="flex justify-end">
-        <app-button 
-          label="Cancel"  buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2"  (click)="closeModal()"> </app-button>
-        <app-button  label="Submit"   type="submit"  buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"> </app-button>
+        <app-button
+          label="Cancel"
+          buttonClass="bg-red-600 text-white hover:bg-white hover:text-red-600 hover:border border-red-600 py-2 px-4 rounded-lg mr-2"
+          (click)="closeModal()"
+        ></app-button>
+
+        <app-button
+          *ngIf="!isLoading"
+          label="Submit"
+          type="submit"
+          buttonClass="bg-[#1a2035] text-white border py-2 px-4 hover:bg-white hover:text-[#1a2035] hover:border border-[#1a2035] rounded-lg"
+        ></app-button>
+  
+        <div *ngIf="isLoading" class="flex justify-center items-center h-12 w-12">
+          <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
+        </div>
       </div>
     </form>
   </app-modal>
+  
 
 
 

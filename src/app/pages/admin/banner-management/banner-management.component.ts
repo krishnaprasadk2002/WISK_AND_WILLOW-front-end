@@ -27,6 +27,7 @@ export class BannerManagementComponent implements OnInit {
   isModalOpen: Boolean = false;
   bannerForm!: FormGroup;
   selectedImage: string | ArrayBuffer | null = null;
+  isLoadingBanner = false; 
 
   private toastService: ToastService = inject(ToastService); 
 
@@ -118,34 +119,38 @@ export class BannerManagementComponent implements OnInit {
 
   onSubmit() {
     if (this.bannerForm.valid) {
+      this.isLoadingBanner = true; 
       let newBanner: IBanner = this.bannerForm.value;
+
       if (typeof this.selectedImage === 'string') {
         newBanner = { ...newBanner, image: this.selectedImage };
       } else {
         console.error('Image data is not a valid string');
+        this.isLoadingBanner = false; 
         return;
       }
 
       this.bannerService.addBanner(newBanner).subscribe(
         (banner) => {
-          if(this.bannerData.length > 4){
+          if (this.bannerData.length > 4) {
             this.bannerData.push(banner);
             this.loadBanners(this.currentPage);
           } else {
             this.bannerData.push(banner);
-          } 
+          }
 
-          // Show custom success toast
           this.toastService.showToast({ severity: 'success', summary: 'Success', detail: 'Banner added successfully' });
 
           this.closeModal();
           this.filteredBanners = this.bannerData;
           this.totalItems = this.bannerData.length;
+
+          this.isLoadingBanner = false;
         },
         (error) => {
           console.error('Error adding banner', error);
-          // Show custom error toast
           this.toastService.showToast({ severity: 'error', summary: 'Error', detail: 'Failed to add banner' });
+          this.isLoadingBanner = false; 
         }
       );
     }

@@ -41,6 +41,8 @@ export class FoodComponent implements OnInit {
     { header: "Status", fieldName: "status", datatype: "string" }
   ];
 
+  isLoading:boolean = false;
+
   private toastService: ToastService = inject(ToastService); 
 
   constructor(private fb: FormBuilder, private foodService: FoodService) {
@@ -85,8 +87,10 @@ export class FoodComponent implements OnInit {
 
   onSubmitFood() {
     if (this.foodForm.valid) {
+      // Set loading state to true
+      this.isLoading = true;
+
       const foodData = this.foodForm.value;
-  
       this.foodService.addFoods(foodData).subscribe(
         response => {
           this.toastService.showToast({
@@ -95,13 +99,15 @@ export class FoodComponent implements OnInit {
             detail: 'Food item added successfully!',
           });
           this.closeFoodModal();
-  
+
           if (this.totalItems < this.itemsPerPage * this.currentPage) {
             this.foods.push(response);
             this.filteredFood = [...this.foods];
           } else {
             this.loadFoods(this.currentPage);
           }
+
+          this.isLoading = false;
         },
         error => {
           this.toastService.showToast({
@@ -110,6 +116,7 @@ export class FoodComponent implements OnInit {
             detail: 'Failed to add food item. Please try again.',
           });
           console.error('Error adding food item:', error);
+          this.isLoading = false;
         }
       );
     } else {
@@ -140,8 +147,9 @@ export class FoodComponent implements OnInit {
 
   onSubmitEditFood() {
     if (this.editFoodForm.valid) {
-      const foodData = this.editFoodForm.value;
+      this.isLoading = true; 
 
+      const foodData = this.editFoodForm.value;
       this.foodService.editFoods(foodData, this.foodID).subscribe(
         response => {
           this.toastService.showToast({
@@ -150,6 +158,7 @@ export class FoodComponent implements OnInit {
             detail: 'Food data updated successfully!',
           });
           this.closeEditFoodModal();
+          this.isLoading = false;
 
           if (this.foods.length > 4) {
             this.loadFoods();
@@ -163,6 +172,7 @@ export class FoodComponent implements OnInit {
         },
         error => {
           console.error('Error updating food data', error);
+          this.isLoading = false; 
           this.toastService.showToast({
             severity: 'error',
             summary: 'Error',

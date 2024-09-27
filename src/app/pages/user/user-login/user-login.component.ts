@@ -3,12 +3,10 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthServicesService } from '../../../core/services/users/auth-services.service';
-import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
-import { userLogin } from '../../../shared/store/userLogin/login.model';
-import { selectUser } from '../../../shared/store/userLogin/login.selector';
+// import { selectUser } from '../../../shared/store/userLogin/login.selector';
 import { Store } from '@ngrx/store';
-import * as LoginAction from '../../../shared/store/userLogin/login.actions'
+// import * as LoginAction from '../../../shared/store/userLogin/login.actions'
 import { AppState } from '../../../shared/store/app.state';
 import { ToastService } from '../../../services/toast.service';
 import IToastOption from '../../../core/models/IToastOptions';
@@ -59,11 +57,6 @@ export class UserLoginComponent implements OnInit {
       shape:'rectangle',
       width:376
     })
- 
-    
-    
-
- 
   }
 
   private decodeToken(token:string){
@@ -115,7 +108,13 @@ export class UserLoginComponent implements OnInit {
 
       this.authService.userLogin(email, password).subscribe(
         response => {
-          //  this.toastService.show('Login successful', 'success'); 
+          const toastOption: IToastOption = {
+            severity: 'success', 
+            summary: 'Success', 
+            detail: 'login successful'
+          }
+    
+          this.toastService.showToast(toastOption); 
            this.authService.setLoggedIn('true')
           this.router.navigate(['']);
         },
@@ -125,13 +124,25 @@ export class UserLoginComponent implements OnInit {
             localStorage.setItem('userId', error.error.userId);
             this.router.navigate(['/otp']);
           } else {
-            // this.toastService.show(error.error.message || "Error during login", 'error');
+            const toastOption: IToastOption = {
+              severity: 'error', 
+              summary: 'Error', 
+              detail: error.error.message || "Error during login"
+            }
+      
+            this.toastService.showToast(toastOption); 
           }
           console.error("Error during login", error);
         }
       );
     } else {
-      // this.toastService.show('Form is invalid', 'error');
+      const toastOption: IToastOption = {
+        severity: 'warn', 
+        summary: 'Warn', 
+        detail: "Form is invalid"
+      }
+
+      this.toastService.showToast(toastOption); 
       console.log('Form is invalid');
     }
   }
