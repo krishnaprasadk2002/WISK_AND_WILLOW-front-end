@@ -13,36 +13,50 @@ import { AuthServicesService } from '../../../core/services/users/auth-services.
   standalone: true,
   imports: [RouterModule,CommonModule,RouterLink],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  styles: [`
+    :host {
+      display: block;
+    }
+    
+    .dropdown {
+      transform-origin: top right;
+      animation: dropdown 0.2s ease-out;
+    }
+    
+    @keyframes dropdown {
+      from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+  `]
 })
 export class NavbarComponent implements OnInit {
-  user$:any
-  isLogged:boolean = false
+  isLogged: boolean = false;
   isMenuOpen = false;
   isDropdownVisible = false;
+  private baseUrl = environment.baseUrl;
 
-  constructor(private http:HttpClient,private route:Router,private toastrService:ToastrService,private store:Store,private authService:AuthServicesService, private ngZone: NgZone){
-  }
+  constructor(
+    private http: HttpClient,
+    private route: Router,
+    private toastrService: ToastrService,
+    private store: Store,
+    private authService: AuthServicesService,
+    private ngZone: NgZone
+  ) {}
+
   ngOnInit(): void {
-    // this.user$ = this.store.select(selectUser);
-    // this.store.select(selectUser).subscribe((res:any)=>{
-    //   if(res){
-    //     this.isLogged = true
-    //   }
-    // });
-    
-    if(this.authService.isLoggedIn()==="true"){
-      this.isLogged = true  ;
-    }else{
+    if (this.authService.isLoggedIn() === "true") {
+      this.isLogged = true;
+    } else {
       this.isLogged = false;
     }
   }
-
-private baseUrl = environment.baseUrl
-
- 
-
-  
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
@@ -53,11 +67,9 @@ private baseUrl = environment.baseUrl
   }
 
   toggleDropdown(event: Event) {
-    console.log("toggled",this.isDropdownVisible);
-    
     this.ngZone.run(() => {
       this.isDropdownVisible = !this.isDropdownVisible;
-    })
+    });
     event.stopPropagation();
   }
 
@@ -66,23 +78,23 @@ private baseUrl = environment.baseUrl
     const target = event.target as HTMLElement;
     const userIcon = document.getElementById('userIcon');
     const dropdown = document.querySelector('.dropdown');
-
+    
     if (userIcon && dropdown && !userIcon.contains(target) && !dropdown.contains(target)) {
       this.isDropdownVisible = false;
     }
   }
 
   logout() {
-    this.http.post(`${this.baseUrl}user/logout`,{}).subscribe(
-      response =>{
-        console.log('User logged out');
-        this.authService.setLoggedIn('false')
-        this.toastrService.show('Logout successful', 'success')
-        this.route.navigate(['/login'])
-      },error=>{
+    this.http.post(`${this.baseUrl}user/logout`, {}).subscribe({
+      next: () => {
+        this.authService.setLoggedIn('false');
+        this.toastrService.show('Logout successful', 'success');
+        this.route.navigate(['/login']);
+      },
+      error: (error) => {
         console.error('Logout failed', error);
-        this.toastrService.show(error.error.message || "Error during logout",'error')
+        this.toastrService.show(error.error.message || "Error during logout", 'error');
       }
-)
+    });
   }
 }
