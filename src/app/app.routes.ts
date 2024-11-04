@@ -45,6 +45,7 @@ import { HomeEmployeeComponent } from './pages/employee/home/home.component';
 import { EmployeeAuthComponent } from './pages/employee/employee-auth/employee-auth.component';
 import { employeeGuard } from './core/guards/employee.guard';
 import { employeeAuthGuard } from './core/guards/employee-auth.guard';
+import { ContactComponent } from './pages/user/contact/contact.component';
 
 export const routes: Routes = [
 
@@ -107,6 +108,10 @@ export const routes: Routes = [
                 path:'chat',
                 component:ChatComponent,
                 canActivate:[userGuard]
+            },
+            {
+                path:'contact',
+                component:ContactComponent
             }
         ]
     },

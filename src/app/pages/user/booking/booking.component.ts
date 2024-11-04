@@ -71,6 +71,7 @@ export class BookingComponent implements OnInit {
     this.loadTypeOfEvent()
     this.loadBookingData()
     this.loadUserData()
+    
   }
 
   loadTypeOfEvent() {
@@ -137,69 +138,6 @@ export class BookingComponent implements OnInit {
       this.nowPayableAmount = this.totalAmount;
     }
   }
-
-  // onSubmitBooking() {
-  //   if (this.bookingForm.valid) {
-  //     this.isLoading = true;
-  //     const bookingData = {
-  //       ...this.bookingForm.value,
-  //       totalAmount: this.totalAmount,
-  //       eventWithoutFoodPrice: this.eventWithoutFoodPrice,
-  //       foodPrice: this.foodPrice,
-  //       advancePayment: this.advancePayment,
-  //       balanceAmount: this.balanceAmount,
-  //       nowPayableAmount: this.nowPayableAmount,
-  //     };
-
-  //     this.bookingServices.bookPackage(bookingData).subscribe(data => {
-  //       this.payNow(data.id);
-
-  //     })
-  //   } else {
-  //     console.log('Form is not valid');
-  //   }
-  // }
-
-  // payNow(orderid: string) {
-  //   const nowPayableAmount = this.nowPayableAmount
-  //   const options = {
-  //     key: 'rzp_test_dUJLoJPD7rBTvA',
-  //     amount: nowPayableAmount,
-  //     currency: 'INR',
-  //     name: 'WISK AND WILLOW',
-  //     description: 'Booking Payment',
-  //     order_id: orderid,
-  //     handler: (response: any) => {
-  //       console.log(response, "Before");
-
-  //       this.verifyPayment(response);
-  //     },
-  //     prefill: {
-  //       name: this.bookingForm.get('name')?.value,
-  //       email: this.bookingForm.get('email')?.value,
-  //       contact: this.bookingForm.get('mobile')?.value,
-  //     },
-  //     theme: {
-  //       color: '#3a4ade',
-  //     },
-  //     modal: {
-  //       ondismiss: () => {
-  //         console.log('Payment popup closed');
-  //         this.updateBookingStatus(orderid, 'failed');
-  //         this.handlePaymentFailure(orderid, 'Payment cancelled by user');
-  //       }
-  //     }
-  //   };
-
-  //   const rzp = new Razorpay(options);
-  //   rzp.open();
-
-  //   rzp.on('payment.failed', (response: any) => {
-  //     console.error('Payment failed:', response.error);
-  //     this.updateBookingStatus(orderid, 'failed');
-  //     this.handlePaymentFailure(orderid, response.error.description);
-  //   });
-  // }
 
   onSubmitBooking() {
     if (this.bookingForm.valid) {
@@ -297,20 +235,18 @@ export class BookingComponent implements OnInit {
       }
     });
   }
-
   handlePaymentFailure(orderId: string, errorMessage: string) {
     this.updateBookingStatus(orderId, 'failed');
-    
     const failureData = {
       bookingId: orderId,
       eventName: this.bookingForm.get('type_of_event')?.value,
       amount: this.nowPayableAmount,
       errorMessage: errorMessage
     };
-    
     this.bookingServices.setBookingData(failureData);
     this.router.navigate(['/payment-failure']);
   }
+  
 
   updateBookingStatus(orderId: string, status: string) {
     this.bookingServices.updateBookingStatus(orderId, status).subscribe(

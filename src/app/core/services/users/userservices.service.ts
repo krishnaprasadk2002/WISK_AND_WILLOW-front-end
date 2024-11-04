@@ -71,4 +71,9 @@ export class UserservicesService {
       params: { email }
     });
   }
+
+  saveContact(contactData: { email: string; subject: string; message: string }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}user/contactsave`, contactData);
+  }
+  
 }
